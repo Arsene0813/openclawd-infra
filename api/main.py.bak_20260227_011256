@@ -367,8 +367,8 @@ async def debug_chat_mem_search(req: DebugChatSearchReq):
     top_k = req.top_k or CHAT_TOP_K
     qvec = await ollama_embed(req.query)
     hits = await qdrant_search_chat(req.session_id, qvec, top_k)
-    top1_score = hits[0].get("score") if hits else None
-    top2_score = hits[1].get("score") if len(hits) > 1 else None
+    top1_score = hits[0].score if hits else None
+    top2_score = hits[1].score if len(hits) > 1 else None
 
     out = []
     for h in hits:
@@ -388,7 +388,7 @@ async def debug_chat_mem_search(req: DebugChatSearchReq):
     }
 
 class ChatKBReq(BaseModel):
-    session_id: str | None = None
+    session_id: str = Field(..., min_length=1)
     message: str = Field(..., min_length=1)
     system: str | None = None
     temperature: float | None = None

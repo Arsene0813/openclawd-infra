@@ -1,4 +1,21 @@
+# secrets
 .env
+*.env
+**/.env
+*.key
+*.pem
+
+# python
 __pycache__/
 *.pyc
+.venv/
+venv/
+
+# logs & runtime
+*.log
 data/
+tmp/
+
+# OS / editor
+.DS_Store
+.vscode/

@@ -57,8 +57,9 @@ services:
     build: ./api
     container_name: oc_api
     environment:
-      OLLAMA_BASE_URL: http://oc_ollama:11434
-      OLLAMA_MODEL: qwen2.5:7b
+      - OLLAMA_BASE_URL=http://oc_ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - EMBED_MODEL=${EMBED_MODEL}
     depends_on:
       - ollama
     ports:
