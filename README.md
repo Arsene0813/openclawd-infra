@@ -1,5 +1,7 @@
 # From an LLM-Powered Livestream System to a Lifecycle-Aware Agent Memory Layer
 
+An iterative project that evolves an earlier LLM-powered livestream system into a lifecycle-aware memory layer for a more agent-like architecture.
+
 This project is the next iteration of my earlier LLM-powered livestream system. It evolves a fluent conversational layer into a more agent-like architecture by adding structured memory, retrieval control, update policies, and lifecycle-aware knowledge management.
 
 ## Why This Project
@@ -75,3 +77,7 @@ If you modify the API code and want to reload the service, use:
 ```bash
 docker compose restart api
 ```
+
+## Notes
+
+This repository represents an iterative project rather than a finished product. The current implementation remains intentionally compact in a single main service file while the system is still evolving quickly. Future refactoring would likely separate configuration, retrieval clients, memory logic, and debug routes into dedicated modules.
