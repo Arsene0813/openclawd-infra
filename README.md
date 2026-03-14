@@ -46,7 +46,8 @@ If a newer fact of the same type appears, such as `我住在上海` followed lat
 ## Repository Structure
 
 - `api/main.py` – core FastAPI application, memory logic, retrieval control, and debug routes.
-- `api/` – API-related code and service entry point.
+- `api/Dockerfile` – container setup for the API service.
+- `api/requirements.txt` – Python dependencies for the API.
 - `docker-compose.yml` – local multi-service setup for the API, Ollama, and Qdrant.
 - `README.md` – project overview, evolution, and usage notes.
 
