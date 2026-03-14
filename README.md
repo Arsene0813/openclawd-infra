@@ -39,6 +39,23 @@ When the system answers a follow-up query such as `我住在哪`, it can retriev
 ### 3. Overwrite and lifecycle handling
 If a newer fact of the same type appears, such as `我住在上海` followed later by `我住在北京`, the system can update the active fact in a controlled way, preserve the older one through soft deactivation, and keep lifecycle metadata to reflect how knowledge changes over time.
 
+## Demo Evidence
+
+### Structured Fact Extraction
+![Structured Fact Extraction](./docs/01-structured-fact-extraction.png)
+
+A conversational input can be converted into a structured fact and stored as typed memory rather than remaining only as raw chat history.
+
+### Traceable Retrieval
+![Traceable Retrieval](./docs/02-traceable-retrieval.png)
+
+When answering a follow-up query, the system can retrieve the relevant memory item and surface traceable evidence showing what influenced the response.
+
+### Overwrite and Lifecycle Management
+![Overwrite and Lifecycle Management](./docs/03-overwrite-lifecycle.png)
+
+Newer same-type facts can replace older active ones in a controlled way, while older records are preserved through soft deactivation rather than being discarded without trace.
+
 ## Next Steps
 
 - Add richer evaluation workflows to compare retrieval behavior, overwrite decisions, and lifecycle-aware memory usage across different scenarios.
