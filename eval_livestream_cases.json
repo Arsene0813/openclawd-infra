@@ -1,0 +1,91 @@
+[
+  {
+    "name": "product_price_routing",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-product-price-1",
+      "message": "这款多少钱"
+    },
+    "expect": {
+      "refusal": false,
+      "routed_fact_type": "product_price",
+      "reply_contains": "99元"
+    }
+  },
+  {
+    "name": "promo_routing",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-promo-1",
+      "message": "今天有什么优惠"
+    },
+    "expect": {
+      "refusal": false,
+      "routed_fact_type": "promo",
+      "reply_contains": "满199"
+    }
+  },
+  {
+    "name": "stock_status_routing",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-stock-1",
+      "message": "现在有货吗"
+    },
+    "expect": {
+      "refusal": false,
+      "routed_fact_type": "stock_status",
+      "reply_contains": "现货"
+    }
+  },
+  {
+    "name": "shipping_policy_routing",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-shipping-1",
+      "message": "多久能发货"
+    },
+    "expect": {
+      "refusal": false,
+      "routed_fact_type": "shipping_policy",
+      "reply_contains": "次日达"
+    }
+  },
+  {
+    "name": "product_feature_routing",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-feature-1",
+      "message": "这款有什么特点"
+    },
+    "expect": {
+      "refusal": false,
+      "routed_fact_type": "product_feature",
+      "reply_contains": "高透氧"
+    }
+  },
+  {
+    "name": "stale_promo_refusal",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-freshness-policy-1",
+      "message": "今天有什么优惠"
+    },
+    "expect": {
+      "refusal": true,
+      "reply_contains": "没有检索到足够可靠"
+    }
+  },
+  {
+    "name": "no_match_refusal",
+    "endpoint": "/chat_livestream_kb",
+    "payload": {
+      "session_id": "demo-no-match-1",
+      "message": "有没有赠品"
+    },
+    "expect": {
+      "refusal": true,
+      "reply_contains": "没有检索到足够可靠"
+    }
+  }
+]
