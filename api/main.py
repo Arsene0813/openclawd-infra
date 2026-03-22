@@ -21,9 +21,20 @@ CHAT_SCORE_THRESHOLD = float(os.getenv("CHAT_SCORE_THRESHOLD", "0.75"))
 KB_SCORE_THRESHOLD = float(os.getenv("KB_SCORE_THRESHOLD", "0.75"))
 CHAT_BASE_THRESHOLD = float(os.getenv("CHAT_BASE_THRESHOLD", "0.60"))
 CHAT_GAP_THRESHOLD  = float(os.getenv("CHAT_GAP_THRESHOLD",  "0.05"))
-CHAT_MARGIN         = float(os.getenv("CHAT_MARGIN",         "0.02"))
 DEBUG_ROUTES_ENABLED = os.getenv("DEBUG_ROUTES_ENABLED", "true").lower() == "true"
 
+LIVESTREAM_FACT_TYPES = {
+    "product_price",
+    "promo",
+    "stock_status",
+    "shipping_policy",
+    "product_feature",
+}
+
+def get_livestream_score_threshold(fact_type: str | None) -> float:
+    if fact_type == "product_feature":
+        return 0.60
+    return 0.65
 
 app = FastAPI(title="Agent API", version="0.1.0")
 
@@ -40,11 +51,13 @@ async def ollama_embed(text: str) -> list[float]:
         try:
             async with httpx.AsyncClient(timeout=120) as client:
                 r = await client.post(
-                    f"{OLLAMA_BASE_URL}/api/embeddings",
-                    json={"model": EMBED_MODEL, "prompt": text},
+                    f"{OLLAMA_BASE_URL}/api/embed",
+                    json={"model": EMBED_MODEL, "input": text},
                 )
                 r.raise_for_status()
-                return r.json()["embedding"]
+                data = r.json()
+                return data["embeddings"][0]
+
         except Exception as e:
             last_error = e
             await asyncio.sleep(1)
@@ -80,18 +93,18 @@ async def qdrant_upsert_chat(
 
 async def qdrant_search_chat(session_id: str, query_vector: list[float], limit: int):
     body = {
-        "vector": query_vector,
+        "query": query_vector,
         "limit": limit,
         "with_payload": True,
         "filter": {"must": [{"key": "session_id", "match": {"value": session_id}}]},
     }
     async with httpx.AsyncClient(timeout=60) as client:
         r = await client.post(
-            f"{QDRANT_BASE_URL}/collections/{QDRANT_CHAT_COLLECTION}/points/search",
+            f"{QDRANT_BASE_URL}/collections/{QDRANT_CHAT_COLLECTION}/points/query",
             json=body,
         )
         r.raise_for_status()
-        return r.json().get("result", [])
+        return r.json().get("result", {}).get("points", [])
 
 
 async def qdrant_scroll_chat(session_id: str, limit: int = 20):
@@ -147,21 +160,19 @@ def should_store_user_memory(text: str) -> bool:
     if not t:
         return False
 
-    # 典型问题句：先排除
-    if t.endswith("吗") or t.endswith("？") or t.endswith("?") or ("什么" in t):
+    # 太短，通常没有存储价值
+    if len(t) < 2:
         return False
 
-    # 典型“值得记住”的陈述句
-    keywords = [
-        "我叫",
-        "我是",
-        "我喜欢",
-        "我在",
-        "我住在",
-        "我的",
-    ]
+    # 纯数字，通常没有存储价值
+    if t.isdigit():
+        return False
 
-    return any(k in t for k in keywords)
+    # 纯符号/标点，通常没有存储价值
+    if all(not ch.isalnum() for ch in t):
+        return False
+
+    return True
 
 async def should_store_user_memory_llm(text: str) -> bool:
     t = (text or "").strip()
@@ -170,9 +181,10 @@ async def should_store_user_memory_llm(text: str) -> bool:
 
     prompt = (
         "You are a memory gate for a long-term memory assistant.\n"
-        "Decide whether the following user message contains information worth storing as long-term memory.\n\n"
-        "Store facts, preferences, identity, stable relationships.\n"
-        "Do NOT store questions or temporary requests.\n\n"
+        "Decide whether the following message contains information worth storing as memory.\n\n"
+        "Store durable personal facts, preferences, identity, stable relationships, and operationally meaningful domain facts.\n"
+        "For livestream or commerce-related messages, store facts such as product prices, promotions, stock status, shipping policies, and product features.\n"
+        "Do NOT store questions, vague statements, or temporary requests unless they clearly contain a stable or actionable fact.\n\n"
         f"User message: {t}\n\n"
         "Answer YES or NO."
     )
@@ -193,20 +205,40 @@ async def should_store_user_memory_llm(text: str) -> bool:
     answer = data.get("message", {}).get("content", "").strip().upper()
     return answer.startswith("YES")
 
+def build_extract_fact_prompt(text: str) -> str:
+    t = (text or "").strip()
+
+    return (
+        "You are an information extraction system.\n"
+        "Extract one stable or operationally meaningful fact from the following message if possible.\n"
+        "Valid fact types include: preference, identity, relationship, location, pet_name, "
+        "product_price, promo, stock_status, shipping_policy, product_feature.\n"
+        "Only extract if the message clearly contains a fact that should be stored as memory.\n"
+        "For livestream or commerce-related messages, examples include product prices, promotions, "
+        "stock status, shipping policies, and product features.\n"
+        "Examples:\n"
+        'User message: 这款隐形眼镜价格是99元\n'
+        'Output: {"type":"product_price","value":"99元","source_text":"这款隐形眼镜价格是99元"}\n'
+        'User message: 本场活动满199减30\n'
+        'Output: {"type":"promo","value":"满199减30","source_text":"本场活动满199减30"}\n'
+        'User message: 护理液目前现货\n'
+        'Output: {"type":"stock_status","value":"现货","source_text":"护理液目前现货"}\n'
+        'User message: 本商品支持次日达\n'
+        'Output: {"type":"shipping_policy","value":"次日达","source_text":"本商品支持次日达"}\n'
+        'User message: 这款产品主打高透氧\n'
+        'Output: {"type":"product_feature","value":"高透氧","source_text":"这款产品主打高透氧"}\n'
+        "If no suitable fact is present, answer exactly: NONE\n\n"
+        "Return JSON only, with this schema:\n"
+        '{"type":"...", "value":"...", "source_text":"..."}\n\n'
+        f"User message: {t}"
+    )
+
 async def extract_structured_fact(text: str):
     t = (text or "").strip()
     if not t:
         return None
 
-    prompt = (
-        "You are an information extraction system.\n"
-        "Extract one stable user fact from the following message if possible.\n"
-        "Only extract if the message clearly contains a durable fact, preference, identity, relationship, location, or pet name.\n"
-        "If no durable fact is present, answer exactly: NONE\n\n"
-        "Return JSON only, with this schema:\n"
-        '{"type":"...", "value":"...", "source_text":"..."}\n\n'
-        f"User message: {t}"
-    )
+    prompt = build_extract_fact_prompt(t)
 
     payload = {
         "model": OLLAMA_MODEL,
@@ -300,6 +332,11 @@ def normalize_fact_type(fact_type: str | None) -> str | None:
         "preference": "preference",
         "identity": "identity",
         "relationship": "relationship",
+        "product_price": "product_price",
+        "promo": "promo",
+        "stock_status": "stock_status",
+        "shipping_policy": "shipping_policy",
+        "product_feature": "product_feature",
     }
 
     return mapping.get(t, t)
@@ -346,6 +383,17 @@ async def kb_upsert_fact(session_id: str, fact: dict, vector: list[float] | None
     point_id = str(uuid.uuid4())
     now_ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
+    fact_type = fact.get("type")
+
+    if fact_type == "promo":
+        freshness_days = 1
+    elif fact_type == "stock_status":
+        freshness_days = 3
+    elif fact_type == "product_price":
+        freshness_days = 7
+    else:
+        freshness_days = 30
+
     body = {
         "points": [
             {
@@ -361,7 +409,7 @@ async def kb_upsert_fact(session_id: str, fact: dict, vector: list[float] | None
                     "ts": now_ts,
                     "source_ts": now_ts,
                     "last_seen_ts": now_ts,
-                    "freshness_days": 30,
+                    "freshness_days": freshness_days,
                     "is_active": True,
                 }
             }
@@ -404,6 +452,7 @@ async def store_user_memory_if_needed(
     kb_upsert_ok = False
     kb_upsert_error = None
     memory_llm_ok = None
+    skipped_reason = None
 
     if not (message.strip() and should_store_user_memory(message)):
         return {
@@ -411,6 +460,7 @@ async def store_user_memory_if_needed(
             "fact_extracted": fact_extracted,
             "kb_upsert_ok": kb_upsert_ok,
             "kb_upsert_error": kb_upsert_error,
+            "skipped_reason": skipped_reason,
         }
 
     memory_llm_ok = await should_store_user_memory_llm(message)
@@ -420,15 +470,18 @@ async def store_user_memory_if_needed(
             "fact_extracted": fact_extracted,
             "kb_upsert_ok": kb_upsert_ok,
             "kb_upsert_error": kb_upsert_error,
+            "skipped_reason": skipped_reason,
         }
 
     last_user_text = await get_last_user_message(session_id)
     if last_user_text == message:
+        skipped_reason = "duplicate_message"
         return {
             "memory_llm_ok": memory_llm_ok,
             "fact_extracted": fact_extracted,
             "kb_upsert_ok": kb_upsert_ok,
             "kb_upsert_error": kb_upsert_error,
+            "skipped_reason": skipped_reason,
         }
 
     fact = current_fact
@@ -459,6 +512,7 @@ async def store_user_memory_if_needed(
         "fact_extracted": fact_extracted,
         "kb_upsert_ok": kb_upsert_ok,
         "kb_upsert_error": kb_upsert_error,
+        "skipped_reason": skipped_reason,
     }
 
 @app.get("/health")
@@ -548,13 +602,12 @@ async def chat_mem(req: ChatReq):
     top1_score = top1
     top2_score = top2
 
-    dynamic_th = None
+    score_th = CHAT_BASE_THRESHOLD
     gap_ok = False
     th_ok = False
 
     if top1 is not None:
-        dynamic_th = max(CHAT_BASE_THRESHOLD, top1 - CHAT_MARGIN)
-        th_ok = top1 >= dynamic_th
+        th_ok = top1 >= CHAT_BASE_THRESHOLD
 
         if top2 is None:
             gap_ok = True
@@ -589,15 +642,16 @@ async def chat_mem(req: ChatReq):
                 "extracted": memres["fact_extracted"],
                 "kb_upsert_ok": memres["kb_upsert_ok"],
                 "kb_upsert_error": memres["kb_upsert_error"],
+                "skipped_reason": memres["skipped_reason"],
             },
             "retrieval": {
                 "query": req.message,
                 "top_k": CHAT_TOP_K,
                 "base_threshold": CHAT_BASE_THRESHOLD,
                 "gap_threshold": CHAT_GAP_THRESHOLD,
-                "margin": CHAT_MARGIN,
                 "top1_score": top1_score,
                 "top2_score": top2_score,
+                "score_threshold": score_th,
                 "dynamic_threshold": dynamic_th,
                 "th_ok": th_ok,
                 "gap_ok": gap_ok,
@@ -693,6 +747,7 @@ async def chat_mem(req: ChatReq):
             "extracted": memres["fact_extracted"],
             "kb_upsert_ok": memres["kb_upsert_ok"],
             "kb_upsert_error": memres["kb_upsert_error"],
+            "skipped_reason": memres["skipped_reason"],
         },
         "sources": sources[:CHAT_TOP_K],
         "retrieval": {
@@ -700,12 +755,11 @@ async def chat_mem(req: ChatReq):
             "top_k": CHAT_TOP_K,
             "base_threshold": CHAT_BASE_THRESHOLD,
             "gap_threshold": CHAT_GAP_THRESHOLD,
-            "margin": CHAT_MARGIN,
             "top1_score": top1_score,
             "top2_score": top2_score,
-            "dynamic_threshold": dynamic_th,
             "th_ok": th_ok,
             "gap_ok": gap_ok,
+            "score_threshold": score_th,
             "hit_count_raw": len(hits),
             "hit_count_candidates": len(candidate_hits),
             "hit_count_used": len(sources[:CHAT_TOP_K]),
@@ -843,6 +897,9 @@ class DebugFactOverwriteReq(BaseModel):
     session_id: str = Field(..., min_length=1, max_length=128)
     message: str = Field(..., min_length=1, max_length=4000)
 
+class DebugExtractFactReq(BaseModel):
+    message: str = Field(..., min_length=1, max_length=4000)
+
 @app.post("/debug/chat_mem_search")
 async def debug_chat_mem_search(req: DebugChatSearchReq):
     if not DEBUG_ROUTES_ENABLED:
@@ -925,13 +982,12 @@ async def debug_chat_mem_trace(req: ChatReq):
     top1 = filtered_candidates[0].get("score") if len(filtered_candidates) >= 1 else None
     top2 = filtered_candidates[1].get("score") if len(filtered_candidates) >= 2 else None
 
-    dynamic_th = None
+    score_th = CHAT_BASE_THRESHOLD
     gap_ok = False
     th_ok = False
 
     if top1 is not None:
-        dynamic_th = max(CHAT_BASE_THRESHOLD, top1 - CHAT_MARGIN)
-        th_ok = top1 >= dynamic_th
+        th_ok = top1 >= CHAT_BASE_THRESHOLD
 
         if top2 is None:
             gap_ok = True
@@ -955,19 +1011,111 @@ async def debug_chat_mem_trace(req: ChatReq):
             "top_k": CHAT_TOP_K,
             "base_threshold": CHAT_BASE_THRESHOLD,
             "gap_threshold": CHAT_GAP_THRESHOLD,
-            "margin": CHAT_MARGIN,
             "hit_count_raw": len(hits),
             "hit_count_candidates": len(candidate_hits),
             "hit_count_after_type_filter": len(filtered_candidates),
             "top1_score": top1,
             "top2_score": top2,
-            "dynamic_threshold": dynamic_th,
+            "score_threshold": score_th,
             "th_ok": th_ok,
             "gap_ok": gap_ok,
             "memory_allowed": memory_allowed,
         },
         "candidate_hits": candidate_hits,
         "filtered_candidates": filtered_candidates,
+    }
+
+
+@app.post("/debug/extract_fact")
+async def debug_extract_fact(req: DebugExtractFactReq):
+    t = (req.message or "").strip()
+
+    prompt = build_extract_fact_prompt(t)
+
+    payload = {
+        "model": OLLAMA_MODEL,
+        "stream": False,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+    }
+
+    async with httpx.AsyncClient(timeout=120) as client:
+        r = await client.post(f"{OLLAMA_BASE_URL}/api/chat", json=payload)
+        r.raise_for_status()
+        data = r.json()
+
+    raw_content = data.get("message", {}).get("content", "").strip()
+    parsed = try_parse_json_object(raw_content)
+
+    normalized = None
+    if isinstance(parsed, dict):
+        required_keys = {"type", "value", "source_text"}
+        if required_keys.issubset(parsed):
+            normalized = {
+                "type": normalize_fact_type(str(parsed.get("type")).strip()),
+                "value": str(parsed.get("value")).strip(),
+                "source_text": str(parsed.get("source_text")).strip(),
+            }
+
+    return {
+        "message": req.message,
+        "raw_content": raw_content,
+        "parsed": parsed,
+        "normalized": normalized,
+    }
+
+class ChatLivestreamKBReq(BaseModel):
+    session_id: str | None = Field(default=None, max_length=128)
+    message: str = Field(..., min_length=1, max_length=4000)
+    system: str | None = Field(default=None, max_length=4000)
+    temperature: float | None = Field(default=None, ge=0.0, le=2.0)
+    top_k: int | None = Field(default=None, ge=1, le=20)
+    score_threshold: float | None = Field(default=None, ge=0.0, le=1.0)
+
+@app.post("/debug/select_livestream_fact")
+async def debug_select_livestream_fact(req: ChatLivestreamKBReq):
+    if not DEBUG_ROUTES_ENABLED:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    top_k = req.top_k if req.top_k else KB_TOP_K
+
+    best = await select_best_livestream_fact(
+        message=req.message,
+        session_id=req.session_id,
+        top_k=top_k,
+        score_threshold=req.score_threshold,
+    )
+
+    if best is None:
+        return {
+            "message": req.message,
+            "session_id": req.session_id,
+            "selected_fact_type": None,
+            "score_threshold": req.score_threshold if req.score_threshold is not None else 0.65,
+            "selected_hit": None,
+        }
+
+    hit = best.get("hit") or {}
+    payload = hit.get("payload") or {}
+
+    return {
+        "message": req.message,
+        "session_id": req.session_id,
+        "selected_fact_type": best.get("fact_type"),
+        "score_threshold": best.get("score_threshold"),
+        "selected_hit": {
+            "point_id": hit.get("id"),
+            "score": hit.get("score"),
+            "type": normalize_fact_type(payload.get("type")),
+            "value": payload.get("value"),
+            "source_text": payload.get("source_text"),
+            "source_ts": payload.get("source_ts"),
+            "last_seen_ts": payload.get("last_seen_ts"),
+            "freshness_days": payload.get("freshness_days"),
+            "is_active": payload.get("is_active"),
+            "text": payload.get("text"),
+        },
     }
 
 @app.post("/debug/fact_overwrite_trace")
@@ -1050,7 +1198,7 @@ async def kb_search(query: str, top_k: int, session_id: str | None = None):
 
     # 2. 搜索 Qdrant
     body = {
-        "vector": qvec,
+        "query": qvec,
         "limit": top_k,
         "with_payload": True
     }
@@ -1064,11 +1212,11 @@ async def kb_search(query: str, top_k: int, session_id: str | None = None):
 
     async with httpx.AsyncClient(timeout=60) as client:
         r = await client.post(
-            f"{QDRANT_BASE_URL}/collections/{QDRANT_KB_COLLECTION}/points/search",
+            f"{QDRANT_BASE_URL}/collections/{QDRANT_KB_COLLECTION}/points/query",
             json=body
         )
         r.raise_for_status()
-        return r.json().get("result", [])
+        return r.json().get("result", {}).get("points", [])
 
 async def kb_upsert(text: str, point_id: str | None = None):
     vec = await ollama_embed(text)
@@ -1092,6 +1240,53 @@ async def kb_upsert(text: str, point_id: str | None = None):
         )
         r.raise_for_status()
         return {"id": point_id, "result": r.json()}
+
+async def select_best_livestream_fact(
+    message: str,
+    session_id: str | None,
+    top_k: int,
+    score_threshold: float | None = None,
+):
+    best = None
+    hits = await kb_search(message, top_k, session_id)
+
+    for h in hits:
+        payload = h.get("payload") or {}
+        txt = payload.get("text") or ""
+        score = h.get("score")
+        fact_type = normalize_fact_type(payload.get("type"))
+        is_active = payload.get("is_active")
+        source_ts = payload.get("source_ts")
+        freshness_days = payload.get("freshness_days")
+
+        if fact_type not in LIVESTREAM_FACT_TYPES:
+            continue
+        if txt.strip() == "":
+            continue
+        if is_active is False:
+            continue
+        if not is_fact_fresh(source_ts, freshness_days):
+            continue
+
+        if score_threshold is not None:
+            current_threshold = score_threshold
+        else:
+            current_threshold = get_livestream_score_threshold(fact_type)
+
+        if score is None or score < current_threshold:
+            continue
+
+        candidate = {
+            "fact_type": fact_type,
+            "score": score,
+            "hit": h,
+            "score_threshold": current_threshold,
+        }
+
+        if best is None or score > best["score"]:
+            best = candidate
+
+    return best
 
 @app.post("/kb_upsert")
 async def kb_upsert_api(req: KBUpsertReq):
@@ -1141,14 +1336,21 @@ async def debug_kb_search(req: DebugKBSearchReq):
 @app.post("/chat_kb")
 async def chat_kb(req: ChatKBReq):
     top_k = req.top_k if req.top_k else KB_TOP_K
-    score_th = req.score_threshold if req.score_threshold is not None else KB_SCORE_THRESHOLD
     wanted_type = normalize_fact_type(req.fact_type)
+
+    if req.score_threshold is not None:
+        score_th = req.score_threshold
+    elif wanted_type in LIVESTREAM_FACT_TYPES:
+        score_th = get_livestream_score_threshold(wanted_type)
+    else:
+        score_th = KB_SCORE_THRESHOLD
 
     hits = await kb_search(req.message, top_k, req.session_id)
     raw_hit_count = len(hits)
 
     contexts = []
     sources = []  # 这里我们改名叫 sources（返回给用户的，可追溯）
+    filtered_out = []
     cite_no = 0   # 引用编号：1,2,3...（只给“通过阈值”的命中编号，避免中间断号）
 
     for h in hits:
@@ -1166,9 +1368,26 @@ async def chat_kb(req: ChatKBReq):
         is_active = payload.get("is_active")
 
         if is_active is False:
+            filtered_out.append({
+                "point_id": point_id,
+                "type": fact_type,
+                "score": score,
+                "reason": "inactive",
+                "source_text": source_text,
+                "is_active": is_active,
+            })
             continue
 
         if not is_fact_fresh(source_ts, freshness_days):
+            filtered_out.append({
+                "point_id": point_id,
+                "type": fact_type,
+                "score": score,
+                "reason": "stale",
+                "source_text": source_text,
+                "source_ts": source_ts,
+                "freshness_days": freshness_days,
+            })
             continue
 
         # 兼容旧 structured_fact：payload 里没有 value/source_text，只把 JSON 放在 text 里
@@ -1183,33 +1402,61 @@ async def chat_kb(req: ChatKBReq):
                 pass
 
         if wanted_type is not None and fact_type != wanted_type:
+            filtered_out.append({
+                "point_id": point_id,
+                "type": fact_type,
+                "score": score,
+                "reason": "type_mismatch",
+                "source_text": source_text,
+            })
             continue
 
-        if (txt is not None) and (txt.strip() != "") and (score is not None) and (score >= score_th):
-            await kb_touch_fact(point_id)
-
-            cite_no += 1
-            contexts.append(f"[{cite_no}] {txt}")
-            sources.append({
-                "cite": cite_no,
+        if (txt is None) or (txt.strip() == ""):
+            filtered_out.append({
                 "point_id": point_id,
-                "score": score,
-                "collection": QDRANT_KB_COLLECTION,
-                "kind": kind,
                 "type": fact_type,
-                "value": fact_value,
+                "score": score,
+                "reason": "empty_text",
                 "source_text": source_text,
-                "source_ts": source_ts,
-                "last_seen_ts": last_seen_ts,
-                "freshness_days": freshness_days,
-                "is_active": is_active,
-                "text": txt
             })
+            continue
+
+        if (score is None) or (score < score_th):
+            filtered_out.append({
+                "point_id": point_id,
+                "type": fact_type,
+                "score": score,
+                "reason": "below_score_threshold",
+                "source_text": source_text,
+                "score_threshold": score_th,
+            })
+            continue
+
+        await kb_touch_fact(point_id)
+
+        cite_no += 1
+        contexts.append(f"[{cite_no}] {txt}")
+        sources.append({
+            "cite": cite_no,
+            "point_id": point_id,
+            "score": score,
+            "collection": QDRANT_KB_COLLECTION,
+            "kind": kind,
+            "type": fact_type,
+            "value": fact_value,
+            "source_text": source_text,
+            "source_ts": source_ts,
+            "last_seen_ts": last_seen_ts,
+            "freshness_days": freshness_days,
+            "is_active": is_active,
+            "text": txt
+        })
 
     filtered_hit_count = len(sources)
 
     context_block = "\n".join(contexts) if contexts else "(知识库未命中)"
     # HARD REFUSAL: after threshold filtering, no usable KB context -> do not call LLM
+
     if not sources:
         return {
             "model": OLLAMA_MODEL,
@@ -1222,7 +1469,8 @@ async def chat_kb(req: ChatKBReq):
                 "fact_type": wanted_type,
                 "session_id": req.session_id,
                 "hit_count_raw": raw_hit_count,
-                "hit_count_filtered": 0
+                "hit_count_filtered": 0,
+                "filtered_out": filtered_out,
             }
         }
 
@@ -1240,6 +1488,7 @@ async def chat_kb(req: ChatKBReq):
             {"role": "user", "content": req.message}
         ]
     }
+
     async with httpx.AsyncClient(timeout=120) as client:
         r = await client.post(f"{OLLAMA_BASE_URL}/api/chat", json=payload)
         r.raise_for_status()
@@ -1256,6 +1505,65 @@ async def chat_kb(req: ChatKBReq):
             "fact_type": wanted_type,
             "session_id": req.session_id,
             "hit_count_raw": raw_hit_count,
-            "hit_count_filtered": filtered_hit_count
+            "hit_count_filtered": filtered_hit_count,
+            "filtered_out": filtered_out,
         }
     }
+
+
+@app.post("/chat_livestream_kb")
+async def chat_livestream_kb(req: ChatLivestreamKBReq):
+    top_k = req.top_k if req.top_k else KB_TOP_K
+
+    best = await select_best_livestream_fact(
+        message=req.message,
+        session_id=req.session_id,
+        top_k=top_k,
+        score_threshold=req.score_threshold,
+    )
+
+    default_score_threshold = req.score_threshold if req.score_threshold is not None else 0.65
+
+    if best is None:
+        return {
+            "model": OLLAMA_MODEL,
+            "reply": "我目前没有检索到足够可靠的直播知识来回答这个问题。",
+            "sources": [],
+            "refusal": True,
+            "routed_fact_type": None,
+            "routing": {
+                "candidate_fact_types": sorted(LIVESTREAM_FACT_TYPES),
+                "selected_score": None,
+                "selected_point_id": None,
+            },
+            "retrieval": {
+                "query": req.message,
+                "top_k": top_k,
+                "score_threshold": default_score_threshold,
+                "session_id": req.session_id,
+                "selected_fact_type": None,
+            },
+        }
+
+    routed_fact_type = best.get("fact_type")
+    selected_hit = best.get("hit") or {}
+
+    delegated_req = ChatKBReq(
+        session_id=req.session_id,
+        message=req.message,
+        system=req.system,
+        temperature=req.temperature,
+        top_k=top_k,
+        score_threshold=req.score_threshold if req.score_threshold is not None else best.get("score_threshold"),
+        fact_type=routed_fact_type,
+    )
+
+    result = await chat_kb(delegated_req)
+    result["routed_fact_type"] = routed_fact_type
+    result["routing"] = {
+        "candidate_fact_types": sorted(LIVESTREAM_FACT_TYPES),
+        "selected_score": best.get("score"),
+        "selected_point_id": selected_hit.get("id"),
+    }
+
+    return result
