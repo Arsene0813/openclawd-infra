@@ -108,12 +108,6 @@ The system can separate facts across products instead of forcing all livestream 
 
 ### 5. Livestream commerce query routing
 
-<<<<<<< HEAD
-For livestream commerce queries, the system does not rely on a separate intent classifier. Instead, it performs semantic retrieval over eligible knowledge candidates, applies fact-type-specific validity checks and routing thresholds, and uses the highest-scoring eligible fact type as the routed type.
-=======
-<<<<<<< HEAD
-For livestream commerce queries, the system does not rely on a separate intent classifier. Instead, it performs semantic retrieval over eligible knowledge candidates, applies fact-type-specific validity checks and routing thresholds, and uses the highest-scoring eligible fact type as the routed type.
-=======
 For livestream commerce queries, the system does not rely on a separate intent classifier. Instead, it performs semantic retrieval over eligible knowledge candidates, applies fact-type-specific validity checks and routing thresholds, and uses the highest-scoring eligible fact type among the top-k retrieval candidates as the routed type.
 
 In other words, livestream fact-type routing is implemented through retrieval-time score competition rather than a standalone classification step.
