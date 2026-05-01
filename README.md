@@ -8,6 +8,14 @@ The original focus was on structured fact extraction, typed memory, overwrite co
 
 Recent updates are intended to make the project easier to inspect and evaluate. They add clearer documentation, more evaluation cases, and an extension toward retail operations decision support. These additions do not replace the original project; they show how the same memory-layer design can be applied to broader commerce and data-driven decision-making scenarios.
 
+## Current Status
+
+- Core API: working locally with Docker Compose
+- Memory layer: structured fact extraction, typed memory, overwrite control, lifecycle metadata, and traceable retrieval
+- Livestream knowledge types: product price, promotion, stock status, shipping policy, and product features
+- Evaluation: 11 / 11 scenario-based cases passed
+- Main endpoints: `/chat_mem` for fact ingestion and `/chat_livestream_kb` for structured retrieval
+
 ## Introduction
 
 An iterative project that extends an earlier LLM-powered livestream system into a policy-driven memory and retrieval layer for a more agent-like architecture.
@@ -36,7 +44,7 @@ Currently, the project includes:
   - product features
 - a broader policy registry that also includes additional session-scoped fact types used by extraction beyond the livestream commerce categories emphasized in this README
 - traceable retrieval outputs and inspectable fallback behavior
-- a small evaluation setup for routing and fallback behavior in the current livestream knowledge layer
+- a scenario-based evaluation setup covering product price retrieval, overwrite behavior, entity separation, stock status, promotion retrieval, shipping policy, product features, non-fact filtering, and fallback/refusal behavior
 - A legacy strict-threshold chat-memory endpoint is still kept for comparison and debugging, but it is not the primary interaction path of the current memory layer.
 
 ## Why This Project
@@ -78,7 +86,7 @@ This project emerged from that limitation. Its purpose is to make an LLM-based i
   The earlier pipeline separated memory gating from fact extraction, which increased latency and could produce inconsistent behavior. The current version consolidates this flow so that extraction itself determines whether a message yields a storable fact, while obvious non-fact messages such as greetings are filtered out before memory write.
 
 - **Explainable fallback and small-scale evaluation**  
-  At the current stage, the system can not only answer from stored knowledge, but also fall back safely when available knowledge is stale, inactive, unsupported, or insufficiently reliable. Retrieval outputs expose routing decisions and filtered reasons, making failure cases easier to inspect rather than leaving them ambiguous. To make the current behavior easier to verify, I also added a small evaluation setup covering successful routing cases as well as fallback cases such as stale or unsupported queries.
+  At the current stage, the system can not only answer from stored knowledge, but also fall back safely when available knowledge is stale, inactive, unsupported, or insufficiently reliable. Retrieval outputs expose routing decisions and filtered reasons, making failure cases easier to inspect rather than leaving them ambiguous. To make the current behavior easier to verify, I added a scenario-based evaluation setup covering successful retrieval, fact-type routing, overwrite behavior, product-level separation, non-fact filtering, and unsupported-query fallback. Freshness filtering is implemented in the retrieval layer, while timestamp-controlled freshness tests remain a planned next step.
 
 ## Current Capabilities
 
@@ -145,24 +153,22 @@ The evaluation is intentionally small-scale and behavior-focused. It is not inte
 - product-level entity separation
 - overwrite behavior for updated facts
 - active-state filtering
+- non-fact filtering
 - fallback or refusal when no reliable memory is available
 - traceable retrieval through returned sources
+
+Current evaluation result: **11 / 11 scenario-based cases passed**.
+
+The current cases cover product price retrieval, price overwrite, unsupported-query fallback, entity separation, stock status retrieval, stock overwrite, promotion retrieval, promotion overwrite, shipping policy retrieval, product feature retrieval, and non-fact filtering.
 
 Evaluation files:
 
 - `eval/eval_livestream_cases.json` — scenario cases and expected outcomes
 - `eval/eval_livestream.py` — lightweight evaluation runner
 - `eval/eval_report.md` — evaluation scope, current results, limitations, and next steps
+- `eval/results/eval_result_11_pass.txt` — saved run output
 
 The main evaluation flow uses `/chat_mem` to ingest structured facts and `/chat_livestream_kb` to retrieve and answer from the structured livestream knowledge base.
-
-Current evaluation result: **11 / 11 scenario-based cases passed**.
-
-See:
-- `eval/eval_livestream_cases.json`
-- `eval/eval_livestream.py`
-- `eval/eval_report.md`
-- `eval/results/eval_result_11_pass.txt`
 
 ## Running the Project
 
@@ -198,13 +204,17 @@ docker compose up -d --build
 
 ## Repository Structure
 
-- `api/main.py` - main FastAPI application, including memory logic, retrieval control, routing, and debug endpoints
-- `api/Dockerfile` - Docker image definition for the API service
-- `api/requirements.txt` - Python dependencies for the API service
-- `docker-compose.yml` - local multi-service setup for the API and supporting services
-- `eval_livestream_cases.json` - small evaluation set for livestream routing and fallback/refusal cases
-- `eval_livestream.py` - simple evaluation runner for the livestream cases
-- `README.md` - project overview, current capabilities, evaluation notes, and usage instructions
+- `api/main.py` — main FastAPI application, including memory logic, retrieval control, routing, overwrite behavior, and debug endpoints
+- `api/Dockerfile` — Docker image definition for the API service
+- `api/requirements.txt` — Python dependencies for the API service
+- `docker-compose.yml` — local multi-service setup for the API, Ollama, and Qdrant
+- `docs/` — project diagrams and alignment notes
+- `eval/eval_livestream_cases.json` — scenario-based evaluation cases and expected outcomes
+- `eval/eval_livestream.py` — lightweight evaluation runner for the livestream memory cases
+- `eval/eval_report.md` — evaluation scope, current result, limitations, and next steps
+- `eval/results/eval_result_11_pass.txt` — saved output from the 11/11 evaluation run
+- `PROJECT_SUMMARY_FOR_ADMISSIONS.md` — concise project summary for admissions review
+- `README.md` — project overview, capabilities, evaluation notes, and usage instructions
 
 ## Notes
 
@@ -215,13 +225,15 @@ At the current stage, the implementation still keeps much of the logic in a sing
 ## Next Steps
 
 Short-term improvements:
-- expand the evaluation set beyond the current livestream cases
-- add more explicit tests for overwrite, freshness filtering, product separation, and non-fact filtering
-- provide an evaluation report with pass/fail results and limitations
-- improve documentation for admissions and project review
+
+- add timestamp-controlled freshness tests for stale promotion and outdated stock facts
+- add more ambiguous product-reference cases, such as similar product names or incomplete product mentions
+- save machine-readable evaluation results after each run, in addition to the current text log
+- improve non-fact filtering cases beyond simple greetings
 
 Medium-term improvements:
-- separate extraction, routing, storage, and evaluation logic into clearer modules
-- make fact-policy configuration easier to extend
+
+- separate extraction, routing, storage, lifecycle policy, and evaluation logic into clearer modules
+- make the fact-policy registry easier to extend through configuration
 - add a retail operations decision-support extension using anonymized or synthetic store metrics
-- explore how structured operational memory can support cross-store comparison and decision-making
+- explore how structured operational memory can support cross-store comparison and data-driven business decisionss-store comparison and decision-making
