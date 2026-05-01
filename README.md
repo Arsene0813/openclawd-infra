@@ -136,33 +136,25 @@ The system can also fall back or refuse when stored knowledge should no longer b
 
 ## Evaluation
 
-The repository includes a small evaluation setup for the current livestream knowledge layer.
+This repository includes a scenario-based evaluation setup for the livestream knowledge and memory layer.
 
-The evaluation is intentionally limited in scope. Its purpose is not to claim broad benchmark coverage, but to verify that the current routing and fallback behavior matches the intended design for the livestream scenarios implemented so far.
+The evaluation is intentionally small-scale and behavior-focused. It is not intended as a broad language-model benchmark. Instead, it checks whether the system can handle commerce-oriented memory behavior such as:
 
-At the moment, the evaluation covers seven scenarios in total:
+- structured fact extraction
+- livestream fact-type routing
+- product-level entity separation
+- overwrite behavior for updated facts
+- active-state filtering
+- fallback or refusal when no reliable memory is available
+- traceable retrieval through returned sources
 
-- five successful routing cases:
-  - product price
-  - promotions
-  - stock status
-  - shipping policy
-  - product features
-- two fallback or refusal cases:
-  - stale promotion knowledge
-  - unsupported or no-match queries
+Evaluation files:
 
-The evaluation files are:
+- `eval/eval_livestream_cases.json` — scenario cases and expected outcomes
+- `eval/eval_livestream.py` — lightweight evaluation runner
+- `eval/eval_report.md` — evaluation scope, current results, limitations, and next steps
 
-- `eval_livestream_cases.json` - evaluation cases and expected outcomes
-- `eval_livestream.py` - a lightweight script that runs the cases against the local API and reports pass/fail results
-
-A typical run checks whether the system:
-
-- routes a query to the expected fact type
-- produces a non-refusal answer when reliable knowledge is available
-- falls back or refuses when knowledge is stale or insufficiently reliable
-- returns responses that contain the expected key information
+The main evaluation flow uses `/chat_mem` to ingest structured facts and `/chat_livestream_kb` to retrieve and answer from the structured livestream knowledge base.
 
 ## Running the Project
 
