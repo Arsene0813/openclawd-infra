@@ -1,91 +1,276 @@
 [
   {
-    "name": "product_price_routing",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-product-price-1",
-      "message": "这款多少钱"
-    },
-    "expect": {
-      "refusal": false,
-      "routed_fact_type": "product_price",
-      "reply_contains": "99元"
-    }
+    "id": "price_extraction_001",
+    "category": "fact_extraction",
+    "goal": "Extract a product price fact from livestream-style product information.",
+    "setup_messages": [
+      "A款日抛隐形眼镜现在价格是99元。"
+    ],
+    "query": "A款日抛隐形眼镜多少钱？",
+    "expected_contains": ["99"],
+    "forbidden_contains": [],
+    "expected_behavior": "answer_with_stored_fact",
+    "requires_trace": true
   },
   {
-    "name": "promo_routing",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-promo-1",
-      "message": "今天有什么优惠"
-    },
-    "expect": {
-      "refusal": false,
-      "routed_fact_type": "promo",
-      "reply_contains": "满199"
-    }
+    "id": "price_overwrite_001",
+    "category": "price_overwrite",
+    "goal": "A newer price should replace an older active price for the same product.",
+    "setup_messages": [
+      "A款日抛隐形眼镜现在价格是99元。",
+      "A款日抛隐形眼镜价格更新为89元。"
+    ],
+    "query": "A款日抛隐形眼镜现在多少钱？",
+    "expected_contains": ["89"],
+    "forbidden_contains": ["99"],
+    "expected_behavior": "answer_with_current_fact",
+    "requires_trace": true
   },
   {
-    "name": "stock_status_routing",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-stock-1",
-      "message": "现在有货吗"
-    },
-    "expect": {
-      "refusal": false,
-      "routed_fact_type": "stock_status",
-      "reply_contains": "现货"
-    }
+    "id": "price_overwrite_002",
+    "category": "price_overwrite",
+    "goal": "The system should not treat old and new prices as equally active.",
+    "setup_messages": [
+      "B款护理液原价是120元。",
+      "B款护理液今晚直播价是108元。"
+    ],
+    "query": "B款护理液现在按哪个价格卖？",
+    "expected_contains": ["108"],
+    "forbidden_contains": ["120"],
+    "expected_behavior": "answer_with_current_fact",
+    "requires_trace": true
   },
   {
-    "name": "shipping_policy_routing",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-shipping-1",
-      "message": "多久能发货"
-    },
-    "expect": {
-      "refusal": false,
-      "routed_fact_type": "shipping_policy",
-      "reply_contains": "次日达"
-    }
+    "id": "entity_separation_001",
+    "category": "entity_separation",
+    "goal": "The system should keep prices of different products separate.",
+    "setup_messages": [
+      "A款日抛隐形眼镜价格是89元。",
+      "B款月抛隐形眼镜价格是159元。"
+    ],
+    "query": "A款日抛隐形眼镜多少钱？",
+    "expected_contains": ["89"],
+    "forbidden_contains": ["159"],
+    "expected_behavior": "answer_with_correct_entity_fact",
+    "requires_trace": true
   },
   {
-    "name": "product_feature_routing",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-feature-1",
-      "message": "这款有什么特点"
-    },
-    "expect": {
-      "refusal": false,
-      "routed_fact_type": "product_feature",
-      "reply_contains": "高透氧"
-    }
+    "id": "entity_separation_002",
+    "category": "entity_separation",
+    "goal": "The system should not use one product's stock status to answer another product's query.",
+    "setup_messages": [
+      "A款日抛隐形眼镜目前有货。",
+      "B款月抛隐形眼镜目前缺货。"
+    ],
+    "query": "A款日抛隐形眼镜还有货吗？",
+    "expected_contains": ["有货"],
+    "forbidden_contains": ["缺货"],
+    "expected_behavior": "answer_with_correct_entity_fact",
+    "requires_trace": true
   },
   {
-    "name": "stale_promo_refusal",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-freshness-policy-1",
-      "message": "今天有什么优惠"
-    },
-    "expect": {
-      "refusal": true,
-      "reply_contains": "没有检索到足够可靠"
-    }
+    "id": "stock_update_001",
+    "category": "stock_status_update",
+    "goal": "A newer stock status should replace an older stock status.",
+    "setup_messages": [
+      "C款彩色隐形眼镜现在有货。",
+      "C款彩色隐形眼镜刚刚售罄。"
+    ],
+    "query": "C款彩色隐形眼镜现在还能买吗？",
+    "expected_contains": ["售罄"],
+    "forbidden_contains": ["有货"],
+    "expected_behavior": "answer_with_current_fact",
+    "requires_trace": true
   },
   {
-    "name": "no_match_refusal",
-    "endpoint": "/chat_livestream_kb",
-    "payload": {
-      "session_id": "demo-no-match-1",
-      "message": "有没有赠品"
-    },
-    "expect": {
-      "refusal": true,
-      "reply_contains": "没有检索到足够可靠"
-    }
+    "id": "stock_update_002",
+    "category": "stock_status_update",
+    "goal": "Restock information should become the current active stock fact.",
+    "setup_messages": [
+      "D款护理液上午显示缺货。",
+      "D款护理液下午已经补货。"
+    ],
+    "query": "D款护理液现在有没有货？",
+    "expected_contains": ["补货"],
+    "forbidden_contains": ["缺货"],
+    "expected_behavior": "answer_with_current_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "promotion_extraction_001",
+    "category": "promotion_memory",
+    "goal": "Extract promotion information as a typed fact.",
+    "setup_messages": [
+      "今晚直播间A款满199减30。"
+    ],
+    "query": "A款今晚有什么优惠？",
+    "expected_contains": ["满199减30"],
+    "forbidden_contains": [],
+    "expected_behavior": "answer_with_stored_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "promotion_overwrite_001",
+    "category": "promotion_memory",
+    "goal": "A newer promotion should replace or supersede an older active promotion when appropriate.",
+    "setup_messages": [
+      "A款今晚活动是满199减30。",
+      "A款最新活动改成满159减20。"
+    ],
+    "query": "A款现在的活动是什么？",
+    "expected_contains": ["满159减20"],
+    "forbidden_contains": ["满199减30"],
+    "expected_behavior": "answer_with_current_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "promotion_freshness_001",
+    "category": "freshness_filtering",
+    "goal": "Expired or time-limited promotion should not be treated as always valid.",
+    "setup_messages": [
+      "昨天A款有满199减30活动。"
+    ],
+    "query": "今天A款还有满199减30活动吗？",
+    "expected_contains": ["不确定"],
+    "forbidden_contains": ["还有", "可以用"],
+    "expected_behavior": "fallback_or_uncertain_answer",
+    "requires_trace": true
+  },
+  {
+    "id": "shipping_policy_001",
+    "category": "shipping_policy",
+    "goal": "Retrieve a stored shipping policy fact.",
+    "setup_messages": [
+      "本店同城订单一般30分钟内送达。"
+    ],
+    "query": "同城订单大概多久送到？",
+    "expected_contains": ["30分钟"],
+    "forbidden_contains": [],
+    "expected_behavior": "answer_with_stored_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "shipping_policy_update_001",
+    "category": "shipping_policy",
+    "goal": "A newer shipping policy should replace an older one.",
+    "setup_messages": [
+      "本店同城订单一般30分钟内送达。",
+      "雨天配送时间调整为60分钟左右。"
+    ],
+    "query": "雨天大概多久送到？",
+    "expected_contains": ["60分钟"],
+    "forbidden_contains": ["30分钟"],
+    "expected_behavior": "answer_with_current_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "feature_memory_001",
+    "category": "product_feature",
+    "goal": "Retrieve product feature information for the correct product.",
+    "setup_messages": [
+      "E款隐形眼镜主打高保湿，适合长时间佩戴。"
+    ],
+    "query": "E款适合长时间戴吗？",
+    "expected_contains": ["高保湿", "长时间"],
+    "forbidden_contains": [],
+    "expected_behavior": "answer_with_stored_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "non_fact_filtering_001",
+    "category": "non_fact_filtering",
+    "goal": "Greeting messages should not be stored as business facts.",
+    "setup_messages": [
+      "你好。",
+      "谢谢你的介绍。"
+    ],
+    "query": "刚才有什么商品价格信息？",
+    "expected_contains": ["没有", "未找到", "不确定"],
+    "forbidden_contains": ["你好", "谢谢"],
+    "expected_behavior": "fallback_or_no_fact_found",
+    "requires_trace": false
+  },
+  {
+    "id": "non_fact_filtering_002",
+    "category": "non_fact_filtering",
+    "goal": "General opinions should not overwrite factual product information.",
+    "setup_messages": [
+      "A款日抛隐形眼镜价格是89元。",
+      "这个产品感觉挺不错的。"
+    ],
+    "query": "A款日抛隐形眼镜多少钱？",
+    "expected_contains": ["89"],
+    "forbidden_contains": ["不错"],
+    "expected_behavior": "answer_with_stored_fact",
+    "requires_trace": true
+  },
+  {
+    "id": "fallback_001",
+    "category": "fallback_refusal",
+    "goal": "The system should not invent information when no supporting fact exists.",
+    "setup_messages": [
+      "A款日抛隐形眼镜价格是89元。"
+    ],
+    "query": "Z款护理液现在多少钱？",
+    "expected_contains": ["不确定", "没有", "未找到"],
+    "forbidden_contains": ["89"],
+    "expected_behavior": "fallback_or_refusal",
+    "requires_trace": false
+  },
+  {
+    "id": "fallback_002",
+    "category": "fallback_refusal",
+    "goal": "The system should refuse or express uncertainty when asked about unsupported promotions.",
+    "setup_messages": [
+      "B款护理液价格是108元。"
+    ],
+    "query": "B款护理液今天有没有买一送一？",
+    "expected_contains": ["不确定", "没有", "未找到"],
+    "forbidden_contains": ["买一送一"],
+    "expected_behavior": "fallback_or_refusal",
+    "requires_trace": false
+  },
+  {
+    "id": "traceability_001",
+    "category": "traceable_retrieval",
+    "goal": "The system should provide traceable supporting memory for a retrieved answer.",
+    "setup_messages": [
+      "F款月抛隐形眼镜价格是139元。"
+    ],
+    "query": "F款月抛多少钱？",
+    "expected_contains": ["139"],
+    "forbidden_contains": [],
+    "expected_behavior": "answer_with_traceable_support",
+    "requires_trace": true
+  },
+  {
+    "id": "retail_extension_001",
+    "category": "retail_decision_support_extension",
+    "goal": "Represent store-level performance observations as structured operational memory.",
+    "setup_messages": [
+      "门店A搜索曝光较高，但下单转化率偏低。",
+      "门店A护理液类商品转化率相对较好。",
+      "门店A满减活动成本偏高。"
+    ],
+    "query": "门店A现在应该优先优化什么？",
+    "expected_contains": ["转化率", "护理液", "活动成本"],
+    "forbidden_contains": ["只需要继续提高曝光"],
+    "expected_behavior": "decision_support_with_retrieved_facts",
+    "requires_trace": true
+  },
+  {
+    "id": "retail_extension_002",
+    "category": "retail_decision_support_extension",
+    "goal": "The system should not recommend more exposure when the stored bottleneck is conversion.",
+    "setup_messages": [
+      "门店B搜索曝光已经较高。",
+      "门店B入店后下单转化率低于同类门店。",
+      "门店B部分高频SKU价格高于附近竞品。"
+    ],
+    "query": "门店B的主要问题可能是什么？",
+    "expected_contains": ["转化率", "价格", "竞品"],
+    "forbidden_contains": ["曝光不足"],
+    "expected_behavior": "decision_support_with_retrieved_facts",
+    "requires_trace": true
   }
 ]
