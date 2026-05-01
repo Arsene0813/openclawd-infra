@@ -218,11 +218,14 @@ At the current stage, the implementation still keeps much of the logic in a sing
 
 ## Next Steps
 
-- expand the evaluation set beyond the current small livestream cases
-- make fact-policy configuration easier to extend and maintain
-- cover overwrite, multi-value coexistence, product-level separation, and non-fact filtering more explicitly in evaluation
-- continue separating extraction, routing, storage, and evaluation logic out of the current main service file as the project grows
-- explore richer profile-level and cross-session memory on top of the current typed fact layer
+Short-term improvements:
+- expand the evaluation set beyond the current livestream cases
+- add more explicit tests for overwrite, freshness filtering, product separation, and non-fact filtering
+- provide an evaluation report with pass/fail results and limitations
+- improve documentation for admissions and project review
 
-
-
+Medium-term improvements:
+- separate extraction, routing, storage, and evaluation logic into clearer modules
+- make fact-policy configuration easier to extend
+- add a retail operations decision-support extension using anonymized or synthetic store metrics
+- explore how structured operational memory can support cross-store comparison and decision-making
