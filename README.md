@@ -196,11 +196,12 @@ docker compose up -d --build api
 
 ## Running the Evaluation
 
+The evaluation runner is designed to run against the local API service. It uses `/chat_mem` to ingest setup messages into the structured memory layer, and then uses `/chat_livestream_kb` to retrieve livestream knowledge and answer the final query.
+
 Start the local services first:
 
 ```bash
 docker compose up -d --build
-```
 
 ## Repository Structure
 
@@ -236,4 +237,4 @@ Medium-term improvements:
 - separate extraction, routing, storage, lifecycle policy, and evaluation logic into clearer modules
 - make the fact-policy registry easier to extend through configuration
 - add a retail operations decision-support extension using anonymized or synthetic store metrics
-- explore how structured operational memory can support cross-store comparison and data-driven business decisionss-store comparison and decision-making
+- explore how structured operational memory can support cross-store comparison and data-driven business decision-making
