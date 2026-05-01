@@ -156,6 +156,14 @@ Evaluation files:
 
 The main evaluation flow uses `/chat_mem` to ingest structured facts and `/chat_livestream_kb` to retrieve and answer from the structured livestream knowledge base.
 
+Current evaluation result: **11 / 11 scenario-based cases passed**.
+
+See:
+- `eval/eval_livestream_cases.json`
+- `eval/eval_livestream.py`
+- `eval/eval_report.md`
+- `eval/results/eval_result_11_pass.txt`
+
 ## Running the Project
 
 This project is intended to run locally with Docker Compose.
