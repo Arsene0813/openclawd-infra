@@ -182,14 +182,10 @@ docker compose up -d --build api
 
 ## Running the Evaluation
 
-The evaluation script is designed to run against the local API at `http://127.0.0.1:8000`.
-
-Assuming the services are already running, you can copy the evaluation files into the API container and execute the script with:
+Start the local services first:
 
 ```bash
-docker compose cp eval_livestream.py api:/app/eval_livestream.py
-docker compose cp eval_livestream_cases.json api:/app/eval_livestream_cases.json
-docker compose exec api python /app/eval_livestream.py
+docker compose up -d --build
 ```
 
 ## Repository Structure
