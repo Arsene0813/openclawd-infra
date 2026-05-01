@@ -23,3 +23,15 @@ tmp/
 api/main.py.bak
 api/main.py.bak.policy
 api/main.py.pass_feature_and_price
+
+# Local environment
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local backup files
+*.bak
+*.bak.*
+api/main.py.pass_feature_and_price

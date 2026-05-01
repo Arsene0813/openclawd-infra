@@ -5,10 +5,12 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "A款隐形眼镜价格是99元。"
+      "A款隐形眼镜价格是99元"
     ],
     "query": "A款隐形眼镜多少钱？",
-    "expected_contains": ["99"],
+    "expected_contains": [
+      "99元"
+    ],
     "forbidden_contains": [],
     "expected_routed_fact_type": "product_price",
     "expected_refusal": false,
@@ -20,15 +22,39 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "A款隐形眼镜价格是99元。",
-      "A款隐形眼镜价格是89元。"
+      "A款隐形眼镜价格是99元",
+      "A款隐形眼镜价格是89元"
     ],
     "query": "A款隐形眼镜多少钱？",
-    "expected_contains": ["89"],
-    "forbidden_contains": ["99"],
+    "expected_contains": [
+      "89元"
+    ],
+    "forbidden_contains": [
+      "99元"
+    ],
     "expected_routed_fact_type": "product_price",
     "expected_refusal": false,
     "requires_sources": true
+  },
+  {
+    "id": "fallback_unknown_product_001",
+    "category": "fallback_refusal",
+    "setup_endpoint": "/chat_mem",
+    "query_endpoint": "/chat_livestream_kb",
+    "setup_messages": [
+      "A款隐形眼镜价格是89元"
+    ],
+    "query": "Z款护理液多少钱？",
+    "expected_contains": [
+      "没有检索到",
+      "可靠"
+    ],
+    "forbidden_contains": [
+      "89元"
+    ],
+    "expected_routed_fact_type": null,
+    "expected_refusal": true,
+    "requires_sources": false
   },
   {
     "id": "entity_separation_001",
@@ -36,12 +62,16 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "A款隐形眼镜价格是89元。",
-      "B款隐形眼镜价格是159元。"
+      "A款隐形眼镜价格是89元",
+      "B款隐形眼镜价格是159元"
     ],
     "query": "A款隐形眼镜多少钱？",
-    "expected_contains": ["89"],
-    "forbidden_contains": ["159"],
+    "expected_contains": [
+      "89元"
+    ],
+    "forbidden_contains": [
+      "159元"
+    ],
     "expected_routed_fact_type": "product_price",
     "expected_refusal": false,
     "requires_sources": true
@@ -52,11 +82,16 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "C款护理液目前有货。"
+      "C款护理液目前有货"
     ],
     "query": "C款护理液现在有货吗？",
-    "expected_contains": ["有货"],
-    "forbidden_contains": ["缺货", "售罄"],
+    "expected_contains": [
+      "有货"
+    ],
+    "forbidden_contains": [
+      "缺货",
+      "售罄"
+    ],
     "expected_routed_fact_type": "stock_status",
     "expected_refusal": false,
     "requires_sources": true
@@ -67,12 +102,14 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "C款护理液目前有货。",
-      "C款护理液目前缺货。"
+      "C款护理液目前有货",
+      "C款护理液目前缺货"
     ],
     "query": "C款护理液现在有货吗？",
-    "expected_contains": ["缺货"],
-    "forbidden_contains": ["有货"],
+    "expected_contains": [
+      "缺货"
+    ],
+    "forbidden_contains": [],
     "expected_routed_fact_type": "stock_status",
     "expected_refusal": false,
     "requires_sources": true
@@ -83,10 +120,13 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "D款护理液活动满199减30。"
+      "D款护理液活动满199减30"
     ],
     "query": "D款护理液有什么优惠？",
-    "expected_contains": ["满199减30"],
+    "expected_contains": [
+      "满199",
+      "减30"
+    ],
     "forbidden_contains": [],
     "expected_routed_fact_type": "promo",
     "expected_refusal": false,
@@ -98,12 +138,18 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "D款护理液活动满199减30。",
-      "D款护理液活动满159减20。"
+      "D款护理液活动满199减30",
+      "D款护理液活动满159减20"
     ],
     "query": "D款护理液现在有什么优惠？",
-    "expected_contains": ["满159减20"],
-    "forbidden_contains": ["满199减30"],
+    "expected_contains": [
+      "满159",
+      "减20"
+    ],
+    "forbidden_contains": [
+      "满199",
+      "减30"
+    ],
     "expected_routed_fact_type": "promo",
     "expected_refusal": false,
     "requires_sources": true
@@ -114,10 +160,12 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "E款隐形眼镜支持次日达。"
+      "E款隐形眼镜支持次日达"
     ],
     "query": "E款隐形眼镜支持什么配送？",
-    "expected_contains": ["次日达"],
+    "expected_contains": [
+      "次日达"
+    ],
     "forbidden_contains": [],
     "expected_routed_fact_type": "shipping_policy",
     "expected_refusal": false,
@@ -129,28 +177,38 @@
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "F款隐形眼镜主打高保湿。"
+      "F款隐形眼镜主打高保湿"
     ],
     "query": "F款隐形眼镜有什么特点？",
-    "expected_contains": ["高保湿"],
+    "expected_contains": [
+      "高保湿"
+    ],
     "forbidden_contains": [],
     "expected_routed_fact_type": "product_feature",
     "expected_refusal": false,
     "requires_sources": true
   },
   {
-    "id": "fallback_unknown_product_001",
-    "category": "fallback_refusal",
+    "id": "non_fact_filtering_001",
+    "category": "non_fact_filtering",
     "setup_endpoint": "/chat_mem",
     "query_endpoint": "/chat_livestream_kb",
     "setup_messages": [
-      "A款隐形眼镜价格是89元。"
+      "你好",
+      "谢谢"
     ],
-    "query": "Z款护理液多少钱？",
-    "expected_contains": ["没有检索到", "可靠"],
-    "forbidden_contains": ["89"],
+    "query": "A款隐形眼镜多少钱？",
+    "expected_contains": [
+      "没有检索到",
+      "可靠"
+    ],
+    "forbidden_contains": [
+      "你好",
+      "谢谢"
+    ],
     "expected_routed_fact_type": null,
     "expected_refusal": true,
-    "requires_sources": false
+    "requires_sources": false,
+    "require_setup_fact": false
   }
 ]

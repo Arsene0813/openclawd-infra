@@ -196,6 +196,8 @@ docker compose up -d --build api
 
 ## Running the Evaluation
 
+The evaluation runner is designed to run against the local API service. It uses `/chat_mem` to ingest setup messages into the structured memory layer, and then uses `/chat_livestream_kb` to retrieve livestream knowledge and answer the final query.
+
 Start the local services first:
 
 ```bash
@@ -208,7 +210,7 @@ Check that the API is running:
 curl http://127.0.0.1:8000/health
 ```
 
-Run the evaluation from the project root:
+Copy the evaluation folder into the API container and run the evaluation:
 
 ```bash
 docker compose exec api rm -rf /app/eval
@@ -216,14 +218,7 @@ docker compose cp eval api:/app/eval
 docker compose exec api python /app/eval/eval_livestream.py
 ```
 
-Expected result:
-
-```text
-Passed: 11
-Failed: 0
-Total: 11
-```
-
+The latest saved evaluation output is available at `eval/results/eval_result_11_pass.txt`.
 
 ## Repository Structure
 

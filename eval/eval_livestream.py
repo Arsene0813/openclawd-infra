@@ -69,8 +69,8 @@ def run_case(client, case):
         }
         setup_result = post_json(client, setup_endpoint, setup_payload)
 
-        fact_debug = setup_result.get("fact_debug") or {}
         if case.get("require_setup_fact", True):
+            fact_debug = setup_result.get("fact_debug") or {}
             if fact_debug and fact_debug.get("fact_ready") is False:
                 raise RuntimeError(f"setup message did not produce a fact: {message}")
 

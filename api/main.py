@@ -351,26 +351,27 @@ def build_extract_fact_prompt(text: str) -> str:
         "product_price, promo, stock_status, shipping_policy, product_feature.\n"
         "Only extract if the message clearly contains a fact that should be stored as memory.\n"
         "For livestream or commerce-related messages, examples include product prices, promotions, "
-        "stock status, shipping policies, and product features.\n"
+        "stock status, shipping policies, and product features.\n\n"
         "Examples:\n"
         'User message: 这款隐形眼镜价格是99元\n'
-        'Output: {"type":"product_price","value":"99元","source_text":"这款隐形眼镜价格是99元"}\n'
+        'Output: {"type":"product_price","value":"99元","source_text":"这款隐形眼镜价格是99元","product_ref":null}\n'
+        'User message: A款隐形眼镜价格是99元\n'
+        'Output: {"type":"product_price","value":"99元","source_text":"A款隐形眼镜价格是99元","product_ref":"A款隐形眼镜"}\n'
         'User message: 本场活动满199减30\n'
-        'Output: {"type":"promo","value":"满199减30","source_text":"本场活动满199减30"}\n'
-        'User message: 护理液目前现货\n'
-        'Output: {"type":"stock_status","value":"现货","source_text":"护理液目前现货"}\n'
-        'User message: 本商品支持次日达\n'
-        'Output: {"type":"shipping_policy","value":"次日达","source_text":"本商品支持次日达"}\n'
-        'User message: 这款产品主打高透氧\n'
-        'Output: {"type":"product_feature","value":"高透氧","source_text":"这款产品主打高透氧"}\n'
-        "If no suitable fact is present, answer exactly: NONE\n\n"
+        'Output: {"type":"promo","value":"满199减30","source_text":"本场活动满199减30","product_ref":null}\n'
+        'User message: C款护理液目前有货\n'
+        'Output: {"type":"stock_status","value":"有货","source_text":"C款护理液目前有货","product_ref":"C款护理液"}\n'
+        'User message: E款隐形眼镜支持次日达\n'
+        'Output: {"type":"shipping_policy","value":"次日达","source_text":"E款隐形眼镜支持次日达","product_ref":"E款隐形眼镜"}\n'
+        'User message: F款隐形眼镜主打高保湿\n'
+        'Output: {"type":"product_feature","value":"高保湿","source_text":"F款隐形眼镜主打高保湿","product_ref":"F款隐形眼镜"}\n'
+        'User message: 你好\n'
+        'Output: NONE\n\n'
+        "If no suitable fact is present, answer exactly: NONE\n"
         "Return JSON only, with this schema:\n"
         '{"type":"...", "value":"...", "source_text":"...", "product_ref": null}\n\n'
-        f"User message: {t}"
-        'User message: A款价格是99元\n'
-        'Output: {"type":"product_price","value":"99元","source_text":"A款价格是99元","product_ref":"A款"}\n'
-        'User message: 你好\n'
-        'Output: NONE\n'
+        f"User message: {t}\n"
+        "Output:"
     )
 
 def extract_structured_fact_by_rules(text: str) -> dict | None:
