@@ -1,98 +1,128 @@
 import json
+import uuid
 from pathlib import Path
 
 import httpx
 
-
 BASE_URL = "http://127.0.0.1:8000"
-CASES_FILE = Path("eval_livestream_cases.json")
+CASES_FILE = Path(__file__).parent / "eval_livestream_cases.json"
 
 
-def check_case(case: dict, result: dict) -> tuple[bool, list[str]]:
+def load_cases():
+    with CASES_FILE.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def post_json(client, endpoint, payload):
+    response = client.post(f"{BASE_URL}{endpoint}", json=payload)
+    response.raise_for_status()
+    return response.json()
+
+
+def get_reply(result):
+    return result.get("reply") or result.get("answer") or ""
+
+
+def check_case(case, result):
     errors = []
-    expect = case.get("expect", {})
+    reply = get_reply(result)
 
-    expected_refusal = expect.get("refusal")
+    expected_refusal = case.get("expected_refusal")
     if expected_refusal is not None:
         actual_refusal = result.get("refusal")
         if actual_refusal != expected_refusal:
-            errors.append(
-                f"refusal expected {expected_refusal}, got {actual_refusal}"
-            )
+            errors.append(f"refusal expected {expected_refusal}, got {actual_refusal}")
 
-    expected_fact_type = expect.get("routed_fact_type")
-    if expected_fact_type is not None:
-        actual_fact_type = result.get("routed_fact_type")
-        if actual_fact_type != expected_fact_type:
-            errors.append(
-                f"routed_fact_type expected {expected_fact_type}, got {actual_fact_type}"
-            )
+    expected_type = case.get("expected_routed_fact_type")
+    if expected_type is not None:
+        actual_type = result.get("routed_fact_type")
+        if actual_type != expected_type:
+            errors.append(f"routed_fact_type expected {expected_type}, got {actual_type}")
 
-    expected_reply_contains = expect.get("reply_contains")
-    if expected_reply_contains:
-        actual_reply = result.get("reply", "")
-        if expected_reply_contains not in actual_reply:
-            errors.append(
-                f"reply does not contain expected text: {expected_reply_contains}"
-            )
+    for text in case.get("expected_contains", []):
+        if text not in reply:
+            errors.append(f"reply does not contain expected text: {text}")
 
-    return (len(errors) == 0, errors)
+    for text in case.get("forbidden_contains", []):
+        if text in reply:
+            errors.append(f"reply contains forbidden text: {text}")
+
+    if case.get("requires_sources"):
+        sources = result.get("sources") or []
+        if not sources:
+            errors.append("expected non-empty sources, got empty sources")
+
+    return len(errors) == 0, errors
+
+
+def run_case(client, case):
+    session_id = case.get("session_id") or f"eval-{case['id']}-{uuid.uuid4().hex[:8]}"
+
+    setup_endpoint = case.get("setup_endpoint", "/chat_mem")
+    query_endpoint = case.get("query_endpoint", "/chat_livestream_kb")
+
+    for message in case.get("setup_messages", []):
+        setup_payload = {
+            "session_id": session_id,
+            "message": message,
+            "temperature": 0
+        }
+        setup_result = post_json(client, setup_endpoint, setup_payload)
+
+        fact_debug = setup_result.get("fact_debug") or {}
+        if case.get("require_setup_fact", True):
+            if fact_debug and fact_debug.get("fact_ready") is False:
+                raise RuntimeError(f"setup message did not produce a fact: {message}")
+
+    query_payload = {
+        "session_id": session_id,
+        "message": case["query"],
+        "temperature": 0,
+        "top_k": case.get("top_k", 3)
+    }
+
+    if "score_threshold" in case:
+        query_payload["score_threshold"] = case["score_threshold"]
+
+    return post_json(client, query_endpoint, query_payload)
 
 
 def main():
-    if not CASES_FILE.exists():
-        print(f"[ERROR] Missing file: {CASES_FILE}")
-        return
-
-    with CASES_FILE.open("r", encoding="utf-8") as f:
-        cases = json.load(f)
+    cases = load_cases()
 
     passed = 0
     failed = 0
 
-    with httpx.Client(timeout=60) as client:
-        for i, case in enumerate(cases, start=1):
-            name = case.get("name", f"case_{i}")
-            endpoint = case.get("endpoint")
-            payload = case.get("payload", {})
-
-            if not endpoint:
-                print(f"[FAIL] {name}")
-                print("  - missing endpoint")
-                failed += 1
-                continue
-
-            url = f"{BASE_URL}{endpoint}"
+    with httpx.Client(timeout=120) as client:
+        for case in cases:
+            case_id = case["id"]
 
             try:
-                response = client.post(url, json=payload)
-                response.raise_for_status()
-                result = response.json()
+                result = run_case(client, case)
+                ok, errors = check_case(case, result)
             except Exception as e:
-                print(f"[FAIL] {name}")
-                print(f"  - request error: {e}")
-                failed += 1
-                continue
-
-            ok, errors = check_case(case, result)
+                ok = False
+                errors = [f"exception: {e}"]
+                result = {}
 
             if ok:
-                print(f"[PASS] {name}")
+                print(f"[PASS] {case_id}")
                 passed += 1
             else:
-                print(f"[FAIL] {name}")
+                print(f"[FAIL] {case_id}")
                 for err in errors:
                     print(f"  - {err}")
-                print(f"  - reply: {result.get('reply')}")
-                print(f"  - routed_fact_type: {result.get('routed_fact_type')}")
+                if result:
+                    print(f"  - reply: {get_reply(result)}")
+                    print(f"  - routed_fact_type: {result.get('routed_fact_type')}")
+                    print(f"  - refusal: {result.get('refusal')}")
                 failed += 1
 
-    total = passed + failed
     print()
     print("=== Summary ===")
     print(f"Passed: {passed}")
     print(f"Failed: {failed}")
-    print(f"Total:  {total}")
+    print(f"Total: {passed + failed}")
 
 
 if __name__ == "__main__":
