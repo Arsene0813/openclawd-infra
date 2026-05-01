@@ -1,5 +1,15 @@
 # From an LLM-Powered Livestream System to a Policy-Driven, Lifecycle-Aware Agent Memory Layer
 
+## Note for Admissions Reviewers
+
+This repository has been continuously improved after my supplementary application material was prepared. The core project remains the same: it is a lifecycle-aware memory layer evolved from an earlier LLM-powered livestream system.
+
+The original focus was on structured fact extraction, typed memory, overwrite control, freshness filtering, and traceable retrieval for livestream commerce knowledge such as product price, promotion, stock status, shipping policy, and product features.
+
+Recent updates are intended to make the project easier to inspect and evaluate. They add clearer documentation, more evaluation cases, and an extension toward retail operations decision support. These additions do not replace the original project; they show how the same memory-layer design can be applied to broader commerce and data-driven decision-making scenarios.
+
+## Introduction
+
 An iterative project that extends an earlier LLM-powered livestream system into a policy-driven memory and retrieval layer for a more agent-like architecture.
 
 This project began as the next iteration of an earlier livestream system. Instead of focusing only on fluent generation, it now moves toward structured fact extraction, policy-driven typed memory, entity-aware overwrite control, lifecycle-aware retrieval, and traceable decision behavior.
