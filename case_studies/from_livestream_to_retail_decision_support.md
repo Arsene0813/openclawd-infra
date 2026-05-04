@@ -1,8 +1,10 @@
-# From Livestream Memory to Retail Decision Support
+# From Livestream Product Memory to Retail Decision Support
 
-## Background
+This case study explains how the same memory-layer design can be extended from customer-facing livestream product interaction to internal retail operations decision support.
 
-The original project focused on livestream commerce, where product prices, promotions, stock status, shipping policy, and product features change frequently.
+In the original livestream setting, the system manages changing product knowledge such as price, promotion, stock status, shipping policy, and product features. In a multi-store retail setting, similar lifecycle problems appear in operational knowledge: pricing decisions change, promotions expire, stock observations become outdated, seasonal product rules may only apply during specific periods, and cross-store insights need to be reused carefully rather than blindly copied.
+
+The shared problem is knowledge lifecycle management: deciding what information should be stored, when it should be updated, when it becomes stale, how it should be retrieved, and when it should not be reused.
 
 ## Why This Can Extend to Retail Operations
 
