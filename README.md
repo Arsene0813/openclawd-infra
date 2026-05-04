@@ -199,6 +199,8 @@ The main evaluation flow uses `/chat_mem` to ingest structured facts and `/chat_
 
 This project is intended to run locally with Docker Compose.
 
+Optional environment variables are shown in `.env.example`. The default Docker Compose setup can run with the provided defaults, but `.env.example` documents the main configurable values.
+
 Start the services with:
 
 ```bash
