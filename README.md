@@ -1,4 +1,6 @@
-# Livestream Agent Memory Layer
+# Lifecycle-Aware AI Memory Layer for Retail Decision Support
+
+Repository name: `livestream-agent-memory-layer`
 
 A working prototype for making AI-assisted retail interaction and operational decision support more reliable through structured memory, lifecycle-aware retrieval, and traceable knowledge use.
 
@@ -14,14 +16,16 @@ The project began from an earlier LLM-powered livestream system and later inform
 
 For admissions review, this repository should be read together with my Meituan retail supplementary evidence. The supplementary evidence shows the real multi-store retail context; this repository shows the technical prototype behind my interest in structured memory, retrieval reliability, and AI-assisted decision support.
 
+
 ## Current Status
 
-- Working local prototype with Docker Compose
-- FastAPI service + Ollama + Qdrant
+Status: working local prototype, tested through scenario-based evaluation.
+
+- Local Docker Compose setup: FastAPI service + Ollama + Qdrant
 - Structured fact extraction and typed memory
 - Product-level entity separation
 - Overwrite control and soft deactivation
-- Freshness-aware retrieval and active-state filtering
+- Freshness-aware retrieval design and active-state filtering
 - Traceable retrieval outputs
 - Scenario-based evaluation: 11 / 11 current cases passed
 - Main endpoints: `/chat_mem` for fact ingestion and `/chat_livestream_kb` for structured retrieval
@@ -67,6 +71,26 @@ A款价格是89元
 - A later query such as `A款多少钱？` should retrieve the current active price.
 - If no reliable active fact is available, the system should fall back or refuse instead of treating outdated memory as current knowledge.
 
+## Admissions Demo Transcript
+
+This simplified transcript shows the core behavior without requiring reviewers to run the code.
+
+1. Store initial fact  
+User input: `A款价格是99元`  
+System extracts: `product_price = 99元`, entity = `A款`, active = true
+
+2. Update the fact  
+User input: `A款价格是89元`  
+System behavior: the new price becomes active; the older price is softly deactivated.
+
+3. Retrieve current information  
+User query: `A款多少钱？`  
+Expected behavior: retrieve the active price `89元` with traceable source information.
+
+4. Unsupported or stale information  
+User query: `今天有什么优惠？`  
+Expected behavior: if no reliable active promotion fact is available, the system should fall back or refuse instead of inventing an answer.
+
 ## Architecture Overview
 
 ```mermaid
@@ -94,23 +118,22 @@ flowchart TD
 | Entity + slot storage | Product facts can conflict across products | Prevents facts about different products from overwriting each other |
 | Soft deactivation | Old facts should not disappear silently | Preserves traceability while keeping current knowledge active |
 | Freshness filtering | Promotions and stock status become outdated quickly | Reduces the risk of using stale information |
-| Retrieval gating | Similarity alone does not prove reliability | Avoids weakly supported memory use |
+| Retrieval gating | Similarity alone does not prove reliability | Prevents the system from using weakly matched memory as if it were verified knowledge |
 | Traceable sources | Hidden memory use is hard to inspect | Makes answers easier to debug and evaluate |
 
 ## What This Demonstrates
 
-This project demonstrates several abilities that are relevant to AI, data science, and language-technology-related study:
+This project demonstrates several abilities relevant to AI, data science, and language-technology-related study:
 
+- identifying a real reliability problem in AI-assisted commerce
 - representing unstructured interaction as structured data
-- designing rules for different types of information
-- managing changing knowledge over time
-- distinguishing current knowledge from outdated memory
-- using retrieval with confidence and validity checks
+- mapping short product-related queries into typed facts
+- designing rules for different types of changing information
+- managing current vs outdated knowledge over time
+- using retrieval with confidence, freshness, and validity checks
 - exposing supporting sources for inspection
 - evaluating system behavior through scenario-based test cases
-- mapping short product-related queries into structured facts for retrieval and decision support
-
-The focus is not on building a full production livestream platform. The focus is on the memory layer: how an AI system stores, updates, retrieves, and safely reuses information.
+- connecting customer-facing AI interaction with broader retail decision support
 
 ## Quick Review Path
 
@@ -134,6 +157,16 @@ This connection later informed my interest in adapting structured retrieval from
 The key idea is the same: changing information should not be treated as timeless memory. It should be structured, updated, filtered, retrieved with traceable evidence, and reused only when it remains reliable.
 
 In this sense, the project provides a technical bridge between AI-assisted product interaction and my later interest in data-informed retail decision support.
+
+## From Product Memory to Retail Decision Support
+
+| Current memory type | Current livestream use | Retail decision-support extension |
+|---|---|---|
+| `product_price` | Retrieve current product price | Track pricing decisions and price-change context across stores |
+| `promo` | Retrieve current promotion | Store promotion observations and avoid reusing expired campaign logic |
+| `stock_status` | Retrieve whether a product is available | Track inventory notes, stockout risks, and replenishment decisions |
+| `shipping_policy` | Retrieve delivery or shipping rule | Connect fulfillment constraints with store operation decisions |
+| `product_feature` | Retrieve product selling points | Store SKU role, product positioning, and seasonal demand patterns |
 
 ## Current Capabilities
 
@@ -176,11 +209,11 @@ In other words, livestream fact-type routing is implemented through retrieval-ti
 
 Current examples include:
 
-- `这款多少钱` → product price
-- `今天有什么优惠` → promotions
-- `现在有货吗` → stock status
-- `多久能发货` → shipping policy
-- `这款有什么特点` → product features
+- `这款多少钱？` / “How much is this item?” → product price
+- `今天有什么优惠？` / “What promotions are available today?” → promotions
+- `现在有货吗？` / “Is it in stock now?” → stock status
+- `多久能发货？` / “How long until it ships?” → shipping policy
+- `这款有什么特点？` / “What are this product’s features?” → product features
 
 ### 6. Lifecycle-aware fallback and refusal
 
