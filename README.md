@@ -1,58 +1,41 @@
-# From an LLM-Powered Livestream System to a Policy-Driven, Lifecycle-Aware Agent Memory Layer
-A prototype memory and retrieval layer for improving AI response reliability in retail product interaction.
+# Livestream Agent Memory Layer
 
-## Note for Admissions Reviewers
+A working prototype for making AI-assisted retail interaction more reliable through structured memory, lifecycle-aware retrieval, and traceable knowledge use.
 
-This repository has been continuously improved after my supplementary application material was prepared. The core project remains the same: it is a lifecycle-aware memory layer evolved from an earlier LLM-powered livestream system.
+## 30-Second Summary
 
-The original focus was on structured fact extraction, typed memory, overwrite control, freshness filtering, and traceable retrieval for livestream commerce knowledge such as product price, promotion, stock status, shipping policy, and product features.
+AI agents can generate fluent responses while still using outdated, conflicting, or weakly matched information. This project explores how to reduce that risk in a livestream/retail commerce setting.
 
-Recent updates are intended to make the project easier to inspect and evaluate. They add clearer documentation, more evaluation cases, and an extension toward retail operations decision support. These additions do not replace the original project; they show how the same memory-layer design can be applied to broader commerce and data-driven decision-making scenarios.
+The system extracts structured product facts such as price, promotion, stock status, shipping policy, and product features; stores them as typed memory; applies freshness and overwrite rules; retrieves relevant facts with traceable sources; and falls back or refuses when reliable memory is not available.
+
+This project began from an earlier LLM-powered livestream system and later informed my interest in adapting structured retrieval from customer-facing product interaction to internal retail decision support.
 
 ## Current Status
 
-- Core API: working locally with Docker Compose
-- Memory layer: structured fact extraction, typed memory, overwrite control, lifecycle metadata, and traceable retrieval
-- Livestream knowledge types: product price, promotion, stock status, shipping policy, and product features
-- Evaluation: 11 / 11 scenario-based cases passed
+- Working local prototype with Docker Compose
+- FastAPI service + Ollama + Qdrant
+- Structured fact extraction and typed memory
+- Product-level entity separation
+- Overwrite control and soft deactivation
+- Freshness-aware retrieval and active-state filtering
+- Traceable retrieval outputs
+- Scenario-based evaluation: 11 / 11 current cases passed
 - Main endpoints: `/chat_mem` for fact ingestion and `/chat_livestream_kb` for structured retrieval
 
-## Introduction
+## Why This Matters
 
-An iterative project that extends an earlier LLM-powered livestream system into a policy-driven memory and retrieval layer for a more agent-like architecture.
+In commerce settings, information changes quickly. Product prices may change, promotions may expire, stock status may become outdated, and shipping policies may vary. A simple chatbot or vector-memory system may retrieve semantically similar but outdated information.
 
-This project began as the next iteration of an earlier livestream system. Instead of focusing only on fluent generation, it now moves toward structured fact extraction, policy-driven typed memory, entity-aware overwrite control, lifecycle-aware retrieval, and traceable decision behavior.
+This project treats memory as structured, updateable, and inspectable knowledge rather than raw chat history. The goal is not only to generate answers, but to make the system’s use of past information more reliable and easier to evaluate.
 
-At its current stage, the system can handle livestream commerce knowledge such as product price, promotions, stock status, shipping policy, and product features. It supports typed fact storage, product-level entity separation, slot-based overwrite, non-fact filtering, and traceable retrieval behavior rather than relying on ungrounded generation.
+## Quick Review Path
 
-## Current Scope
+For admissions or non-specialist reviewers:
 
-Currently, the project includes:
-
-- structured fact extraction from interaction
-- policy-driven typed memory through a centralized fact-policy registry
-- slot-based overwrite control with soft deactivation
-- entity-aware storage based on `entity_id + slot` instead of type-only overwrite
-- product-level memory separation through lightweight `product_ref` extraction
-- lifecycle metadata such as timestamps, freshness windows, active-state flags, and reuse metadata
-- non-fact filtering so greetings and lightweight chat do not enter memory
-- a hybrid memory path in which chat-vector recall is still used for conversational retrieval, while structured facts are extracted and written into the typed knowledge layer when applicable
-- automatic routing across five livestream fact types:
-  - product price
-  - promotions
-  - stock status
-  - shipping policy
-  - product features
-- a broader policy registry that also includes additional session-scoped fact types used by extraction beyond the livestream commerce categories emphasized in this README
-- traceable retrieval outputs and inspectable fallback behavior
-- a scenario-based evaluation setup covering product price retrieval, overwrite behavior, entity separation, stock status, promotion retrieval, shipping policy, product features, non-fact filtering, and fallback/refusal behavior
-- A legacy strict-threshold chat-memory endpoint is still kept for comparison and debugging, but it is not the primary interaction path of the current memory layer.
-
-## Why This Project
-
-My earlier livestream system could already support product explanation and customer-facing dialogue, but I gradually realized that fluent generation alone was not enough to make such a system reliable in practice. The main limitation was not language generation itself, but the lack of a clear way to manage memory over time: newer information had no principled mechanism for replacing older information, outdated content could still remain retrievable, and it was often difficult to explain why a particular past item of information had been used in a response.
-
-This project emerged from that limitation. Its purpose is to make an LLM-based interaction layer more dependable and easier to inspect by introducing structured memory, retrieval gating, overwrite logic, and lifecycle-aware updates.
+1. Read this README for the project overview.
+2. See `PROJECT_SUMMARY_FOR_ADMISSIONS.md` for a concise application-oriented summary.
+3. See `eval/eval_report.md` for the current behavior-based evaluation.
+4. See `case_studies/from_livestream_to_retail_decision_support.md` for how this memory-layer idea extends toward retail operations decision support.
 
 ## Current Capabilities
 
