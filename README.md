@@ -1,16 +1,18 @@
 # Livestream Agent Memory Layer
 
-A working prototype for making AI-assisted retail interaction more reliable through structured memory, lifecycle-aware retrieval, and traceable knowledge use.
+A working prototype for making AI-assisted retail interaction and operational decision support more reliable through structured memory, lifecycle-aware retrieval, and traceable knowledge use.
 
 ## 30-Second Summary
 
 AI agents can produce fluent responses while still using outdated, conflicting, or weakly matched information. This project explores how to reduce that risk in a livestream and retail-commerce setting.
 
-The system extracts structured product facts such as price, promotion, stock status, shipping policy, and product features; stores them as typed memory; applies freshness and overwrite rules; retrieves relevant facts with traceable sources; and falls back or refuses when reliable memory is not available.
+The system extracts structured product facts such as price, promotion, stock status, shipping policy, and product features; stores them as typed memory; applies freshness and overwrite rules; retrieves relevant facts with traceable sources; and falls back or returns a safe refusal when reliable memory is not available.
 
 In simple terms, this project is not only about making an AI agent remember information. It is about making memory more reliable, updateable, inspectable, and safer to reuse when product information changes over time.
 
 The project began from an earlier LLM-powered livestream system and later informed my interest in adapting structured retrieval from customer-facing product interaction to internal retail decision support.
+
+For admissions review, this repository should be read together with my Meituan retail supplementary evidence. The supplementary evidence shows the real multi-store retail context; this repository shows the technical prototype behind my interest in structured memory, retrieval reliability, and AI-assisted decision support.
 
 ## Current Status
 
@@ -26,11 +28,9 @@ The project began from an earlier LLM-powered livestream system and later inform
 
 ## Why This Matters
 
-In commerce settings, information changes quickly. Product prices may change, promotions may expire, stock status may become outdated, and shipping policies may vary. A simple chatbot or vector-memory system may retrieve semantically similar but outdated information.
+This project is not intended to be a general chatbot demo. It focuses on a practical reliability problem: how an AI system should manage changing commercial knowledge over time.
 
-This project treats memory as structured, updateable, and inspectable knowledge rather than raw chat history. The goal is not only to generate answers, but to make the system's use of past information more reliable and easier to evaluate.
-
-For admissions reviewers, the project demonstrates my interest in AI system reliability, structured information extraction, retrieval-augmented generation, knowledge lifecycle management, and decision-support applications in commerce.
+In retail and commerce settings, outdated or conflicting information can lead to wrong decisions or misleading responses. By adding structured memory, update policies, freshness filtering, and traceable retrieval, this project helped me understand how AI systems can be made more inspectable and more useful for decision support.
 
 ## Minimal Example
 
@@ -108,6 +108,7 @@ This project demonstrates several abilities that are relevant to AI, data scienc
 - using retrieval with confidence and validity checks
 - exposing supporting sources for inspection
 - evaluating system behavior through scenario-based test cases
+- mapping short product-related queries into structured facts for retrieval and decision support
 
 The focus is not on building a full production livestream platform. The focus is on the memory layer: how an AI system stores, updates, retrieves, and safely reuses information.
 
@@ -229,7 +230,7 @@ This project is intended to run locally with Docker Compose.
 
 The default Docker Compose setup can run with the provided defaults, but `.env.example` documents the main configurable values.
 
-Optional environment variables are shown in `.env.example`. The default Docker Compose setup can run with the provided defaults, but `.env.example` documents the main configurable values.
+Optional environment variables are shown in `.env.example`.
 
 Start the services with:
 
@@ -313,7 +314,7 @@ Medium-term improvements:
 
 - separate extraction, routing, storage, lifecycle policy, and evaluation logic into clearer modules
 - make the fact-policy registry easier to extend through configuration
-- add a retail operations decision-support extension using anonymized or synthetic store metrics
+- add a retail operations decision-support extension using anonymized or synthetic store metrics, aligned with my Meituan retail supplementary evidence
 - explore how structured operational memory can support cross-store comparison and data-driven business decision-making
 
 
