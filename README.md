@@ -4,13 +4,13 @@ A working prototype for making AI-assisted retail interaction more reliable thro
 
 ## 30-Second Summary
 
-AI agents can generate fluent responses while still using outdated, conflicting, or weakly matched information. This project explores how to reduce that risk in a livestream/retail commerce setting.
+AI agents can produce fluent responses while still using outdated, conflicting, or weakly matched information. This project explores how to reduce that risk in a livestream and retail-commerce setting.
 
 The system extracts structured product facts such as price, promotion, stock status, shipping policy, and product features; stores them as typed memory; applies freshness and overwrite rules; retrieves relevant facts with traceable sources; and falls back or refuses when reliable memory is not available.
 
 In simple terms, this project is not only about making an AI agent remember information. It is about making memory more reliable, updateable, inspectable, and safer to reuse when product information changes over time.
 
-This project began from an earlier LLM-powered livestream system and later informed my interest in adapting structured retrieval from customer-facing product interaction to internal retail decision support.
+The project began from an earlier LLM-powered livestream system and later informed my interest in adapting structured retrieval from customer-facing product interaction to internal retail decision support.
 
 ## Current Status
 
@@ -28,7 +28,9 @@ This project began from an earlier LLM-powered livestream system and later infor
 
 In commerce settings, information changes quickly. Product prices may change, promotions may expire, stock status may become outdated, and shipping policies may vary. A simple chatbot or vector-memory system may retrieve semantically similar but outdated information.
 
-This project treats memory as structured, updateable, and inspectable knowledge rather than raw chat history. The goal is not only to generate answers, but to make the system’s use of past information more reliable and easier to evaluate.
+This project treats memory as structured, updateable, and inspectable knowledge rather than raw chat history. The goal is not only to generate answers, but to make the system's use of past information more reliable and easier to evaluate.
+
+For admissions reviewers, the project demonstrates my interest in AI system reliability, structured information extraction, retrieval-augmented generation, knowledge lifecycle management, and decision-support applications in commerce.
 
 ## Minimal Example
 
@@ -95,26 +97,42 @@ flowchart TD
 | Retrieval gating | Similarity alone does not prove reliability | Avoids weakly supported memory use |
 | Traceable sources | Hidden memory use is hard to inspect | Makes answers easier to debug and evaluate |
 
+## What This Demonstrates
+
+This project demonstrates several abilities that are relevant to AI, data science, and language-technology-related study:
+
+- representing unstructured interaction as structured data
+- designing rules for different types of information
+- managing changing knowledge over time
+- distinguishing current knowledge from outdated memory
+- using retrieval with confidence and validity checks
+- exposing supporting sources for inspection
+- evaluating system behavior through scenario-based test cases
+
+The focus is not on building a full production livestream platform. The focus is on the memory layer: how an AI system stores, updates, retrieves, and safely reuses information.
+
 ## Quick Review Path
 
 For non-specialist reviewers:
 
-1. Read the **30-Second Summary**.
+1. Read the **30-Second Summary** to understand the project purpose.
 2. See the **Minimal Example** to understand the core memory behavior.
 3. See the **Architecture Overview** and **Key Design Ideas** for the system design.
 4. See `PROJECT_SUMMARY_FOR_ADMISSIONS.md` for a concise application-oriented summary.
 5. See `eval/eval_report.md` for the current behavior-based evaluation.
-6. See `case_studies/from_livestream_to_retail_decision_support.md` for the extension toward retail operations decision support.
+6. See `case_studies/from_livestream_to_retail_decision_support.md` for how the same memory-layer idea connects to retail operations decision support.
 
 ## Connection to Retail Decision Support
 
-Although the current prototype focuses on livestream/retail product interaction, the same memory-layer design can be extended to internal retail operations decision support.
+Although the current prototype focuses on livestream and retail product interaction, the same memory-layer design can be extended to internal retail operations decision support.
 
 In livestream commerce, product knowledge changes over time: prices are updated, promotions expire, stock status changes, and product features need to be retrieved accurately. In multi-store retail operations, a similar lifecycle problem appears in operational knowledge: pricing decisions change, inventory notes become outdated, promotion observations may only apply to specific periods, seasonal demand patterns vary by context, and SKU role classifications need to be reused carefully rather than blindly copied across stores.
 
 This connection later informed my interest in adapting structured retrieval from a customer-facing product interaction setting into a broader decision-support setting for retail operations.
 
 The key idea is the same: changing information should not be treated as timeless memory. It should be structured, updated, filtered, retrieved with traceable evidence, and reused only when it remains reliable.
+
+In this sense, the project provides a technical bridge between AI-assisted product interaction and my later interest in data-informed retail decision support.
 
 ## Current Capabilities
 
@@ -171,20 +189,23 @@ The system can also fall back or refuse when stored knowledge should no longer b
 
 This repository includes a scenario-based evaluation setup for the livestream knowledge and memory layer.
 
-The evaluation does not benchmark the language model itself. Instead, it tests whether the memory layer behaves correctly in scenarios involving updated facts, product separation, non-fact filtering, unsupported queries, fallback behavior, and traceable retrieval. Instead, it checks whether the system can handle commerce-oriented memory behavior such as:
+The evaluation does not benchmark the language model itself. Instead, it tests whether the memory layer behaves correctly in scenarios involving updated facts, product separation, non-fact filtering, unsupported queries, fallback behavior, and traceable retrieval.
 
-- structured fact extraction
-- livestream fact-type routing
+Current evaluation result: **11 / 11 scenario-based cases passed.**
+
+The current cases cover:
+
+- product price retrieval
+- price overwrite
+- unsupported-query fallback
 - product-level entity separation
-- overwrite behavior for updated facts
-- active-state filtering
+- stock status retrieval
+- stock overwrite
+- promotion retrieval
+- promotion overwrite
+- shipping policy retrieval
+- product feature retrieval
 - non-fact filtering
-- fallback or refusal when no reliable memory is available
-- traceable retrieval through returned sources
-
-Current evaluation result: **11 / 11 scenario-based cases passed**.
-
-The current cases cover product price retrieval, price overwrite, unsupported-query fallback, entity separation, stock status retrieval, stock overwrite, promotion retrieval, promotion overwrite, shipping policy retrieval, product feature retrieval, and non-fact filtering.
 
 Evaluation files:
 
@@ -198,6 +219,15 @@ The main evaluation flow uses `/chat_mem` to ingest structured facts and `/chat_
 ## Running the Project
 
 This project is intended to run locally with Docker Compose.
+
+### Prerequisites
+
+- Docker and Docker Compose
+- Ollama-compatible local model setup
+- Qdrant is started through Docker Compose
+- Optional environment variables are documented in `.env.example`
+
+The default Docker Compose setup can run with the provided defaults, but `.env.example` documents the main configurable values.
 
 Optional environment variables are shown in `.env.example`. The default Docker Compose setup can run with the provided defaults, but `.env.example` documents the main configurable values.
 
@@ -261,11 +291,14 @@ The latest saved evaluation output is available at `eval/results/eval_result_11_
 - `ADMISSIONS_REVIEW_GUIDE.md` — short guide for reviewers who want to inspect the repository quickly
 - `README.md` — project overview, capabilities, evaluation notes, and usage instructions
 
-## Notes
+## Limitations and Design Trade-Offs
 
-This repository reflects an ongoing iteration rather than a finished product. The project is still intentionally compact, and a number of design choices remain visible at the application level for ease of inspection and experimentation.
+This repository reflects an ongoing iteration rather than a finished production system. The project is intentionally compact, and a number of design choices remain visible at the application level for ease of inspection and experimentation.
 
-At the current stage, the implementation still keeps much of the logic in a single main service file. This makes iteration easier during development and keeps policy, overwrite, routing, and retrieval behavior easy to inspect, even though future cleanup would likely separate routing, memory policy, evaluation, and storage logic more clearly as the project grows.
+At the current stage, much of the logic still lives in a single main service file. This makes iteration easier during development and keeps policy, overwrite, routing, and retrieval behavior easy to inspect. As the project grows, a future version would likely separate extraction, routing, memory policy, evaluation, and storage logic into clearer modules.
+
+The current evaluation is scenario-based and behavior-focused. It verifies important memory-layer behaviors such as overwrite, product separation, routing, and fallback, but it is not intended to be a broad benchmark of language-model capability.
+
 
 ## Next Steps
 
@@ -282,3 +315,5 @@ Medium-term improvements:
 - make the fact-policy registry easier to extend through configuration
 - add a retail operations decision-support extension using anonymized or synthetic store metrics
 - explore how structured operational memory can support cross-store comparison and data-driven business decision-making
+
+
