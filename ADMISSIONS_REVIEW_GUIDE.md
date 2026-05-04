@@ -33,3 +33,8 @@ This project is relevant to AI, computing, business analytics, and data science 
 - evaluation of system behavior
 - commerce-oriented decision support
 - extension toward store-level operational analytics
+- language-based search-intent understanding through short product queries
+- mapping user/product queries into structured product facts for retrieval and decision support
+
+
+
