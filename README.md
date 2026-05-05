@@ -148,7 +148,7 @@ For non-specialist reviewers:
 
 ## Connection to Retail Decision Support
 
-Although the current prototype focuses on livestream and retail product interaction, the same memory-layer design can be extended to internal retail operations decision support.
+Although the prototype focuses on livestream and retail product interaction, the same memory-layer design can be extended to internal retail operations decision support.
 
 In livestream commerce, product knowledge changes over time: prices are updated, promotions expire, stock status changes, and product features need to be retrieved accurately. In multi-store retail operations, a similar lifecycle problem appears in operational knowledge: pricing decisions change, inventory notes become outdated, promotion observations may only apply to specific periods, seasonal demand patterns vary by context, and SKU role classifications need to be reused carefully rather than blindly copied across stores.
 
