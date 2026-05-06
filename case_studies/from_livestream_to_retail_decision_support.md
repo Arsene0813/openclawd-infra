@@ -28,11 +28,11 @@ In my retail experience, I initially focused on improving search exposure. Howev
 
 The same memory-layer design can support retail operations by representing store-level findings as structured operational facts.
 
-For example:
+In practice, store-level retail data is often uneven and difficult to compare directly. Some stores have strong performance across most metrics, while others have low order volume. Therefore, the first step is not to force a clean causal conclusion, but to determine whether the available data is complete, comparable, and recent enough to support a decision.
 
-Store A has high search exposure but low order conversion.
+For example, if one store has higher search exposure and another has lower orders, the system should not immediately conclude that search exposure caused the difference. It should first check whether the stores are comparable in time period, order volume, product mix, region type, promotion status, and data completeness.
 
-This should not simply trigger a recommendation to increase exposure. Instead, the system should retrieve related facts about pricing, product mix, campaign cost, and search-entry behavior before suggesting an operational decision.
+This makes the memory layer useful not only for storing conclusions, but also for preventing weak or misleading conclusions from being reused as operational knowledge.
 
 ## Relevance
 
