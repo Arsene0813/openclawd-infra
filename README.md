@@ -62,6 +62,9 @@ Status: working local prototype, tested through scenario-based evaluation.
 - Freshness-aware retrieval design and active-state filtering
 - Traceable retrieval outputs
 - Scenario-based evaluation: 11 / 11 current cases passed
+- Retail operations SQL extension under `retail_ops/`
+- Public anonymized Meituan-style multi-store sample data for SQL workflow demonstration
+- Generated operational memory facts for conservative decision-support examples
 - Main endpoints: `/chat_mem` for fact ingestion and `/chat_livestream_kb` for structured retrieval
 
 ## Why This Matters
@@ -176,12 +179,13 @@ For admissions officer:
 1. Read the 30-Second Summary to understand the project purpose.
 2. See the Minimal Example to understand the core memory behavior.
 3. See the Architecture Overview and Key Design Ideas for the system design.
-4. See `eval/eval_report.md` for the current behavior-based evaluation.
-5. See `retail_ops/README.md` for the SQL-based retail operations extension.
-6. See `retail_ops/outputs/cross_store_comparison_report.md` for the cross-store Meituan metrics comparison report.
-7. See `retail_ops/outputs/generated_memory_facts.json` for how SQL outputs are converted into structured operational memory facts.
-8. See `PROJECT_SUMMARY_FOR_ADMISSIONS.md` for a concise application-oriented summary.
-9. See `case_studies/from_livestream_to_retail_decision_support.md` for the broader narrative connection from livestream memory to retail decision support.
+4. See `retail_ops/README.md` for the SQL-based Meituan retail operations extension.
+5. See `retail_ops/demo_retail_decision_support.md` for evidence-based retail decision-support examples.
+6. See `retail_ops/outputs/cross_store_comparison_report.md` for the generated cross-store analysis report.
+7. See `retail_ops/outputs/generated_memory_facts.json` for structured operational memory facts.
+8. See `docs/retail_decision_memory_architecture.md` for how the project evolves from product memory to operational decision memory.
+9. See `eval/eval_report.md` and `eval/eval_retail_decision_cases.json` for behavior-based evaluation.
+10. See `PROJECT_SUMMARY_FOR_ADMISSIONS.md` for a concise application-oriented summary.
 
 ## Connection to Retail Decision Support
 
