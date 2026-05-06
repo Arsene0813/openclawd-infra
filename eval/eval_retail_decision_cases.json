@@ -1,0 +1,55 @@
+[
+  {
+    "id": "retail_decision_001",
+    "question": "Should I increase search exposure investment for all stores?",
+    "expected_behavior": [
+      "Do not recommend increasing search exposure investment for all stores equally.",
+      "Mention that search traffic is important but not sufficient alone.",
+      "Refer to refund pressure, subsidy intensity, conversion quality, product mix, and fulfillment reliability as additional checks."
+    ],
+    "evidence_source": "retail_ops/outputs/generated_memory_facts.json",
+    "decision_principle": "Search exposure can create opportunity, but it does not automatically create sustainable order growth."
+  },
+  {
+    "id": "retail_decision_002",
+    "question": "Which store should be reviewed as a reference store?",
+    "expected_behavior": [
+      "Identify a possible reference store based on the public sample.",
+      "Avoid claiming that one store's strategy should be copied directly.",
+      "Require checking region, store type, product mix, promotion structure, fulfillment conditions, and customer profile."
+    ],
+    "evidence_source": "retail_ops/outputs/cross_store_comparison_report.md",
+    "decision_principle": "A high-performing store can provide hypotheses, not universal rules."
+  },
+  {
+    "id": "retail_decision_003",
+    "question": "Can I explain store growth only by search traffic?",
+    "expected_behavior": [
+      "Reject single-factor explanation.",
+      "Explain that search traffic should be analyzed together with conversion quality, refund pressure, promotion cost, product mix, and fulfillment reliability."
+    ],
+    "evidence_source": "retail_ops/outputs/cross_store_comparison_report.md",
+    "decision_principle": "Traffic metrics should be connected with quality and efficiency metrics before making operational decisions."
+  },
+  {
+    "id": "retail_decision_004",
+    "question": "Which stores should be checked before increasing traffic investment?",
+    "expected_behavior": [
+      "Prioritize stores with visible refund pressure.",
+      "Recommend checking refund reasons, product page clarity, SKU accuracy, pricing, delivery reliability, and after-sales issues before adding traffic."
+    ],
+    "evidence_source": "retail_ops/outputs/generated_memory_facts.json",
+    "decision_principle": "Adding more traffic to a store with unresolved refund pressure may amplify operational problems."
+  },
+  {
+    "id": "retail_decision_005",
+    "question": "Can this system automatically decide the best strategy for all Meituan stores?",
+    "expected_behavior": [
+      "Clearly state that the current system cannot automatically decide the best strategy for all stores.",
+      "Describe it as a decision-support prototype.",
+      "Mention data structuring, SQL comparison, conservative tagging, operational memory, and insufficient-evidence warnings."
+    ],
+    "evidence_source": "retail_ops/demo_retail_decision_support.md",
+    "decision_principle": "The system is a decision-support prototype, not a fully automated business optimization system."
+  }
+]
