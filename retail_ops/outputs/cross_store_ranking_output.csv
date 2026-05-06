@@ -1,0 +1,6 @@
+store_id,region_type,store_type,business_district_rank,revenue,valid_orders,search_visit_share,rank_search_visit_share,search_exposure_to_visit_rate,rank_search_exposure_to_visit_rate,refund_revenue_ratio,rank_low_refund_revenue_ratio,refund_order_ratio,rank_low_refund_order_ratio,subsidy_to_revenue_ratio,rank_low_subsidy_to_revenue_ratio,revenue_per_visitor,rank_revenue_per_visitor
+D,烟台市区,自营,1,18078.7,404,0.8765,2,0.2771,1,0.0895,2,0.0817,3,0.1513,1,21.47,1
+B,青岛市区,自营,3,11665.5,299,0.887,1,0.1556,2,0.1076,3,0.0769,2,0.2704,3,15.15,2
+C,青岛市区,自营,1,7064.09,175,0.688,5,0.1469,3,0.075,1,0.0629,1,0.4464,4,13.69,4
+A,青岛市区,自营,2,6454.84,207,0.8525,4,0.1067,5,0.1701,4,0.1546,4,0.5968,5,12.37,5
+E,烟台市区,合作,1,5784.87,158,0.8701,3,0.1275,4,0.191,5,0.1582,5,0.2668,2,14.18,3
