@@ -137,16 +137,23 @@ This project demonstrates several abilities relevant to AI, data science, and la
 
 ## Quick Review Path
 
-For non-specialist reviewers:
+For admissions officer:
 
-1. Read the **30-Second Summary** to understand the project purpose.
-2. See the **Minimal Example** to understand the core memory behavior.
-3. See the **Architecture Overview** and **Key Design Ideas** for the system design.
-4. See `PROJECT_SUMMARY_FOR_ADMISSIONS.md` for a concise application-oriented summary.
-5. See `eval/eval_report.md` for the current behavior-based evaluation.
-6. See `case_studies/from_livestream_to_retail_decision_support.md` for how the same memory-layer idea connects to retail operations decision support.
+1. Read the 30-Second Summary to understand the project purpose.
+2. See the Minimal Example to understand the core memory behavior.
+3. See the Architecture Overview and Key Design Ideas for the system design.
+4. See `eval/eval_report.md` for the current behavior-based evaluation.
+5. See `retail_ops/README.md` for the SQL-based retail operations extension.
+6. See `retail_ops/outputs/cross_store_comparison_report.md` for the cross-store Meituan metrics comparison report.
+7. See `retail_ops/outputs/generated_memory_facts.json` for how SQL outputs are converted into structured operational memory facts.
+8. See `PROJECT_SUMMARY_FOR_ADMISSIONS.md` for a concise application-oriented summary.
+9. See `case_studies/from_livestream_to_retail_decision_support.md` for the broader narrative connection from livestream memory to retail decision support.
 
 ## Connection to Retail Decision Support
+
+In the latest extension, I added a small SQL-based retail operations workflow under `retail_ops/`. This extension uses manually organized Meituan merchant backend metrics from five anonymized stores in March 2026 and calculates comparable cross-store indicators such as search visit share, search exposure-to-visit rate, refund pressure, subsidy intensity, and revenue per visitor.
+
+This extension is not intended to claim automatic business optimization. Its purpose is to show how fragmented store-level operational metrics can be standardized, compared through SQL, and converted into structured memory facts with period, scope, confidence, and source information.
 
 Although the prototype focuses on livestream and retail product interaction, the same memory-layer design can be extended to internal retail operations decision support.
 
