@@ -168,6 +168,28 @@ In this sense, the project provides a technical bridge between AI-assisted produ
 | `shipping_policy` | Retrieve delivery or shipping rule | Connect fulfillment constraints with store operation decisions |
 | `product_feature` | Retrieve product selling points | Store SKU role, product positioning, and seasonal demand patterns |
 
+# Retail Operations Data Readiness Extension
+
+This folder extends the lifecycle-aware memory layer from livestream product facts to multi-store retail operations data.
+
+The goal is not to claim that the system can already produce perfect business recommendations. In real Meituan operations, store-level backend data is fragmented, uneven, and difficult to compare directly. Some stores have high volume and stable metrics, while others have low order counts or incomplete indicators.
+
+Therefore, this extension focuses on an earlier but important step: turning raw store-level data into structured, comparable, and traceable operational memory.
+
+## What This Extension Demonstrates
+
+1. A simple SQL schema for organizing multi-store operational metrics.
+2. Data quality checks before comparing stores.
+3. Conservative comparability screening.
+4. Structured operational memory facts with time period, store scope, metric source, and confidence level.
+5. A decision-support principle: the system should refuse or qualify recommendations when data is incomplete or not comparable.
+
+## Why This Matters
+
+Meituan merchant backend data is useful, but it is primarily store-centric. Cross-store comparison requires additional structure. Without this layer, an AI assistant may overgeneralize from one store, reuse outdated observations, or produce recommendations that are not supported by comparable data.
+
+This extension shows how SQL-based data preparation and lifecycle-aware memory can work together before higher-level AI decision support.
+
 ## Current Capabilities
 
 The current prototype supports:
