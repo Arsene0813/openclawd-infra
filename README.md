@@ -158,6 +158,8 @@ The key idea is the same: changing information should not be treated as timeless
 
 In this sense, the project provides a technical bridge between AI-assisted product interaction and my later interest in data-informed retail decision support.
 
+At the current stage, the retail extension should be understood as a data-readiness and conservative decision-memory prototype rather than a fully automated business optimization system. Its purpose is to show how fragmented store-level metrics can be structured, checked for comparability, and converted into traceable operational memory before being reused by an AI assistant.
+
 ## From Product Memory to Retail Decision Support
 
 | Current memory type | Current livestream use | Retail decision-support extension |
