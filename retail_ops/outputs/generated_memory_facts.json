@@ -1,0 +1,47 @@
+[
+  {
+    "type": "cross_store_pattern",
+    "period": "2026-03",
+    "scope": "5 anonymized Meituan stores",
+    "value": "Four out of five stores show search visit share above 85%, suggesting that search-driven traffic is a major entry source in the current sample.",
+    "decision_use": "Search visibility should remain an important operational focus, but it should not be used as the only explanation for store performance.",
+    "confidence": "medium",
+    "source": "retail_ops/sql/01_derived_metrics.sql"
+  },
+  {
+    "type": "store_metric_signal",
+    "period": "2026-03",
+    "store_id": "D",
+    "value": "Store D has the highest revenue, highest valid order count, highest search exposure-to-visit rate, highest revenue per visitor, and lowest subsidy-to-revenue ratio in the current sample.",
+    "decision_use": "Store D can be reviewed as a reference store, but its strategy should not be copied directly without checking region, product mix, promotion structure, fulfillment conditions, and customer profile.",
+    "confidence": "medium",
+    "source": "retail_ops/sql/02_cross_store_ranking.sql"
+  },
+  {
+    "type": "risk_signal",
+    "period": "2026-03",
+    "store_id": "A",
+    "value": "Store A shows high search visit share, but also relatively high refund revenue ratio, high refund order ratio, and high subsidy-to-revenue ratio.",
+    "decision_use": "Before increasing traffic investment, review refund reasons, product description clarity, pricing, promotion structure, and fulfillment reliability.",
+    "confidence": "medium",
+    "source": "retail_ops/sql/03_conservative_store_tags.sql"
+  },
+  {
+    "type": "risk_signal",
+    "period": "2026-03",
+    "store_id": "E",
+    "value": "Store E shows relatively high refund revenue ratio and refund order ratio in the current sample.",
+    "decision_use": "Review refund reasons and fulfillment reliability before treating additional exposure as the main growth lever.",
+    "confidence": "medium",
+    "source": "retail_ops/sql/03_conservative_store_tags.sql"
+  },
+  {
+    "type": "promotion_efficiency_signal",
+    "period": "2026-03",
+    "store_id": "C",
+    "value": "Store C has relatively low refund pressure but high subsidy intensity relative to revenue.",
+    "decision_use": "Promotion efficiency should be checked before interpreting trade-area ranking as purely organic performance.",
+    "confidence": "medium",
+    "source": "retail_ops/sql/03_conservative_store_tags.sql"
+  }
+]
