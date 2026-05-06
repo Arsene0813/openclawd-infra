@@ -1,0 +1,6 @@
+store_id,region_type,store_type,business_district_rank,revenue,valid_orders,search_visit_share,search_exposure_to_visit_rate,refund_revenue_ratio,refund_order_ratio,subsidy_to_revenue_ratio,revenue_per_visitor,traffic_pattern_tag,search_efficiency_tag,refund_pressure_tag,refund_order_tag,subsidy_intensity_tag,visitor_value_tag
+D,烟台市区,自营,1,18078.7,404,0.8765,0.2771,0.0895,0.0817,0.1513,21.47,search-heavy,high-search-exposure-efficiency,refund-pressure-low,refund-order-ratio-medium,subsidy-intensity-low,high-visitor-value
+B,青岛市区,自营,3,11665.5,299,0.887,0.1556,0.1076,0.0769,0.2704,15.15,search-heavy,medium-search-exposure-efficiency,refund-pressure-medium,refund-order-ratio-low,subsidy-intensity-medium,medium-visitor-value
+C,青岛市区,自营,1,7064.09,175,0.688,0.1469,0.075,0.0629,0.4464,13.69,less-search-dependent,medium-search-exposure-efficiency,refund-pressure-low,refund-order-ratio-low,subsidy-intensity-high,low-visitor-value
+A,青岛市区,自营,2,6454.84,207,0.8525,0.1067,0.1701,0.1546,0.5968,12.37,search-heavy,low-search-exposure-efficiency,refund-pressure-high,refund-order-ratio-high,subsidy-intensity-high,low-visitor-value
+E,烟台市区,合作,1,5784.87,158,0.8701,0.1275,0.191,0.1582,0.2668,14.18,search-heavy,medium-search-exposure-efficiency,refund-pressure-high,refund-order-ratio-high,subsidy-intensity-medium,medium-visitor-value
