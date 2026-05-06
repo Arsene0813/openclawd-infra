@@ -1,8 +1,29 @@
 # Lifecycle-Aware AI Memory Layer for Retail Decision Support
 
-Repository name: `livestream-agent-memory-layer`
+This project began as a memory layer for an LLM-powered livestream commerce system.
+It has now been extended into a SQL-assisted retail decision-support prototype
+for multi-store Meituan instant-retail operations.
 
-A working prototype for making AI-assisted retail interaction and operational decision support more reliable through structured memory, lifecycle-aware retrieval, and traceable knowledge use.
+The system demonstrates how changing commercial information should be:
+1. extracted into structured facts,
+2. processed with SQL when it comes from store-level metrics,
+3. converted into scoped operational memory,
+4. retrieved with freshness, confidence, and source checks,
+5. used conservatively for decision support instead of unsupported recommendations.
+
+Meituan backend metrics
+        ↓
+Anonymized store-level CSV
+        ↓
+SQL derived metrics
+        ↓
+Cross-store tags and risk signals
+        ↓
+Generated operational memory facts
+        ↓
+Lifecycle-aware retrieval
+        ↓
+Traceable decision-support answer / conservative refusal
 
 ## 30-Second Summary
 
