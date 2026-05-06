@@ -2,65 +2,40 @@
 
 This folder extends the original livestream-agent memory layer into a retail operations decision-support scenario.
 
-The original project focused on lifecycle-aware memory for livestream commerce facts such as price, stock status, promotion, shipping policy, and product features. This extension applies the same idea to multi-store Meituan instant-retail operations.
+The original project focused on lifecycle-aware memory for livestream commerce facts such as price, stock status, promotion, shipping policy, and product features. This extension applies the same design principle to multi-store Meituan instant-retail operations: operational observations should not be treated as timeless memory. They should be structured, scoped, updated, checked, and reused only when the supporting data is still reliable.
 
 ## Motivation
 
-Meituan merchant backend provides many detailed metrics, but the interface is mainly store-centric. It is difficult to compare multiple stores efficiently under the same metric structure.
+Meituan merchant backend provides many useful store-level metrics, but the interface is mainly store-centric. For multi-store operations, the challenge is not simply whether data exists. The challenge is how to compare stores under the same metric structure before making decisions.
 
-This extension demonstrates a small SQL-based workflow for reorganizing manually collected store-level backend metrics into a cross-store comparison layer.
+This extension demonstrates a small SQL-based workflow for reorganizing manually collected and anonymized Meituan backend metrics into a cross-store comparison layer. The goal is not to claim that the system can fully automate business decisions. The goal is to show how fragmented store-level metrics can be converted into traceable operational memory for conservative AI-assisted decision support.
 
 ## Data Scope
 
+Public demo scope:
+
 - Period: March 2026
-- Stores: 5 anonymized stores
+- Stores: 5 anonymized representative stores
 - Regions: Qingdao urban area and Yantai urban area
 - Store types: self-operated and partner-operated
 - Category: contact lenses and care-solution related instant retail
+- Source: manually organized Meituan merchant backend metrics
 
-## SQL Workflow
+Privacy note:
 
-The SQL files calculate:
+The public repository uses a small anonymized representative sample for readability and privacy protection. It should not be interpreted as the full operational scale of the underlying business context. The broader application supplement provides additional real-world operational background.
 
-1. Derived operational metrics
-2. Cross-store rankings
-3. Conservative store-level operational tags
+## Core Workflow
 
-Key derived metrics include:
-
-- Search visit share
-- Search exposure-to-visit rate
-- Refund revenue ratio
-- Refund order ratio
-- Promotion GMV to revenue ratio
-- Merchant subsidy to revenue ratio
-- Revenue per visitor
-
-## Connection to Memory Layer
-
-The output is converted into structured memory facts in:
-
-`outputs/generated_memory_facts.json`
-
-These facts are not treated as universal business conclusions. Each memory fact includes:
-
-- type
-- period
-- store scope
-- value
-- decision use
-- confidence
-- source
-
-This prevents the AI assistant from overgeneralizing one store's pattern as a universal rule.
-
-## Files
-
-- `sql/01_derived_metrics.sql`: calculates comparable cross-store metrics
-- `sql/02_cross_store_ranking.sql`: ranks stores across selected metrics
-- `sql/03_conservative_store_tags.sql`: converts metrics into conservative operational tags
-- `outputs/derived_metrics_output.csv`: SQL output for derived metrics
-- `outputs/cross_store_ranking_output.csv`: SQL output for cross-store rankings
-- `outputs/store_tags_output.csv`: SQL output for operational tags
-- `outputs/cross_store_comparison_report.md`: short analysis report
-- `outputs/generated_memory_facts.json`: structured facts for the memory layer
+```text
+Meituan backend metrics
+        ↓
+Anonymized store-level CSV
+        ↓
+SQLite / SQL derived metrics
+        ↓
+Cross-store ranking and conservative tags
+        ↓
+Structured operational memory facts
+        ↓
+Decision-support demo with evidence and refusal rules
