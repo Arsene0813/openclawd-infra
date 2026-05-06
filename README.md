@@ -12,27 +12,21 @@ The system demonstrates how changing commercial information should be:
 5. used conservatively for decision support instead of unsupported recommendations.
 
 Meituan backend metrics
-
         ↓
         
 Anonymized store-level CSV
-
         ↓
         
 SQL derived metrics
-
         ↓
         
 Cross-store tags and risk signals
-
         ↓
         
 Generated operational memory facts
-
         ↓
         
 Lifecycle-aware retrieval
-
         ↓
         
 Traceable decision-support answer / conservative refusal
