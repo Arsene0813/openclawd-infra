@@ -1,0 +1,37 @@
+# secrets
+.env
+*.env
+**/.env
+*.key
+*.pem
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# logs & runtime
+*.log
+/data/
+tmp/
+
+# OS / editor
+.DS_Store
+.vscode/
+
+api/main.py.bak
+api/main.py.bak.policy
+api/main.py.pass_feature_and_price
+
+# Local environment
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local backup files
+*.bak
+*.bak.*
+api/main.py.pass_feature_and_price
