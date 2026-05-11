@@ -84,8 +84,12 @@ diagnostics AS (
         ROUND(CAST(m.refund_amount AS REAL) / NULLIF(CAST(m.transaction_amount AS REAL), 0) * 100, 2)
             AS refund_pressure_pct,
 
-        ROUND(CAST(m.invalid_orders AS REAL) / NULLIF(CAST(m.transaction_orders AS REAL), 0) * 100, 2)
-            AS invalid_order_pressure_pct,
+        ROUND(
+            CAST(m.invalid_orders AS REAL)
+            / NULLIF(CAST(m.valid_orders AS REAL) + CAST(m.invalid_orders AS REAL), 0)
+            * 100,
+            2
+        ) AS invalid_order_pressure_pct,
 
         ROUND(COALESCE(s.top3_sku_transaction_amount, 0.0) / NULLIF(CAST(m.transaction_amount AS REAL), 0) * 100, 2)
             AS top3_sku_transaction_amount_share_pct

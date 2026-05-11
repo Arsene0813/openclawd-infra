@@ -208,7 +208,7 @@ for row in comparability_rows:
                 "full_refund_orders": as_int(row["full_refund_orders"]),
                 "refund_orders_all_or_partial": as_int(row["refund_orders_all_or_partial"]),
             },
-            "calculation": "refund_pressure_pct = refund_amount / transaction_amount * 100; invalid_order_pressure_pct = invalid_orders / transaction_orders * 100",
+            "calculation": "refund_pressure_pct = refund_amount / transaction_amount * 100; invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100",
             "source_fields": [
                 "refund_amount",
                 "transaction_amount",

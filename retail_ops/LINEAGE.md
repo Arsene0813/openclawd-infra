@@ -254,7 +254,7 @@ The SQL derives the following diagnostic fields:
 - search_entry_share_pct = search_entry_users / entry_users * 100
 - activity_order_share_pct = activity_orders / transaction_orders * 100
 - refund_pressure_pct = refund_amount / transaction_amount * 100
-- invalid_order_pressure_pct = invalid_orders / transaction_orders * 100
+- invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100
 - top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100
 
 These derived fields are diagnostic summaries. They do not replace Meituan backend definitions.

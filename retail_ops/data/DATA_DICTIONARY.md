@@ -147,6 +147,52 @@ Interpretation limit: ranking change should be read together with exposure, entr
 Interpretation limit: these boolean fields are not canonical memory slots and must not be treated as store-stage labels. They only support broader memory slots such as `transaction_conversion_profile` and `order_quality_pressure_profile`.
 
 
+## Demo 2 Cross-Store Comparability Diagnostic Fields
+
+The following fields are SQL-derived diagnostic fields used in Demo 2. They are not Meituan backend metrics and must not be interpreted as store-stage labels, best-store rankings, or operating recommendations.
+
+### `comparison_scope_flag`
+
+Type: SQL-derived diagnostic text field.
+
+Purpose:
+`comparison_scope_flag` records whether a store-period row is inside the current Demo 2 comparison scope before any operating interpretation is made.
+
+Current values:
+- `same_period_diagnostic_ready`: the row has the required same-period fields for the current Demo 2 diagnostic.
+- `not_comparable_period_mismatch`: the row does not match the Demo 2 reporting window.
+- `insufficient_data`: one or more required diagnostic fields are missing.
+
+Correct use:
+This field is a data-readiness and comparison-scope guardrail. It helps the memory layer decide whether a same-period cross-store diagnostic can be discussed.
+
+Not supported:
+This field must not be used as a store-stage label, performance ranking, causal explanation, or operating recommendation.
+
+### `comparison_limit_notes`
+
+Type: SQL-derived diagnostic text field.
+
+Purpose:
+`comparison_limit_notes` records caution notes generated from documented Demo 2 threshold checks. It explains why cross-store comparison should be constrained even when stores share the same reporting window.
+
+Current threshold notes:
+- `high_search_entry_dependence`: `search_entry_share_pct >= 85`
+- `high_activity_involvement`: `activity_order_share_pct >= 80`
+- `moderate_activity_involvement`: `activity_order_share_pct >= 65`
+- `high_refund_pressure`: `refund_pressure_pct >= 15`
+- `moderate_refund_pressure`: `refund_pressure_pct >= 10`
+- `high_invalid_order_pressure`: `invalid_order_pressure_pct >= 12`
+- `moderate_invalid_order_pressure`: `invalid_order_pressure_pct >= 8`
+- `top3_sku_amount_concentration`: `top3_sku_transaction_amount_share_pct >= 25`
+- `compare_with_region_store_type_activity_refund_limits`: default reminder that region, store type, activity, refund, and order-quality conditions constrain direct comparison.
+
+Correct use:
+This field is used by the memory layer as an interpretation-boundary note. It preserves comparison limits when answering cross-store questions.
+
+Not supported:
+This field does not rank stores, assign store stages, prove causality, or decide whether a promotion, subsidy, price change, SKU change, or ranking action should be taken.
+
 ## Generated Retail Memory Fact Semantics / 生成零售记忆事实语义
 
 Generated retail memory facts are not raw Meituan backend exports.

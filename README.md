@@ -233,19 +233,14 @@ This project demonstrates abilities relevant to AI, data science, business analy
 
 ## Recommended Review Path
 
-For a quick admissions review, read these files in order:
-
-1. `README.md` — project overview, implementation boundary, and validation snapshot.
-2. `PROJECT_SUMMARY_FOR_ADMISSIONS.md` — admissions-oriented narrative and relevance.
-3. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — completed retail operations demo.
-4. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
-5. `retail_ops/LINEAGE.md` — claim-to-field lineage and interpretation limits.
-6. `eval/eval_retail_report.md` — Store A retail retrieval and refusal evaluation.
-7. `retail_ops/outputs/demo2_cross_store_comparability_output.csv` — Demo 2 cross-store diagnostic output.
-8. `eval/results/eval_retail_demo2_facts_result.txt` — Demo 2 facts evaluation result.
-
-The SQL files, generated outputs, and validation scripts are supporting evidence for the demos rather than separate admissions entry points.
-
+1. `PROJECT_SUMMARY_FOR_ADMISSIONS.md` — concise admissions-facing project summary.
+2. `README.md` — project overview, architecture, and evaluation status.
+3. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — Store A month-over-month retail operations demo.
+4. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` — same-period B-F cross-store comparability diagnostic.
+5. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
+6. `retail_ops/LINEAGE.md` — source-to-SQL-to-memory lineage.
+7. `eval/eval_report.md` and `eval/eval_retail_report.md` — scenario-based evaluation reports.
+8. `PROJECT_STATUS.md` — current implementation status and known limitations.
 ## Running the Project
 
 This project is intended to run locally with Docker Compose.
@@ -393,32 +388,18 @@ docker-compose.yml
 This repository is a working prototype, not a finished production system.
 
 Current limitations:
-
-- the retail retrieval path is narrow and limited to Store A Demo 1;
-- cross-store decision support is not implemented yet;
-- automated Meituan backend ingestion is not implemented yet;
-- promotion cycle dates are unknown in Demo 1;
-- estimated income is treated as a platform-displayed proxy, not audited profit;
-- top-SKU evidence is used qualitatively, not as full product-category sales share;
-- full automated SKU classification is deferred to future work.
-
-These limitations are intentionally visible because the project is designed to avoid overstating what the data can prove.
-
-## Next Steps
+- Demo 1 supports Store A month-over-month retail retrieval.
+- Demo 2 supports a limited same-period B-F cross-store comparability diagnostic, but it is not a full 48-store decision-support system.
+- Demo 2 memory facts are currently file-backed rather than loaded through the same Qdrant path as Store A Demo 1.
+- Automated Meituan backend ingestion is not implemented yet.
+- Promotion cycle dates, competitor density, delivery conditions, rating/review signals, and stockout history are not yet included.
+- Estimated income is treated as a platform-displayed proxy, not audited profit.
+- Top-SKU evidence is used qualitatively, not as full product-category sales share.
+- Full automated SKU classification is deferred to future work.
 
 Short-term improvements:
-
-- add Demo 2: a cross-store comparability gate for sampled Meituan stores;
-- check whether stores are comparable by period alignment, coarse market context, store type, activity and subsidy profile, order volume, visibility/ranking signals, conversion profile, refund/invalid-order pressure, SKU evidence, and data completeness;
-- add Demo 2 retail evaluation cases for `comparable`, `partially_comparable`, `not_comparable`, and `insufficient_data` outcomes;
-- add a dedicated metric-lineage retrieval eval case after adding the corresponding retrievable retail memory fact;
-- update the evaluation runner so it automatically regenerates retail and livestream summary files after each run.
-
-Medium-term improvements:
-
-- expand retail memory retrieval beyond Store A Demo 1;
-- add timestamp-controlled freshness tests for stale promotion, outdated stock facts, and outdated retail diagnostic facts;
-- separate extraction, routing, storage, lifecycle policy, and evaluation logic into clearer modules;
-- make the fact-policy registry easier to extend through configuration;
-- explore automated SKU classification for care solutions, daily lenses, color lenses, period lenses, accessories, and other product groups;
-- add a safer profit-margin-aware SKU recommendation layer only after margin data is explicitly available.
+- Expand Demo 2 beyond the current B-F same-period sample.
+- Add clearer grouping rules for when stores are comparable, partially comparable, not comparable, or missing required data.
+- Add more Demo 2 retrieval/evaluation cases around comparison scope and limitation-preserving answers.
+- Add a dedicated metric-lineage retrieval eval case after adding the corresponding retrievable retail memory fact.
+- Update the evaluation runner so it automatically regenerates retail and livestream summary files after each run.
