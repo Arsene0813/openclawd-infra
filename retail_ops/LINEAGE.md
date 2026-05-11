@@ -209,3 +209,181 @@ Top-SKU evidence uses SKU-level fields from `retail_ops/data/store_a_top_skus.cs
 - `sku_transaction_amount` is SKU-period-level transaction evidence.
 - It must not be confused with store-period-level `transaction_amount`.
 - Top-SKU evidence is used only as lightweight product-mix support, not as full category-level sales-share analysis.
+
+## Demo 2 Cross-Store Comparability Lineage
+
+Demo 2 extends the retail operations prototype from a single-store month-over-month diagnostic to a same-period cross-store diagnostic.
+
+The current Demo 2 scope is limited to five anonymized stores: B, C, D, E, and F.
+
+All Demo 2 records use the same reporting window:
+
+- period_start: 2026-03-01
+- period_end: 2026-03-31
+- period_month: 2026-03
+
+Demo 2 does not rank stores as simply better or worse. Its purpose is to structure comparable backend metrics, derive cautious diagnostic signals, and preserve interpretation limits before any operating recommendation is made.
+
+### Source data
+
+Demo 2 source data is stored in:
+
+- retail_ops/data/demo2_store_period_metrics.csv
+- retail_ops/data/demo2_top_search_terms.csv
+- retail_ops/data/demo2_top_skus_by_sales_volume.csv
+- retail_ops/data/demo2_top_skus_by_transaction_amount.csv
+- retail_ops/data/demo2_source_notes.md
+
+The source metrics are manually transcribed from the Meituan Waimai merchant backend and anonymized at the store level.
+
+Original Chinese backend search terms and SKU names are retained for traceability. English helper columns are included only for readability.
+
+### SQL diagnostic output
+
+Demo 2 SQL is stored in:
+
+- retail_ops/sql/02_demo2_cross_store_comparability.sql
+
+The generated SQL output is stored in:
+
+- retail_ops/outputs/demo2_cross_store_comparability_output.csv
+
+The SQL derives the following diagnostic fields:
+
+- search_entry_rate_pct = search_entry_users / search_exposure_users * 100
+- search_entry_share_pct = search_entry_users / entry_users * 100
+- activity_order_share_pct = activity_orders / transaction_orders * 100
+- refund_pressure_pct = refund_amount / transaction_amount * 100
+- invalid_order_pressure_pct = invalid_orders / transaction_orders * 100
+- top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100
+
+These derived fields are diagnostic summaries. They do not replace Meituan backend definitions.
+
+### Claim-to-field mapping
+
+Claim: stores are in the same Demo 2 reporting window.
+
+Supporting fields:
+
+- period_month
+- period_start
+- period_end
+
+Interpretation limit:
+
+- Same period alignment improves comparability but does not remove differences in region, store type, activity conditions, competition, fulfillment, or SKU mix.
+
+Claim: visibility and entry can be compared cautiously across stores.
+
+Supporting fields:
+
+- exposure_users
+- exposure_times
+- store_average_rank
+- entry_users
+- entry_times
+- entry_conversion_rate_pct
+- search_exposure_users
+- search_average_rank
+- search_entry_users
+- search_entry_rate_pct
+- search_entry_share_pct
+
+Interpretation limit:
+
+- Traffic-source entry metrics are backend-reported source-level metrics and are not assumed to be mutually exclusive.
+- Visibility and entry metrics do not prove causal transaction growth.
+
+Claim: activity involvement should constrain cross-store transaction comparison.
+
+Supporting fields:
+
+- activity_original_transaction_amount
+- activity_orders
+- activity_cost
+- merchant_subsidy_amount
+- platform_subsidy_amount
+- activity_cost_ratio_pct
+- activity_order_share_pct
+
+Interpretation limit:
+
+- Activity mechanism details and promotion cycle dates are not included.
+- activity_cost_ratio_pct is a cost ratio, not traditional ROI.
+- Activity metrics describe tool usage, not causal proof.
+
+Claim: refund and invalid-order pressure should constrain direct performance comparison.
+
+Supporting fields:
+
+- refund_amount
+- full_refund_orders
+- refund_orders_all_or_partial
+- valid_orders
+- invalid_orders
+- transaction_orders
+- refund_pressure_pct
+- invalid_order_pressure_pct
+
+Interpretation limit:
+
+- refund_amount is counted by refund-success date.
+- refund_pressure_pct is not an exact original-order cohort refund rate.
+- invalid-order reasons are not included.
+
+Claim: top search terms provide lightweight demand evidence.
+
+Supporting fields:
+
+- search_term
+- search_term_en
+- search_term_exposure_times
+- search_term_click_times
+- search_term_order_times
+
+Interpretation limit:
+
+- Top search terms are store-period evidence, not complete regional consumer-preference proof.
+- English search terms are helper translations, not backend source values.
+
+Claim: top SKU evidence provides lightweight product-mix evidence.
+
+Supporting fields:
+
+- sku_name
+- sku_name_en
+- sku_transaction_amount
+- sales_volume
+- sku_category_note
+- top3_sku_transaction_amount
+- top3_sku_transaction_amount_share_pct
+
+Interpretation limit:
+
+- Top-3 SKU evidence is not full SKU category-share analysis.
+- Demo 2 does not perform full manual SKU category classification.
+- English SKU names are helper translations, not backend source values.
+
+### Memory fact output
+
+Demo 2 generated memory facts are stored in:
+
+- retail_ops/outputs/generated_demo2_retail_memory_facts.json
+
+The generation script is:
+
+- retail_ops/scripts/generate_demo2_retail_memory_facts.py
+
+The validation script is:
+
+- retail_ops/scripts/validate_demo2_retail_memory_facts.py
+
+Demo 2 reuses existing canonical retail memory slots:
+
+- visibility_entry_profile
+- activity_lever_profile
+- order_quality_pressure_profile
+- top3_sku_product_mix_note
+- single_metric_attribution_guard
+
+Demo 2 does not introduce store-stage labels or best-store rankings.
