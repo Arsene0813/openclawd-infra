@@ -774,3 +774,79 @@ Before adding new SQL outputs, memory facts, or evaluation cases:
 - Do not introduce alternative English names for existing Meituan backend metrics.
 - If a new derived metric is added, define its numerator, denominator, time window, and interpretation limit.
 - If a field is renamed, update CSV, SQL, SQL output, memory facts, lineage, README, admissions documents, and evaluation cases in the same commit.
+
+## Demo 2 Additional Source Tables
+
+Demo 2 adds cross-store March 2026 source tables. These tables are source-data tables, not memory slots and not store-stage labels.
+
+### demo2_store_period_metrics.csv
+
+This table follows the existing Store A source metric naming pattern wherever possible.
+
+Key naming choices:
+
+- exposure_users, not store_exposure_users
+- exposure_times, not store_exposure_times
+- entry_times, not entry_visits
+- order_times, not order_submissions
+- refund_orders_all_or_partial, not full_or_partial_refund_orders
+- business_district_rank, not business_area_rank
+
+business_district_rank is included as a supplementary backend-reported field. It should not be used alone as a hard comparability condition because business-district boundaries and local competitive contexts may differ across stores.
+
+### demo2_top_search_terms.csv
+
+This table records the top 3 backend-reported search terms for each store-period.
+
+Fields:
+
+- search_term_rank: rank of the search term in the backend top-search-term list.
+- search_term: original backend search term.
+- search_term_en: conservative English translation for readability.
+- search_term_exposure_times: exposure count for the search term.
+- search_term_click_times: click count for the search term.
+- search_term_order_times: order count attributed to the search term.
+
+The Chinese search_term remains the source value. search_term_en is only a helper field and should not replace the original backend value.
+
+### demo2_top_skus_by_sales_volume.csv
+
+This table records the top 3 SKUs by backend-reported sales volume for each store-period.
+
+Fields:
+
+- sku_rank
+- sku_name
+- sku_name_en
+- sku_transaction_amount
+- sales_volume
+- sku_category_note
+
+When transaction amount is not available for a sales-volume-ranked SKU, sku_transaction_amount is left blank.
+
+### demo2_top_skus_by_transaction_amount.csv
+
+This table records the top 3 SKUs by backend-reported SKU transaction amount for each store-period.
+
+Fields:
+
+- sku_rank
+- sku_name
+- sku_name_en
+- sku_transaction_amount
+- sales_volume
+- sku_category_note
+
+When sales volume is not available for a transaction-amount-ranked SKU, sales_volume is left blank.
+
+### English helper fields
+
+sku_name and search_term preserve the original Chinese backend values.
+
+sku_name_en and search_term_en are conservative English helper translations for readability. They are not treated as source-of-truth backend values.
+
+### SKU category handling
+
+Demo 2 does not perform full manual SKU category classification.
+
+For Demo 2 source tables, sku_category_note = not_classified means the SKU name is retained as source evidence but not converted into a full product-category taxonomy.
