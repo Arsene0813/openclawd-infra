@@ -258,60 +258,96 @@ This repository is an ongoing prototype, not a finished production system.
 
 Current limitations include:
 
-- the live API currently focuses on livestream product memory;
-- the retail extension currently includes Store A Demo 1, not a full multi-store system;
-- retail retrieval is currently narrow and limited to Store A Demo 1;
-- generated retail memory facts can be loaded into Qdrant, but the retail retrieval flow has not yet been expanded into a full multi-store decision-support system;
-- conversion-rate lineage rules are documented, but not yet covered by a dedicated retail retrieval evaluation case;
-- promotion cycle dates are unknown for the Store A demo;
+- the livestream memory system remains a local prototype rather than a deployed production service;
+- Demo 1 is based on one Store A month-over-month case, so it should not be generalized across all stores;
+- Demo 2 uses five anonymized stores, B-F, from the same March 2026 reporting window, not the full 48-store business;
+- the Demo 2 endpoint is file-backed and separate from the Store A retrieval endpoint;
+- Demo 2 supports cautious cross-store diagnostic comparison, not final operating recommendations;
+- the current system does not yet perform full 48-store grouping, store-stage classification, or automated daily decision generation;
+- automated Meituan backend ingestion is not implemented;
+- promotion cycle dates are unknown;
 - estimated income is treated as a platform-displayed proxy, not audited profit;
 - refund amount is treated as refund pressure because refund date is based on refund-success date;
-- top-selling SKU evidence is used qualitatively, not as full product-category sales share;
+- top-selling SKU evidence is used as lightweight product-mix evidence, not as full product-category sales share;
 - full SKU classification is deferred to a future automated classification step.
 
 These limitations are intentional and visible in the project because the goal is to avoid overstating what the data can prove.
 
-## 12. Next Development Step
+## 12. Current Retail Demo 2
 
-The next development step is Demo 2: a cross-store comparability gate.
+Demo 2 has now been implemented as a limited same-period cross-store comparability diagnostic.
 
-The purpose of Demo 2 will be to check whether randomly sampled Meituan stores can be compared before generating any operational interpretation.
+It uses five anonymized Meituan stores, B-F, all from the same March 2026 reporting window. The purpose is not to choose the best store or recommend subsidy allocation directly. The purpose is to test whether multi-store backend data can be structured into a comparable form before any operating conclusion is made.
 
-The comparability gate will not treat region or market context as a standalone comparison rule. It will check a store pair across factors such as:
+Demo 2 adds:
 
-- period;
-- coarse market context;
-- store type;
-- order volume;
-- activity and subsidy profile;
-- visibility and entry structure;
-- data completeness;
-- dominant top-SKU category.
+- March 2026 source tables for Stores B-F;
+- top search term evidence with original Chinese backend values and conservative English helper translations;
+- top SKU evidence with original Chinese SKU names and conservative English helper translations;
+- SQL-derived comparability diagnostics;
+- generated Demo 2 retail memory facts;
+- validation scripts for source data, SQL output, and generated facts;
+- an offline Demo 2 facts evaluation;
+- a separate file-backed endpoint, /chat_retail_ops_demo2_kb.
 
-The expected output should not be “good store” or “bad store.”
+The Demo 2 SQL output derives diagnostic signals such as:
 
-The expected output should be:
+- search-entry rate;
+- search-entry share;
+- activity-order share;
+- refund pressure;
+- invalid-order pressure;
+- top-3 SKU transaction amount share;
+- comparison scope flags;
+- comparison limitation notes.
 
-- comparable;
-- partially comparable;
-- not comparable;
-- insufficient data.
+These fields are not used to label stores as good or bad. They are used to preserve the conditions under which comparison is possible.
+
+The key design point is that multi-store decision support should first ask:
+
+- Are these stores from the same reporting period?
+- Are the metrics available under the same data contract?
+- Is search traffic unusually dominant?
+- Is activity involvement high enough to limit transaction comparison?
+- Is refund or invalid-order pressure high enough to constrain interpretation?
+- Is top-SKU evidence only lightweight product-mix evidence rather than a full category structure?
+
+This is the practical bridge from single-store SQL diagnostics to a multi-store memory layer.
+
+## 13. Next Development Step
+
+The next development step is not to claim that the full 48-store decision-support system is finished.
+
+The next step is to expand the current Demo 2 path from a five-store sample toward broader multi-store coverage.
+
+The planned next work is:
+
+- include more stores while preserving the same metric contract;
+- add a clearer comparability gate for same-period store groups;
+- separate same-region, same-store-type, and different-region comparisons;
+- improve cross-store explanation logic without turning it into store ranking;
+- eventually connect Demo 2 facts to a broader retrieval and decision-support workflow;
+- keep refusing or qualifying questions that ask for unsupported rankings, causal claims, or full-business recommendations.
 
 This follows the same principle as the memory layer: the system should refuse or qualify conclusions when the evidence is weak, stale, incomplete, or not comparable.
 
-## 13. Files to Review
+## 14. Files to Review
 
 Recommended files for admissions review:
 
-1. `README.md` — project overview, implementation boundary, and validation snapshot.
-2. `PROJECT_SUMMARY_FOR_ADMISSIONS.md` — admissions-oriented narrative and relevance.
-3. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — completed retail operations demo.
-4. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
-5. `retail_ops/LINEAGE.md` — claim-to-field lineage and interpretation limits.
-6. `eval/eval_retail_report.md` — retail retrieval and refusal evaluation.
+1. README.md — project overview, implementation boundary, and validation snapshot.
+2. PROJECT_SUMMARY_FOR_ADMISSIONS.md — admissions-oriented narrative and relevance.
+3. retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md — completed Store A month-over-month demo.
+4. retail_ops/data/DATA_DICTIONARY.md — Meituan backend metric definitions and canonical fields.
+5. retail_ops/LINEAGE.md — claim-to-field lineage and interpretation limits for Demo 1 and Demo 2.
+6. retail_ops/outputs/demo2_cross_store_comparability_output.csv — Demo 2 cross-store diagnostic output.
+7. retail_ops/outputs/generated_demo2_retail_memory_facts.json — generated Demo 2 memory-facing facts.
+8. eval/results/eval_retail_demo2_facts_result.txt — Demo 2 offline facts evaluation result.
+9. eval/eval_retail_report.md — Store A retrieval and refusal evaluation.
 
-SQL files, generated outputs, validation scripts, and result files remain supporting evidence for the demo, but they are not separate admissions entry points.
+SQL files, generated outputs, validation scripts, and result files remain supporting evidence for the demos, but they are not separate admissions entry points.
 
-## 14. One-Sentence Summary
+## 15. One-Sentence Summary
 
-This project shows how changing commercial information can be normalized, checked, traced, validated, retrieved with evidence, and used cautiously for livestream product interaction and Meituan-style retail operations decision support.
+This project shows how changing commercial information can be normalized, checked, traced, validated, retrieved with evidence, and used cautiously for livestream product interaction and Meituan-style retail operations decision support, moving from single-store diagnostics toward controlled multi-store comparability.
+
