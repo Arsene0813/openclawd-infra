@@ -93,6 +93,7 @@ For this reason, Demo 2 converts SQL diagnostics into generated retail memory fa
 
 - `visibility_entry_profile`
 - `activity_lever_profile`
+- `transaction_conversion_profile`
 - `order_quality_pressure_profile`
 - `top3_sku_product_mix_note`
 - `single_metric_attribution_guard`

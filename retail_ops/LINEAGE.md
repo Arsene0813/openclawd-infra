@@ -382,6 +382,7 @@ Demo 2 reuses existing canonical retail memory slots:
 
 - visibility_entry_profile
 - activity_lever_profile
+- transaction_conversion_profile
 - order_quality_pressure_profile
 - top3_sku_product_mix_note
 - single_metric_attribution_guard
