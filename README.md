@@ -26,7 +26,7 @@ The project began from an earlier lifecycle-aware memory layer for livestream co
 | Retail facts Qdrant loading path | Implemented for Store A Demo 1 facts | `retail_ops/scripts/load_retail_facts_to_qdrant.py` |
 | Retail retrieval endpoint | Implemented for Store A Demo 1 and file-backed Demo 2 facts | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb` |
 | Retail retrieval evaluation | Implemented for Store A Demo 1; Demo 2 facts have offline eval | `eval/eval_retail.py`, `eval/eval_retail_demo2_facts.py` |
-| Cross-store decision support | Implemented as Demo 2 same-period B-F comparability diagnostic | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
+| Limited cross-store comparability diagnostic | Implemented as Demo 2 same-period B-F comparability diagnostic | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
 | Automated Meituan backend ingestion | Not implemented yet | Future work |
 | Full 48-store decision-support system | Not implemented yet | Future work |
 
@@ -210,7 +210,7 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 |---|---|---:|
 | Livestream memory evaluation | fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | Current implemented cases pass |
 | Retail retrieval evaluation | Store A retail-memory retrieval, attribution-warning behavior, unsupported-scope refusal | Current Store A cases pass |
-| Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, order-quality, SKU, and attribution-guard slots | 5/5 passed |
+| Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
 | Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
 | Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |
 

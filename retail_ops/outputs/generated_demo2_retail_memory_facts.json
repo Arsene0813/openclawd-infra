@@ -15,6 +15,7 @@
       "exposure_times": 24196,
       "store_average_rank": 15.0,
       "entry_users": 770,
+      "entry_times": 2676,
       "entry_conversion_rate_pct": 15.12,
       "search_exposure_users": 4390,
       "search_average_rank": 15.0,
@@ -47,10 +48,13 @@
     },
     "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
     "source_fields": [
+      "region_type",
+      "store_type",
       "exposure_users",
       "exposure_times",
       "store_average_rank",
       "entry_users",
+      "entry_times",
       "entry_conversion_rate_pct",
       "search_exposure_users",
       "search_average_rank",
@@ -71,7 +75,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -115,6 +119,57 @@
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
       "short-term ROI may not be the primary target in every operating stage"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_B",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store B's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 11665.5,
+      "transaction_orders": 299,
+      "average_order_value": 39.02,
+      "estimated_income_proxy": 8078.26,
+      "order_users": 284,
+      "order_times": 336,
+      "order_conversion_rate_pct": 36.88,
+      "payment_users": 280,
+      "payment_conversion_rate_pct": 98.59,
+      "entry_users": 770,
+      "valid_orders": 299,
+      "invalid_orders": 23
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "payment_users",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "cross-store demo",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -266,7 +321,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -287,6 +342,7 @@
       "exposure_times": 15598,
       "store_average_rank": 16.0,
       "entry_users": 516,
+      "entry_times": 1481,
       "entry_conversion_rate_pct": 17.3,
       "search_exposure_users": 2416,
       "search_average_rank": 13.0,
@@ -319,10 +375,13 @@
     },
     "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
     "source_fields": [
+      "region_type",
+      "store_type",
       "exposure_users",
       "exposure_times",
       "store_average_rank",
       "entry_users",
+      "entry_times",
       "entry_conversion_rate_pct",
       "search_exposure_users",
       "search_average_rank",
@@ -343,7 +402,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -387,6 +446,57 @@
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
       "short-term ROI may not be the primary target in every operating stage"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_C",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store C's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 7064.09,
+      "transaction_orders": 175,
+      "average_order_value": 40.37,
+      "estimated_income_proxy": 5049.65,
+      "order_users": 169,
+      "order_times": 188,
+      "order_conversion_rate_pct": 32.75,
+      "payment_users": 166,
+      "payment_conversion_rate_pct": 98.22,
+      "entry_users": 516,
+      "valid_orders": 174,
+      "invalid_orders": 11
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "payment_users",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "cross-store demo",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -538,7 +648,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -559,6 +669,7 @@
       "exposure_times": 15667,
       "store_average_rank": 14.0,
       "entry_users": 408,
+      "entry_times": 1400,
       "entry_conversion_rate_pct": 12.19,
       "search_exposure_users": 2784,
       "search_average_rank": 13.0,
@@ -591,10 +702,13 @@
     },
     "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
     "source_fields": [
+      "region_type",
+      "store_type",
       "exposure_users",
       "exposure_times",
       "store_average_rank",
       "entry_users",
+      "entry_times",
       "entry_conversion_rate_pct",
       "search_exposure_users",
       "search_average_rank",
@@ -615,7 +729,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -659,6 +773,57 @@
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
       "short-term ROI may not be the primary target in every operating stage"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 5784.87,
+      "transaction_orders": 158,
+      "average_order_value": 36.61,
+      "estimated_income_proxy": 5337.95,
+      "order_users": 161,
+      "order_times": 185,
+      "order_conversion_rate_pct": 39.46,
+      "payment_users": 159,
+      "payment_conversion_rate_pct": 98.76,
+      "entry_users": 408,
+      "valid_orders": 155,
+      "invalid_orders": 25
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "payment_users",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "cross-store demo",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -810,7 +975,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -831,6 +996,7 @@
       "exposure_times": 18142,
       "store_average_rank": 13.0,
       "entry_users": 541,
+      "entry_times": 1946,
       "entry_conversion_rate_pct": 15.27,
       "search_exposure_users": 2699,
       "search_average_rank": 13.0,
@@ -863,10 +1029,13 @@
     },
     "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
     "source_fields": [
+      "region_type",
+      "store_type",
       "exposure_users",
       "exposure_times",
       "store_average_rank",
       "entry_users",
+      "entry_times",
       "entry_conversion_rate_pct",
       "search_exposure_users",
       "search_average_rank",
@@ -887,7 +1056,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -931,6 +1100,57 @@
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
       "short-term ROI may not be the primary target in every operating stage"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 9301.8,
+      "transaction_orders": 266,
+      "average_order_value": 34.97,
+      "estimated_income_proxy": 5937.09,
+      "order_users": 269,
+      "order_times": 305,
+      "order_conversion_rate_pct": 49.72,
+      "payment_users": 267,
+      "payment_conversion_rate_pct": 99.26,
+      "entry_users": 541,
+      "valid_orders": 266,
+      "invalid_orders": 30
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "payment_users",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "cross-store demo",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1082,7 +1302,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1103,6 +1323,7 @@
       "exposure_times": 32638,
       "store_average_rank": 8.0,
       "entry_users": 842,
+      "entry_times": 3802,
       "entry_conversion_rate_pct": 13.88,
       "search_exposure_users": 2663,
       "search_average_rank": 13.0,
@@ -1135,10 +1356,13 @@
     },
     "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
     "source_fields": [
+      "region_type",
+      "store_type",
       "exposure_users",
       "exposure_times",
       "store_average_rank",
       "entry_users",
+      "entry_times",
       "entry_conversion_rate_pct",
       "search_exposure_users",
       "search_average_rank",
@@ -1159,7 +1383,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1203,6 +1427,57 @@
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
       "short-term ROI may not be the primary target in every operating stage"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_D",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store D's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 18078.7,
+      "transaction_orders": 404,
+      "average_order_value": 44.75,
+      "estimated_income_proxy": 12590.34,
+      "order_users": 392,
+      "order_times": 451,
+      "order_conversion_rate_pct": 46.56,
+      "payment_users": 385,
+      "payment_conversion_rate_pct": 98.21,
+      "entry_users": 842,
+      "valid_orders": 402,
+      "invalid_orders": 33
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "payment_users",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "cross-store demo",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1354,7 +1629,7 @@
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
-      "compare with region, store type, activity, and refund limits"
+      "compare with region, store type, activity, refund, and order-quality limits"
     ],
     "is_active": true,
     "period_granularity": "month"

@@ -59,4 +59,4 @@ Current project checks are expected to pass with:
 Expected retail evaluation status:
 
 - Store A retail eval: Retail eval result: 8/8 passed
-- Demo 2 offline facts eval: Retail Demo 2 facts eval result: 5/5 passed
+- Demo 2 offline facts eval: Retail Demo 2 facts eval result: 6/6 passed

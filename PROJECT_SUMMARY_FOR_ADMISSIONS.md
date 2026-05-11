@@ -342,7 +342,7 @@ Recommended files for admissions review:
 5. retail_ops/LINEAGE.md — claim-to-field lineage and interpretation limits for Demo 1 and Demo 2.
 6. retail_ops/outputs/demo2_cross_store_comparability_output.csv — Demo 2 cross-store diagnostic output.
 7. retail_ops/outputs/generated_demo2_retail_memory_facts.json — generated Demo 2 memory-facing facts.
-8. eval/results/eval_retail_demo2_facts_result.txt — Demo 2 offline facts evaluation result.
+8. eval/results/eval_retail_demo2_facts_result.txt — Demo 2 offline facts evaluation result, currently covering six Demo 2 fact types.
 9. eval/eval_retail_report.md — Store A retrieval and refusal evaluation.
 
 SQL files, generated outputs, validation scripts, and result files remain supporting evidence for the demos, but they are not separate admissions entry points.

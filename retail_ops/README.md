@@ -163,7 +163,7 @@ The Store A retail retrieval evaluation checks whether the system can:
 - refuse unknown-store stage claims;
 - refuse unsupported cross-store strategy claims.
 
-Demo 2 offline facts evaluation checks whether generated B-F facts cover visibility, activity, order-quality pressure, top-SKU evidence, and attribution-guard slots.
+Demo 2 offline facts evaluation checks whether generated B-F facts cover visibility, activity, transaction/conversion, order-quality pressure, top-SKU evidence, and attribution-guard slots.
 
 ## Future Work
 

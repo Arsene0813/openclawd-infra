@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
+
 
 FACTS_PATH = Path("retail_ops/outputs/generated_demo2_retail_memory_facts.json")
 RESULTS_PATH = Path("eval/results/eval_retail_demo2_facts_result.txt")
@@ -47,6 +50,17 @@ EXPECTED_CASES = [
         ],
     },
     {
+        "name": "store_f_transaction_conversion_profile",
+        "entity_id": "store_F",
+        "slot": "transaction_conversion_profile",
+        "expected_terms": [
+            "transaction_amount",
+            "order_conversion_rate_pct",
+            "payment_conversion_rate_pct",
+            "estimated_income_proxy is platform-displayed and not audited profit",
+        ],
+    },
+    {
         "name": "store_f_single_metric_attribution_guard",
         "entity_id": "store_F",
         "slot": "single_metric_attribution_guard",
@@ -59,11 +73,7 @@ EXPECTED_CASES = [
 ]
 
 facts = json.loads(FACTS_PATH.read_text(encoding="utf-8"))
-
-index = {
-    (fact["entity_id"], fact["slot"]): fact
-    for fact in facts
-}
+index = {(fact["entity_id"], fact["slot"]): fact for fact in facts}
 
 passed = 0
 failed = 0
@@ -79,11 +89,7 @@ for case in EXPECTED_CASES:
         continue
 
     serialized = json.dumps(fact, ensure_ascii=False)
-
-    missing_terms = [
-        term for term in case["expected_terms"]
-        if term not in serialized
-    ]
+    missing_terms = [term for term in case["expected_terms"] if term not in serialized]
 
     if missing_terms:
         failed += 1
@@ -106,5 +112,4 @@ RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
 RESULTS_PATH.write_text("\n".join(summary), encoding="utf-8")
 
 print("\n".join(summary))
-
 sys.exit(0 if failed == 0 else 1)

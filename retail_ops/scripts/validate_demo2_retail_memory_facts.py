@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import json
 from pathlib import Path
+
 
 FACTS_PATH = Path("retail_ops/outputs/generated_demo2_retail_memory_facts.json")
 
@@ -8,6 +11,7 @@ EXPECTED_ENTITIES = {"store_B", "store_C", "store_D", "store_E", "store_F"}
 EXPECTED_SLOTS = {
     "visibility_entry_profile",
     "activity_lever_profile",
+    "transaction_conversion_profile",
     "order_quality_pressure_profile",
     "top3_sku_product_mix_note",
     "single_metric_attribution_guard",
@@ -33,10 +37,24 @@ REQUIRED_KEYS = [
     "period_granularity",
 ]
 
+REQUIRED_TRANSACTION_FIELDS = {
+    "transaction_amount",
+    "transaction_orders",
+    "average_order_value",
+    "estimated_income_proxy",
+    "order_users",
+    "order_times",
+    "order_conversion_rate_pct",
+    "payment_users",
+    "payment_conversion_rate_pct",
+}
+
+
 data = json.loads(FACTS_PATH.read_text(encoding="utf-8"))
 
-if len(data) != 25:
-    raise SystemExit(f"Expected 25 Demo 2 facts, got {len(data)}")
+expected_fact_count = len(EXPECTED_ENTITIES) * len(EXPECTED_SLOTS)
+if len(data) != expected_fact_count:
+    raise SystemExit(f"Expected {expected_fact_count} Demo 2 facts, got {len(data)}")
 
 entities = {fact["entity_id"] for fact in data}
 slots = {fact["slot"] for fact in data}
@@ -51,15 +69,12 @@ seen_pairs = set()
 
 for fact in data:
     missing_keys = [key for key in REQUIRED_KEYS if key not in fact]
-
     if missing_keys:
         raise SystemExit(f"Missing keys in fact: {missing_keys}")
 
     pair = (fact["entity_id"], fact["slot"])
-
     if pair in seen_pairs:
         raise SystemExit(f"Duplicate entity-slot pair: {pair}")
-
     seen_pairs.add(pair)
 
     if fact["kind"] != "retail_memory_fact":
@@ -95,8 +110,17 @@ for fact in data:
     if not isinstance(fact["limitations"], list) or not fact["limitations"]:
         raise SystemExit(f"{pair}: limitations must be a non-empty list")
 
+    if fact["slot"] == "transaction_conversion_profile":
+        observed_fields = set(fact["observed_values"])
+        missing_transaction_fields = sorted(REQUIRED_TRANSACTION_FIELDS - observed_fields)
+        if missing_transaction_fields:
+            raise SystemExit(
+                f"{pair}: missing transaction/conversion observed fields: "
+                f"{missing_transaction_fields}"
+            )
+
 print("Demo 2 retail memory facts validation PASSED.")
-print("Checked facts: 25")
+print(f"Checked facts: {expected_fact_count}")
 print("Checked entities: store_B, store_C, store_D, store_E, store_F")
 print("Checked slots:", ", ".join(sorted(EXPECTED_SLOTS)))
-print("Checked schema, period, source fields, limitations, and active status.")
+print("Checked schema, period, source fields, limitations, transaction/conversion fields, and active status.")
