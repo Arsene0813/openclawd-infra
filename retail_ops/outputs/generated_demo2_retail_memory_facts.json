@@ -99,7 +99,7 @@
       "activity_cost_ratio_pct": 24.12,
       "activity_order_share_pct": 88.63
     },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100",
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
     "source_fields": [
       "activity_original_transaction_amount",
       "activity_orders",
@@ -260,13 +260,14 @@
       "sku_category_note"
     ],
     "confidence": "medium",
-    "source_path": "retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
       "top-3 SKU evidence only",
       "not full SKU category-share analysis",
       "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values"
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -426,7 +427,7 @@
       "activity_cost_ratio_pct": 9.45,
       "activity_order_share_pct": 70.86
     },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100",
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
     "source_fields": [
       "activity_original_transaction_amount",
       "activity_orders",
@@ -587,13 +588,14 @@
       "sku_category_note"
     ],
     "confidence": "medium",
-    "source_path": "retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
       "top-3 SKU evidence only",
       "not full SKU category-share analysis",
       "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values"
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -753,7 +755,7 @@
       "activity_cost_ratio_pct": 29.38,
       "activity_order_share_pct": 68.99
     },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100",
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
     "source_fields": [
       "activity_original_transaction_amount",
       "activity_orders",
@@ -914,13 +916,14 @@
       "sku_category_note"
     ],
     "confidence": "medium",
-    "source_path": "retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
       "top-3 SKU evidence only",
       "not full SKU category-share analysis",
       "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values"
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1080,7 +1083,7 @@
       "activity_cost_ratio_pct": 12.16,
       "activity_order_share_pct": 81.58
     },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100",
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
     "source_fields": [
       "activity_original_transaction_amount",
       "activity_orders",
@@ -1241,13 +1244,14 @@
       "sku_category_note"
     ],
     "confidence": "medium",
-    "source_path": "retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
       "top-3 SKU evidence only",
       "not full SKU category-share analysis",
       "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values"
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1407,7 +1411,7 @@
       "activity_cost_ratio_pct": 14.92,
       "activity_order_share_pct": 83.42
     },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100",
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
     "source_fields": [
       "activity_original_transaction_amount",
       "activity_orders",
@@ -1568,13 +1572,14 @@
       "sku_category_note"
     ],
     "confidence": "medium",
-    "source_path": "retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
       "top-3 SKU evidence only",
       "not full SKU category-share analysis",
       "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values"
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
     ],
     "is_active": true,
     "period_granularity": "month"

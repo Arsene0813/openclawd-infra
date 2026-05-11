@@ -32,3 +32,13 @@
 
 - **Explainable fallback and small-scale evaluation**  
   At the current stage, the system can not only answer from stored knowledge, but also fall back safely when available knowledge is stale, inactive, unsupported, or insufficiently reliable. Retrieval outputs expose routing decisions and filtered reasons, making failure cases easier to inspect rather than leaving them ambiguous. To make the current behavior easier to verify, I added a scenario-based evaluation setup covering successful retrieval, fact-type routing, overwrite behavior, product-level separation, non-fact filtering, and unsupported-query fallback. Freshness filtering is implemented in the retrieval layer, while timestamp-controlled freshness tests remain a planned next step.
+
+## Retail Operations Extension
+
+The same lifecycle-aware memory principle is now applied to Meituan-style instant retail operations data.
+
+The practical problem is different from livestream product memory. Meituan's merchant backend provides rich single-store metrics, but multi-store operation requires a stricter question: which store-period records can be compared, under what limits, and which claims should be refused because the evidence is incomplete or not aligned.
+
+The retail extension therefore uses SQL and documented metric definitions before retrieval. The SQL layer organizes selected store-period, traffic, activity, refund, invalid-order, search-term, and top-SKU evidence into comparison-ready diagnostic outputs. The memory layer records store-period evidence, calculation notes, confidence, and limitations so that March data is not casually mixed with April data, activity-heavy stores are not treated like low-activity stores, and lightweight top-SKU evidence is not overstated as full category-share analysis.
+
+This is still a staged prototype. Its current purpose is not to automate final operating decisions, but to make cross-store interpretation more traceable, more cautious, and easier to verify as the number of stores increases.

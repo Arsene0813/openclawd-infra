@@ -242,22 +242,39 @@ Original Chinese backend search terms and SKU names are retained for traceabilit
 
 Demo 2 SQL is stored in:
 
-- retail_ops/sql/02_demo2_cross_store_comparability.sql
+- `retail_ops/sql/02_demo2_cross_store_comparability.sql`
 
 The generated SQL output is stored in:
 
-- retail_ops/outputs/demo2_cross_store_comparability_output.csv
+- `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
 
-The SQL derives the following diagnostic fields:
+The Demo 2 output intentionally separates carried-through canonical fields from SQL-derived diagnostic fields.
 
-- search_entry_rate_pct = search_entry_users / search_exposure_users * 100
-- search_entry_share_pct = search_entry_users / entry_users * 100
-- activity_order_share_pct = activity_orders / transaction_orders * 100
-- refund_pressure_pct = refund_amount / transaction_amount * 100
-- invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100
-- top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100
+Carried-through canonical or backend-formula fields include:
 
-These derived fields are diagnostic summaries. They do not replace Meituan backend definitions.
+- `region_type`
+- `store_type`
+- `business_district_rank`
+- `activity_cost_ratio_pct`
+
+`activity_cost_ratio_pct` follows the documented backend-formula interpretation:
+
+- `activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100`
+
+It is kept in the SQL output because it is important operating-lever evidence, but it should not be described as a newly invented Demo 2 diagnostic or as traditional ROI.
+
+SQL-derived diagnostic fields include:
+
+- `search_entry_rate_pct = search_entry_users / search_exposure_users * 100`
+- `search_entry_share_pct = search_entry_users / entry_users * 100`
+- `activity_order_share_pct = activity_orders / transaction_orders * 100`
+- `refund_pressure_pct = refund_amount / transaction_amount * 100`
+- `invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100`
+- `top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100`
+- `comparison_scope_flag`
+- `comparison_limit_notes`
+
+These derived fields are diagnostic summaries. They do not replace Meituan backend definitions, rank stores, assign store stages, or prove causal operating effects.
 
 ### Claim-to-field mapping
 

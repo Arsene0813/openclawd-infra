@@ -30,6 +30,12 @@ def as_float(value: str) -> float:
     return round(float(value), 2)
 
 
+def as_optional_float(value: str) -> float | None:
+    if value is None or value == "":
+        return None
+    return round(float(value), 2)
+
+
 def as_int(value: str) -> int:
     return int(float(value))
 
@@ -186,7 +192,7 @@ for row in comparability_rows:
             },
             calculation=(
                 "activity_order_share_pct = activity_orders / transaction_orders * 100; "
-                "activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100"
+                "activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100"
             ),
             source_fields=[
                 "activity_original_transaction_amount",
@@ -315,9 +321,9 @@ for row in comparability_rows:
                 f"It should not be treated as full SKU category-share analysis."
             ),
             observed_values={
-                "top3_sku_transaction_amount": as_float(row["top3_sku_transaction_amount"]),
+                "top3_sku_transaction_amount": as_optional_float(row["top3_sku_transaction_amount"]),
                 "transaction_amount": as_float(row["transaction_amount"]),
-                "top3_sku_transaction_amount_share_pct": as_float(row["top3_sku_transaction_amount_share_pct"]),
+                "top3_sku_transaction_amount_share_pct": as_optional_float(row["top3_sku_transaction_amount_share_pct"]),
                 "top_skus_by_transaction_amount": top_skus_by_amount,
             },
             calculation="top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100",
@@ -331,12 +337,13 @@ for row in comparability_rows:
                 "sku_category_note",
             ],
             confidence="medium",
-            source_path="retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
+            source_path=SOURCE_PATH,
             limitations=[
                 "top-3 SKU evidence only",
                 "not full SKU category-share analysis",
                 "manual category inference should not be overclaimed",
                 "English SKU names are helper translations, not backend source values",
+                "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv",
             ],
         )
     )
@@ -361,7 +368,7 @@ for row in comparability_rows:
                 "activity_cost_ratio_pct": as_float(row["activity_cost_ratio_pct"]),
                 "refund_pressure_pct": as_float(row["refund_pressure_pct"]),
                 "invalid_order_pressure_pct": as_float(row["invalid_order_pressure_pct"]),
-                "top3_sku_transaction_amount_share_pct": as_float(row["top3_sku_transaction_amount_share_pct"]),
+                "top3_sku_transaction_amount_share_pct": as_optional_float(row["top3_sku_transaction_amount_share_pct"]),
                 "comparison_scope_flag": row["comparison_scope_flag"],
                 "comparison_limit_notes": row["comparison_limit_notes"],
             },

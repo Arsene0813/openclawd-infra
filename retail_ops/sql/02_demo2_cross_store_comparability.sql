@@ -70,7 +70,7 @@ diagnostics AS (
         CAST(m.refund_orders_all_or_partial AS INTEGER) AS refund_orders_all_or_partial,
         CAST(m.business_district_rank AS INTEGER) AS business_district_rank,
 
-        COALESCE(s.top3_sku_transaction_amount, 0.0) AS top3_sku_transaction_amount,
+        s.top3_sku_transaction_amount AS top3_sku_transaction_amount,
 
         ROUND(CAST(m.search_entry_users AS REAL) / NULLIF(CAST(m.search_exposure_users AS REAL), 0) * 100, 2)
             AS search_entry_rate_pct,
@@ -91,8 +91,13 @@ diagnostics AS (
             2
         ) AS invalid_order_pressure_pct,
 
-        ROUND(COALESCE(s.top3_sku_transaction_amount, 0.0) / NULLIF(CAST(m.transaction_amount AS REAL), 0) * 100, 2)
-            AS top3_sku_transaction_amount_share_pct
+        CASE
+            WHEN s.top3_sku_transaction_amount IS NULL
+              OR m.transaction_amount IS NULL
+              OR m.transaction_amount = ''
+                THEN NULL
+            ELSE ROUND(s.top3_sku_transaction_amount / NULLIF(CAST(m.transaction_amount AS REAL), 0) * 100, 2)
+        END AS top3_sku_transaction_amount_share_pct
 
     FROM demo2_store_period_metrics m
     LEFT JOIN top3_sku_amount s
@@ -159,7 +164,9 @@ SELECT
     CASE
         WHEN period_start != '2026-03-01' OR period_end != '2026-03-31'
             THEN 'not_comparable_period_mismatch'
-        WHEN transaction_orders IS NULL
+        WHEN transaction_amount IS NULL
+          OR transaction_orders IS NULL
+          OR valid_orders IS NULL
           OR exposure_users IS NULL
           OR entry_users IS NULL
           OR search_exposure_users IS NULL
@@ -167,11 +174,27 @@ SELECT
           OR activity_orders IS NULL
           OR refund_amount IS NULL
           OR invalid_orders IS NULL
+          OR top3_sku_transaction_amount IS NULL
             THEN 'insufficient_data'
         ELSE 'same_period_diagnostic_ready'
     END AS comparison_scope_flag,
 
     TRIM(
+        CASE
+            WHEN transaction_amount IS NULL
+                THEN 'missing_transaction_amount; '
+            ELSE ''
+        END ||
+        CASE
+            WHEN valid_orders IS NULL
+                THEN 'missing_valid_orders; '
+            ELSE ''
+        END ||
+        CASE
+            WHEN top3_sku_transaction_amount IS NULL
+                THEN 'missing_top3_sku_amount_evidence; '
+            ELSE ''
+        END ||
         CASE
             WHEN search_entry_share_pct >= 85
                 THEN 'high_search_entry_dependence; '

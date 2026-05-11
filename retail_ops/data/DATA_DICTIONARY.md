@@ -176,7 +176,10 @@ Type: SQL-derived diagnostic text field.
 Purpose:
 `comparison_limit_notes` records caution notes generated from documented Demo 2 threshold checks. It explains why cross-store comparison should be constrained even when stores share the same reporting window.
 
-Current threshold notes:
+Current threshold and evidence-completeness notes:
+- `missing_transaction_amount`: `transaction_amount` is missing, so amount-based ratios such as `refund_pressure_pct` and `top3_sku_transaction_amount_share_pct` should not be interpreted as comparable evidence.
+- `missing_valid_orders`: `valid_orders` is missing, so `invalid_order_pressure_pct` should not be interpreted as comparable evidence.
+- `missing_top3_sku_amount_evidence`: top-SKU transaction-amount evidence is missing, so missing product-mix evidence must not be treated as zero concentration.
 - `high_search_entry_dependence`: `search_entry_share_pct >= 85`
 - `high_activity_involvement`: `activity_order_share_pct >= 80`
 - `moderate_activity_involvement`: `activity_order_share_pct >= 65`
@@ -185,7 +188,7 @@ Current threshold notes:
 - `high_invalid_order_pressure`: `invalid_order_pressure_pct >= 12`
 - `moderate_invalid_order_pressure`: `invalid_order_pressure_pct >= 8`
 - `top3_sku_amount_concentration`: `top3_sku_transaction_amount_share_pct >= 25`
-- `compare_with_region_store_type_activity_refund_limits`: default reminder that region, store type, activity, refund, and order-quality conditions constrain direct comparison.
+- `compare_with_region_store_type_activity_refund_limits`: default reminder that region, store type, activity, refund, order-quality, and product-mix evidence constrain direct comparison.
 
 Correct use:
 This field is used by the memory layer as an interpretation-boundary note. It preserves comparison limits when answering cross-store questions.

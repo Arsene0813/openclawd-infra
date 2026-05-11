@@ -144,23 +144,34 @@ Demo 2 adds:
 - March 2026 source tables for Stores B-F;
 - top search term evidence with original Chinese backend values and conservative English helper translations;
 - top SKU evidence with original Chinese SKU names and conservative English helper translations;
+- carried-through canonical backend fields and backend-formula fields;
 - SQL-derived comparability diagnostics;
 - generated Demo 2 retail memory facts;
 - validation scripts for source data, SQL output, and generated facts;
 - offline Demo 2 facts evaluation;
 - a separate file-backed endpoint, `/chat_retail_ops_demo2_kb`.
 
-The Demo 2 SQL output derives diagnostic signals such as:
+The Demo 2 output separates carried-through canonical fields from SQL-derived diagnostics.
+
+Carried-through canonical or backend-formula fields include:
+
+- `region_type`
+- `store_type`
+- `business_district_rank`
+- `activity_cost_ratio_pct`
+
+SQL-derived diagnostic signals include:
 
 - `search_entry_rate_pct`
 - `search_entry_share_pct`
 - `activity_order_share_pct`
-- `activity_cost_ratio_pct`
 - `refund_pressure_pct`
 - `invalid_order_pressure_pct`
 - `top3_sku_transaction_amount_share_pct`
 - `comparison_scope_flag`
 - `comparison_limit_notes`
+
+`activity_cost_ratio_pct` is not treated as a newly invented Demo 2 metric. In this project it follows the backend-formula definition documented in the data dictionary: activity cost divided by activity original transaction amount. The field is useful, but it should be read as activity-cost-ratio evidence rather than traditional ROI.
 
 These fields are not store labels. They are evidence used to decide whether comparison is safe, limited, or unsupported.
 

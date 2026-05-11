@@ -14,3 +14,11 @@ The current repository keeps the same core direction. The main components descri
 | Livestream commerce use case | product price, promotions, stock status, shipping policy, product features |
 
 Later updates mainly improve clarity, evaluation coverage, and connection to broader commerce decision-support scenarios.
+
+## Current Retail Extension Boundary
+
+This file explains how the earlier submitted material maps to the original lifecycle-aware memory-layer prototype.
+
+The current repository also extends the same evidence-control design into Meituan-style instant retail operations. The current admissions-facing narrative is summarized in `PROJECT_SUMMARY_FOR_ADMISSIONS.md`, while the retail implementation details are documented under `retail_ops/`.
+
+The retail extension should be read as a staged decision-support prototype based on real store-operation problems, not as a finished automated operating system or a complete 48-store deployment.
