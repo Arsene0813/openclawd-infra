@@ -2249,6 +2249,152 @@ def retail_answer_from_points(points: list[dict]) -> dict:
     }
 
 
+
+
+class RetailOpsDemo2KbReq(BaseModel):
+    message: str = Field(..., min_length=1, max_length=4000)
+    entity_id: str | None = Field(default=None, max_length=128)
+    top_k: int | None = Field(default=5, ge=1, le=25)
+
+
+def normalize_demo2_retail_entity_id(entity_id: str | None) -> str:
+    raw = (entity_id or "").strip().lower().replace(" ", "_")
+
+    if raw in {"b", "c", "d", "e", "f"}:
+        return f"store_{raw}"
+
+    return raw
+
+
+def is_demo2_cross_store_query(message: str) -> bool:
+    q = (message or "").lower()
+
+    return any(
+        term in q
+        for term in [
+            "cross-store",
+            "cross store",
+            "compare stores",
+            "compare store",
+            "across stores",
+            "stores b-f",
+            "stores b to f",
+            "b-f",
+            "多店",
+            "跨店",
+            "对比门店",
+            "比较门店",
+        ]
+    )
+
+
+def is_unsupported_demo2_retail_scope(message: str, entity_id: str | None) -> str | None:
+    q = (message or "").lower()
+    eid = normalize_demo2_retail_entity_id(entity_id)
+
+    if any(term in q for term in ["48 stores", "all 48", "all stores", "全部门店", "所有门店", "48家"]):
+        return "Demo 2 currently supports only the anonymized B-F same-period diagnostic sample, not all 48 stores."
+
+    if any(
+        term in q
+        for term in [
+            "best store",
+            "worst store",
+            "which store is best",
+            "which store should",
+            "more subsidy",
+            "receive subsidy",
+            "ranking of stores",
+            "最好",
+            "最差",
+            "哪家最好",
+            "哪家最差",
+            "应该补贴",
+            "加补贴",
+            "经营建议",
+        ]
+    ):
+        return "Demo 2 supports cautious diagnostic comparison, not best-store ranking or final operating recommendations."
+
+    if is_demo2_cross_store_query(message):
+        return None
+
+    if eid not in {"store_b", "store_c", "store_d", "store_e", "store_f"}:
+        return "Demo 2 currently supports Store B, Store C, Store D, Store E, and Store F facts."
+
+    return None
+
+
+def load_demo2_retail_facts() -> list[dict]:
+    import json
+    from pathlib import Path
+
+    path = Path("retail_ops/outputs/generated_demo2_retail_memory_facts.json")
+
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def demo2_retail_facts_to_points(facts: list[dict]) -> list[dict]:
+    return [
+        {
+            "score": 1.0,
+            "payload": fact,
+        }
+        for fact in facts
+    ]
+
+
+@app.post("/chat_retail_ops_demo2_kb")
+async def chat_retail_ops_demo2_kb(req: RetailOpsDemo2KbReq):
+    unsupported_reason = is_unsupported_demo2_retail_scope(req.message, req.entity_id)
+
+    if unsupported_reason:
+        return {
+            "supported": False,
+            "answer": unsupported_reason,
+            "facts": [],
+        }
+
+    facts = load_demo2_retail_facts()
+    slots = infer_retail_slots(req.message)
+
+    if not slots:
+        slots = ["single_metric_attribution_guard"]
+
+    if is_demo2_cross_store_query(req.message):
+        selected_facts = [
+            fact
+            for fact in facts
+            if fact.get("slot") == "single_metric_attribution_guard"
+        ]
+    else:
+        entity_id_norm = normalize_demo2_retail_entity_id(req.entity_id)
+
+        selected_facts = [
+            fact
+            for fact in facts
+            if fact.get("entity_id", "").lower() == entity_id_norm
+            and fact.get("slot") in slots
+        ]
+
+    if not selected_facts:
+        return {
+            "supported": False,
+            "answer": "No supported Demo 2 retail memory fact was found for this question.",
+            "facts": [],
+        }
+
+    limit = req.top_k or 5
+    points = demo2_retail_facts_to_points(selected_facts[:limit])
+
+    result = retail_answer_from_points(points)
+    result["demo_scope"] = "demo2_cross_store"
+    result["retrieval_mode"] = "file_backed_retail_memory_facts"
+
+    return result
+
+
+
 @app.post("/chat_retail_ops_kb")
 async def chat_retail_ops_kb(req: RetailOpsKbReq):
     unsupported_reason = is_unsupported_retail_scope(req.message, req.entity_id)
