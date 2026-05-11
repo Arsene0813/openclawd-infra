@@ -19,14 +19,14 @@ The project began from an earlier lifecycle-aware memory layer for livestream co
 | Livestream memory API | Implemented local prototype | `/chat_mem`, `/chat_livestream_kb`, `api/main.py` |
 | Structured memory lifecycle | Implemented for livestream product facts | overwrite control, soft deactivation, freshness filtering, active-state filtering |
 | Livestream evaluation | Implemented | Scenario checks pass for the implemented cases |
-| Retail SQL diagnostic | Implemented offline for Store A Demo 1 | `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql` |
+| Retail SQL diagnostic | Implemented for Store A Demo 1 and Demo 2 cross-store diagnostics | `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`, `retail_ops/sql/02_demo2_cross_store_comparability.sql` |
 | Retail metric dictionary and lineage | Implemented | `retail_ops/data/DATA_DICTIONARY.md`, `retail_ops/LINEAGE.md` |
 | Retail data-contract validation | Implemented | `retail_ops/scripts/validate_retail_data_contract.py`, `retail_ops/outputs/retail_data_contract_validation_result.txt` |
-| Retail memory facts generation | Implemented as JSON export | `retail_ops/outputs/generated_retail_memory_facts.json` |
+| Retail memory facts generation | Implemented as JSON exports | `retail_ops/outputs/generated_retail_memory_facts.json`, `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
 | Retail facts Qdrant loading path | Implemented for Store A Demo 1 facts | `retail_ops/scripts/load_retail_facts_to_qdrant.py` |
-| Retail retrieval endpoint | Narrow implementation for Store A Demo 1 | `/chat_retail_ops_kb` |
-| Retail retrieval evaluation | Implemented for Store A Demo 1 | Scenario checks pass for the current Store A cases |
-| Cross-store decision support | Not implemented yet | Demo 2 planned |
+| Retail retrieval endpoint | Implemented for Store A Demo 1 and file-backed Demo 2 facts | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb` |
+| Retail retrieval evaluation | Implemented for Store A Demo 1; Demo 2 facts have offline eval | `eval/eval_retail.py`, `eval/eval_retail_demo2_facts.py` |
+| Cross-store decision support | Implemented as Demo 2 same-period B-F comparability diagnostic | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
 | Automated Meituan backend ingestion | Not implemented yet | Future work |
 | Full 48-store decision-support system | Not implemented yet | Future work |
 
@@ -58,11 +58,14 @@ Current evaluation result:
 
 The retail extension applies the same lifecycle-aware memory principle to Meituan-style instant retail operations data.
 
-The completed retail demo is:
+The retail extension currently has two implemented demos:
 
-- `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
+- Demo 1: `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
+- Demo 2: same-period cross-store comparability diagnostic using Stores B-F in March 2026
 
 Demo 1 analyzes Store A, a self-operated Qingdao store, across February, March, and April 2026.
+
+Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window. It does not rank stores as simply better or worse. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
 It includes:
 
@@ -74,9 +77,20 @@ It includes:
 - local data-contract checks;
 - narrow Store A retail retrieval evaluation.
 
+Demo 2 includes:
+
+- cross-store March 2026 source CSVs for Stores B-F;
+- top search term evidence with English helper translations;
+- top SKU evidence with original Chinese SKU names and English helper translations;
+- SQL-derived comparability diagnostics;
+- generated Demo 2 retail memory facts;
+- a file-backed Demo 2 retail endpoint at `/chat_retail_ops_demo2_kb`;
+- offline facts evaluation for Demo 2.
+
 Current retail evaluation result:
 
 - The current Store A retail retrieval cases pass.
+- Demo 2 offline retail facts evaluation passes for the implemented B-F cases.
 
 ## Core Memory Behavior
 
@@ -196,7 +210,9 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 |---|---|---:|
 | Livestream memory evaluation | fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | Current implemented cases pass |
 | Retail retrieval evaluation | Store A retail-memory retrieval, attribution-warning behavior, unsupported-scope refusal | Current Store A cases pass |
+| Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, order-quality, SKU, and attribution-guard slots | 5/5 passed |
 | Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
+| Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |
 
 The evaluation value is not that the model is generally correct. The value is that the system has explicit checks for supported answers, overwrite behavior, unsupported-scope refusal, and data-contract consistency.
 
@@ -224,9 +240,11 @@ For a quick admissions review, read these files in order:
 3. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — completed retail operations demo.
 4. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
 5. `retail_ops/LINEAGE.md` — claim-to-field lineage and interpretation limits.
-6. `eval/eval_retail_report.md` — retail retrieval and refusal evaluation.
+6. `eval/eval_retail_report.md` — Store A retail retrieval and refusal evaluation.
+7. `retail_ops/outputs/demo2_cross_store_comparability_output.csv` — Demo 2 cross-store diagnostic output.
+8. `eval/results/eval_retail_demo2_facts_result.txt` — Demo 2 facts evaluation result.
 
-The SQL files, generated outputs, and validation scripts are supporting evidence for the demo rather than separate admissions entry points.
+The SQL files, generated outputs, and validation scripts are supporting evidence for the demos rather than separate admissions entry points.
 
 ## Running the Project
 
