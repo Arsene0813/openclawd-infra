@@ -233,14 +233,19 @@ This project demonstrates abilities relevant to AI, data science, business analy
 
 ## Recommended Review Path
 
-1. `PROJECT_SUMMARY_FOR_ADMISSIONS.md` — concise admissions-facing project summary.
-2. `README.md` — project overview, architecture, and evaluation status.
-3. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — Store A month-over-month retail operations demo.
-4. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` — same-period B-F cross-store comparability diagnostic.
-5. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
-6. `retail_ops/LINEAGE.md` — source-to-SQL-to-memory lineage.
-7. `eval/eval_report.md` and `eval/eval_retail_report.md` — scenario-based evaluation reports.
-8. `PROJECT_STATUS.md` — current implementation status and known limitations.
+1. PROJECT_SUMMARY_FOR_ADMISSIONS.md — admissions-facing project summary.
+2. README.md — project overview, architecture, implementation boundary, and evaluation status.
+3. retail_ops/README.md — retail operations extension overview.
+4. retail_ops/FIELD_USAGE_REVIEW.md — field-name review before comparability-gate expansion.
+5. retail_ops/COMPARABILITY_GATE_V0.md — first review version of the cross-store comparability gate.
+6. retail_ops/EXPERIMENT_RESULTS.md — comparability and limitation-preserving review cases.
+7. retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md — Store A month-over-month retail operations demo.
+8. retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md — same-period B-F cross-store comparability diagnostic.
+9. retail_ops/data/DATA_DICTIONARY.md — Meituan backend metric definitions and canonical fields.
+10. retail_ops/LINEAGE.md — source-to-SQL-to-memory lineage and interpretation limits.
+11. eval/eval_report.md and eval/eval_retail_report.md — scenario-based evaluation reports.
+12. PROJECT_STATUS.md — current implementation status and known limitations.
+
 ## Running the Project
 
 This project is intended to run locally with Docker Compose.

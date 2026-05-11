@@ -2,49 +2,50 @@
 
 This folder extends the lifecycle-aware memory layer from livestream commerce facts to Meituan-style instant retail operations data.
 
-The purpose is not to automatically label stores as good or bad. The purpose is to turn messy backend metrics into a limited, traceable, and verifiable decision-support path.
-
-The retail extension currently contains two demos:
-
-- Demo 1: Store A month-over-month diagnostic.
-- Demo 2: same-period cross-store comparability diagnostic for anonymized Stores B-F.
+The purpose is to turn messy single-store backend metrics into a limited, traceable, and verifiable decision-support path for cross-store comparison. The purpose is not to automatically label stores as good or bad.
 
 ## Current Demos
 
 ### Demo 1: Store A Month-over-Month Diagnostic
 
-Store A is analyzed across February, March, and April 2026, using natural calendar-month windows: `2026-02-01` to `2026-02-28`, `2026-03-01` to `2026-03-31`, and `2026-04-01` to `2026-04-30`.
+Store A is analyzed across February, March, and April 2026, using natural calendar-month windows:
+
+- 2026-02-01 to 2026-02-28
+- 2026-03-01 to 2026-03-31
+- 2026-04-01 to 2026-04-30
 
 The demo shows that store performance cannot be interpreted from one metric alone. Exposure, entry, ranking, transaction scale, order conversion, average order value, activity cost, refund pressure, invalid-order pressure, and top-SKU evidence can move in different directions.
 
 Main file:
 
-- `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
+- retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md
 
 Core supporting files:
 
-- `retail_ops/data/store_a_monthly_metrics.csv`
-- `retail_ops/data/store_a_top_skus.csv`
-- `retail_ops/data/DATA_DICTIONARY.md`
-- `retail_ops/LINEAGE.md`
-- `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
-- `retail_ops/outputs/store_a_demo1_sql_output.csv`
-- `retail_ops/outputs/store_a_demo1_interpretation_summary.csv`
-- `retail_ops/outputs/generated_retail_memory_facts.json`
+- retail_ops/data/store_a_monthly_metrics.csv
+- retail_ops/data/store_a_top_skus.csv
+- retail_ops/data/DATA_DICTIONARY.md
+- retail_ops/LINEAGE.md
+- retail_ops/sql/01_store_a_month_over_month_diagnostic.sql
+- retail_ops/outputs/store_a_demo1_sql_output.csv
+- retail_ops/outputs/store_a_demo1_interpretation_summary.csv
+- retail_ops/outputs/generated_retail_memory_facts.json
 
 Validation and evaluation files:
 
-- `retail_ops/scripts/validate_retail_data_contract.py`
-- `retail_ops/outputs/retail_data_contract_validation_result.txt`
-- `eval/eval_retail.py`
-- `eval/eval_retail_cases.json`
-- `eval/eval_retail_report.md`
+- retail_ops/scripts/validate_retail_data_contract.py
+- retail_ops/outputs/retail_data_contract_validation_result.txt
+- eval/eval_retail.py
+- eval/eval_retail_cases.json
+- eval/eval_retail_report.md
 
 ### Demo 2: Same-Period Cross-Store Comparability Diagnostic
 
 Demo 2 extends the retail path from a single-store month-over-month diagnostic to a same-period cross-store diagnostic.
 
-It uses five anonymized stores, B-F, all from the same reporting window: 2026-03-01 to 2026-03-31.
+It uses five anonymized stores, B-F, all from the same reporting window:
+
+- 2026-03-01 to 2026-03-31
 
 Demo 2 does not rank stores as simply better or worse. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
@@ -78,31 +79,33 @@ This endpoint is file-backed and uses generated Demo 2 retail memory facts. It i
 
 The current retail path is intentionally staged:
 
-```text
 Meituan-style backend metrics
 -> metric dictionary and lineage rules
 -> offline SQL diagnostic
 -> SQL-derived output tables
 -> generated retail memory facts
 -> data-contract validation
--> Store A retail retrieval evaluation
-```
+-> retail retrieval / facts evaluation
 
 This now includes a limited multi-store Demo 2 comparability diagnostic, but it does not yet represent a full 48-store decision-support system.
 
+## Readable Architecture
+
+Meituan backend screenshots / exports
+-> canonical CSV fields based on DATA_DICTIONARY.md
+-> SQL diagnostics: ratios, shares, pressure indicators, comparison-scope notes
+-> memory facts: store-period evidence, observed values, confidence, limitations
+-> retrieval / evaluation: cautious answer, qualified comparison, or refusal
+
 ## Key Design Principle
 
-The retail SQL layer is not designed to assign a fixed operating label from one threshold.
+Meituan instant-retail stores compete through a chain of operating conditions:
 
-In this business context, Meituan instant retail stores compete through a chain of operating conditions:
-
-```text
 being seen -> being entered -> being ordered -> being selected again or maintaining market share
-```
 
-Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are treated as operating levers inside this chain. They should not be interpreted as isolated causes by themselves.
+Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are treated as operating levers inside this chain.
 
-Short-term ROI is not always the primary target. A new store may need subsidy to gain exposure and first orders. A store under external price pressure may need pricing or activity tools to defend visibility and market share. A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
+Short-term activity-cost efficiency is not always the primary target. A new store may need subsidy to gain exposure and first orders. A store under external price pressure may need pricing or activity tools to defend visibility and market share. A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
 
 The SQL layer therefore prepares comparison-ready diagnostic signals:
 
@@ -111,15 +114,11 @@ The SQL layer therefore prepares comparison-ready diagnostic signals:
 - activity and subsidy profile;
 - refund and invalid-order pressure;
 - top-SKU evidence;
-- month-over-month movement.
-
-Demo 1 is a single-store month-over-month diagnostic. Demo 2 adds a limited same-period cross-store comparability diagnostic for Stores B-F.
-
-The intended future work is to expand from this limited Demo 2 sample toward broader 48-store comparability, store operating-stage judgment, comparable peer-store selection, and possible strategy choices.
+- comparison-scope and limitation notes.
 
 ## Data Contract and Metric Consistency
 
-The retail demo uses `DATA_DICTIONARY.md` as the metric definition layer and `LINEAGE.md` as the claim-to-field lineage layer.
+The retail demo uses DATA_DICTIONARY.md as the metric definition layer and LINEAGE.md as the claim-to-field lineage layer.
 
 The validation script checks that:
 
@@ -129,24 +128,48 @@ The validation script checks that:
 - the generated retail memory fact file is valid JSON;
 - source CSV, SQL output, metric dictionary, lineage, and generated facts remain consistent.
 
+Main validation file:
+
+- retail_ops/scripts/validate_retail_data_contract.py
+
+Saved validation output:
+
+- retail_ops/outputs/retail_data_contract_validation_result.txt
+
+## Comparability-Gate Documentation
+
+This folder now includes three review documents for the next retail expansion step:
+
+- retail_ops/FIELD_USAGE_REVIEW.md
+- retail_ops/COMPARABILITY_GATE_V0.md
+- retail_ops/EXPERIMENT_RESULTS.md
+
+Their role is to make the next step more disciplined before expanding toward broader store coverage.
+
+FIELD_USAGE_REVIEW.md records that this patch does not rename existing fields.
+
+COMPARABILITY_GATE_V0.md defines the first review version of the comparability gate.
+
+EXPERIMENT_RESULTS.md records review cases for limitation-preserving answers.
+
 ## Current Retail Memory Slots
 
 The current generated retail memory facts use these canonical slots:
 
-- `visibility_entry_profile`
-- `activity_lever_profile`
-- `transaction_conversion_profile`
-- `order_quality_pressure_profile`
-- `single_metric_attribution_guard`
-- `top3_sku_product_mix_note`
+- visibility_entry_profile
+- activity_lever_profile
+- transaction_conversion_profile
+- order_quality_pressure_profile
+- single_metric_attribution_guard
+- top3_sku_product_mix_note
 
-Supporting SQL observations such as transaction recovery, order-conversion decline, average-order-value decline, refund-pressure improvement, and invalid-order-pressure improvement can support interpretation, but they are not standalone store-stage labels.
+Supporting SQL observations such as transaction recovery, order-conversion decline, average-order-value decline, refund-pressure improvement, invalid-order-pressure improvement, activity-order share, and activity-cost ratio can support interpretation, but they are not standalone store-stage labels.
 
 ## Important Limitations
 
-Promotion cycle dates are unknown in the current retail demos.
+Promotion cycle dates are unknown in the current retail demos. Activity metrics are treated as operating-lever evidence, not as a clean intervention.
 
-Activity metrics are treated as operating-lever evidence, not as a clean intervention. Demo 1 and Demo 2 can support cautious interpretation, but they cannot support broad causal claims, full 48-store generalization, or store-stage diagnosis.
+Demo 1 and Demo 2 can support cautious interpretation, but they cannot support broad causal claims, full 48-store generalization, or store-stage diagnosis.
 
 Demo 2 includes cross-store diagnostics, but only for five anonymized stores in the same March 2026 reporting window. It should not be treated as a complete multi-store operating system.
 
