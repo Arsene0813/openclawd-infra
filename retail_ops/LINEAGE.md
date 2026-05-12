@@ -423,3 +423,188 @@ Interpretation boundary:
 - `order_amount` is read with `order_users`, `order_times`, and `order_conversion_rate_pct`.
 - `payment_amount` is read with `payment_users` and `payment_conversion_rate_pct`.
 - `transaction_amount` remains a separate transaction metric and should not be merged with order-submission or payment-funnel amount fields.
+
+---
+
+## Demo 3 Pairwise Comparability Gate Lineage
+
+Demo 3 extends Demo 2 from same-period cross-store diagnostics into pairwise comparability checks.
+
+The input is:
+
+- `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
+
+The output is:
+
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+
+Demo 3 does not compare all stores globally. It checks whether two store-period rows can be compared for one narrow question at a time.
+
+### Supported question types
+
+Current supported `comparison_question_type` values are:
+
+- `search_entry_structure`
+- `activity_transfer`
+- `order_quality_pressure`
+
+These values must stay consistent across:
+
+- `retail_ops/data/DATA_DICTIONARY.md`
+- `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+- `eval/eval_retail_demo3_pairwise_gate.py`
+
+### Claim-to-field checks
+
+Claim: two stores can be checked as a pair for one narrow question.
+
+Supporting fields:
+
+- `reference_store_id`
+- `candidate_store_id`
+- `comparison_question_type`
+
+Interpretation limit:
+
+- This is not a full peer-grouping model.
+- This is not a global store ranking.
+
+Claim: the two stores may share or differ in weak region context.
+
+Supporting fields:
+
+- `reference_region_type`
+- `candidate_region_type`
+- `region_type_comparison_note`
+
+Interpretation limit:
+
+- `region_type` is weak context only.
+- It is not a market-area classification.
+- It is not a hard comparability condition.
+
+Claim: the two stores may share or differ in operating format.
+
+Supporting fields:
+
+- `reference_store_type`
+- `candidate_store_type`
+- `store_type_comparison_note`
+
+Interpretation limit:
+
+- `store_type` can constrain comparison.
+- It does not decide performance quality by itself.
+
+Claim: search-entry structure is close or far apart.
+
+Supporting field:
+
+- `search_entry_share_gap_pct`
+
+Interpretation limit:
+
+- This supports only a narrow traffic-structure comparison.
+- It does not prove that search caused order growth.
+
+Claim: activity involvement differs between two stores.
+
+Supporting field:
+
+- `activity_order_share_gap_pct`
+
+Interpretation limit:
+
+- Activity order share is operating-lever evidence.
+- It does not prove that promotion caused performance differences.
+
+Claim: activity cost structure differs between two stores.
+
+Supporting field:
+
+- `activity_cost_ratio_gap_pct`
+
+Interpretation limit:
+
+- This is activity-cost-ratio evidence.
+- It is not traditional ROI.
+- It is not profit margin.
+
+Claim: refund pressure differs between two stores.
+
+Supporting field:
+
+- `refund_pressure_gap_pct`
+
+Interpretation limit:
+
+- Refund amount is counted by refund-success date.
+- It is not a perfect original-order cohort refund rate.
+
+Claim: invalid-order pressure differs between two stores.
+
+Supporting field:
+
+- `invalid_order_pressure_gap_pct`
+
+Interpretation limit:
+
+- Cancelled-order pressure may reflect fulfillment, stock, customer, or operational differences not visible in the current sample.
+
+Claim: top-SKU concentration differs between two stores.
+
+Supporting field:
+
+- `top3_sku_concentration_gap_pct`
+
+Interpretation limit:
+
+- This is top-three SKU concentration evidence.
+- It is not full product-category sales share.
+
+Claim: a pair can be compared, partially compared, or refused for the selected question.
+
+Supporting fields:
+
+- `pairwise_comparison_decision`
+- `pairwise_limit_notes`
+
+Interpretation limit:
+
+- This is a comparability gate.
+- It is not a final operating recommendation.
+
+### Directionality boundary
+
+Demo 3 pair rows should be read as pairwise comparability checks, not directional strategy-transfer decisions.
+
+For example, a row with `reference_store_id = B`, `candidate_store_id = E`, and `comparison_question_type = activity_transfer` does not mean that Store B's activity strategy should be copied to Store E.
+
+It only means the current gate has tested whether the B/E pair can be discussed for the narrow `activity_transfer` question under the implemented evidence contract.
+
+A later answer layer should avoid claims such as:
+
+- copy Store B's promotion strategy to Store E;
+- Store B is better than Store E;
+- Stores B and E belong to the same market type;
+- the activity strategy caused the performance difference.
+
+Supported wording is narrower:
+
+- whether the pair is comparable for the selected question;
+- which gap fields support or limit the comparison;
+- which missing or unresolved context prevents stronger advice.
+
+### Demo 3 answer boundary
+
+A future Demo 3 answer path should return:
+
+- `reference_store_id`
+- `candidate_store_id`
+- `comparison_question_type`
+- `pairwise_comparison_decision`
+- relevant gap fields
+- `pairwise_limit_notes`
+
+If a user asks for a full 48-store ranking, market-area classification, causal promotion effect, or direct strategy recommendation, the answer should qualify or refuse the request unless future evidence has been added and documented.

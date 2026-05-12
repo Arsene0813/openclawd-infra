@@ -1,152 +1,228 @@
 # Demo 3: Pairwise Comparability Gate
 
-## Purpose
+## 1. Purpose
 
-Demo 3 turns the Demo 2 cross-store diagnostic into a small pairwise comparability gate.
+Demo 3 turns the Demo 2 cross-store diagnostic output into a pairwise comparability gate.
 
-The operating question is narrow:
+The question is not which store is best.
 
-> Can these two store-period rows be compared for this specific question?
+The question is narrower:
 
-This is closer to the real multi-store problem than a simple store ranking. A pair of stores may be usable for comparing search-entry structure, but not usable for transferring activity or subsidy strategy.
+Can two store-period rows be compared for a specific operating question?
 
-## Input
+This matters because two stores may be comparable for one question but not for another.
+
+For example, two stores may have similar search-entry structure, so they can be discussed together for `search_entry_structure`. The same two stores may still differ too much in activity involvement, refund pressure, invalid-order pressure, or store type to support an `activity_transfer` comparison.
+
+Demo 3 therefore checks comparability before interpretation.
+
+## 2. Input
 
 Demo 3 uses the existing Demo 2 output:
 
 - `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
 
-That file carries normalized backend fields and SQL-derived diagnostics for Stores B-F in March 2026.
+That file contains same-period diagnostic evidence for Stores B-F in March 2026.
 
-## Output
+## 3. Output
 
 Demo 3 generates:
 
 - `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
 
-The output compares every pair of stores across three question types:
+With five stores, there are ten store pairs.
+
+Each pair is tested against three supported question types, producing thirty pairwise question rows.
+
+Current supported `comparison_question_type` values are:
 
 - `search_entry_structure`
 - `activity_transfer`
 - `order_quality_pressure`
 
-With five stores, there are ten store pairs. Each pair is tested against three question types, producing thirty pairwise question rows.
+These names must stay consistent with:
 
-## Why This Gate Is Useful
+- `retail_ops/data/DATA_DICTIONARY.md`
+- `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+- `eval/eval_retail_demo3_pairwise_gate.py`
+
+## 4. Business Logic
 
 Meituan instant-retail stores compete through a chain of operating conditions:
 
 - being seen;
 - being entered;
 - being ordered;
-- being selected again or maintaining market share.
+- being selected again or maintaining local share.
 
 Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are operating levers inside that chain.
 
-The gate checks whether two store rows are similar enough for a specific comparison before any operating pattern is copied from one store to another.
+Those levers should not be interpreted in isolation.
 
-A comparison can be valid for one question and invalid for another.
+A new store may need stronger activity or subsidy to gain first exposure and first orders. A store under external price pressure may use price or activity tools to defend visibility and local share. A store with high exposure but weak conversion should be read differently from a store with order growth and refund pressure.
 
-## Question Types
+Demo 3 keeps this logic narrow. It does not turn every metric difference into a recommendation. It first asks whether the two stores can be compared for the selected question.
 
-| `comparison_question_type` | What it tests | What it does not prove |
-|---|---|---|
-| `search_entry_structure` | Whether the pair can be compared for search-entry structure. | It does not prove that one store's ranking or title strategy should be copied. |
-| `activity_transfer` | Whether activity-related evidence is similar enough to discuss transferability. | It does not mean direct promotion copying. |
-| `order_quality_pressure` | Whether refund pressure and invalid-order pressure can be compared with limits. | It does not identify the exact cause of refund or cancellation pressure. |
+## 5. Region-Type Boundary
 
-## Region-Type Boundary
+Demo 3 keeps `region_type` as weak operating-context evidence.
 
-Demo 3 keeps `region_type` as weak market-context evidence.
+`region_type` is not:
 
-`region_type` is not a market-area classification and is not a hard peer-store grouping rule. The current sample is too small to classify stores reliably by market area.
+- a market-area classification;
+- a store-stage label;
+- a hard peer-grouping rule;
+- a sufficient condition for strategy transfer.
 
-Future market-area classification should require stronger evidence such as purchasing power, delivery radius, competition, order structure, price pressure, activity intensity, refund pressure, invalid-order pressure, and SKU evidence.
+The current sample is too small to classify stores reliably by market area.
 
-Demo 3 therefore uses `region_type_comparison_note` only as a limitation note.
+Future market-area classification would require stronger evidence, such as purchasing power, delivery radius, local competition, price pressure, activity intensity, refund pressure, invalid-order pressure, SKU evidence, and repeated reporting windows.
 
-## Prototype Threshold Rationale
+Until those fields are defined and validated, Demo 3 uses `region_type_comparison_note` only as a limitation note.
 
-The current Demo 3 thresholds are prototype guardrails. They make comparison behavior explicit and testable on the current Stores B-F March 2026 sample.
+## 6. Pairwise Decision Field
 
-They are not statistical significance thresholds, not universal Meituan operating rules, and not final business-policy thresholds.
+The main SQL-derived decision field is:
 
-| Threshold use | Current rule | Interpretation boundary |
-|---|---:|---|
-| Search-entry structure | `search_entry_share_gap_pct <= 15` can support `comparable_with_limits` for `search_entry_structure`. | This only supports a narrow traffic-structure comparison. |
-| Activity-transfer guard | `activity_order_share_gap_pct > 15` constrains activity-transfer comparison. | Large activity-order-share gaps mean activity involvement differs too much for direct transfer. |
-| Activity-cost guard | `activity_cost_ratio_gap_pct > 10` constrains activity-transfer comparison. | Activity-cost-ratio gaps describe different subsidy/cost structures, not ROI or profit margin. |
-| Refund-pressure guard | `refund_pressure_gap_pct > 5` constrains activity-transfer and order-quality comparison. | Refund amount is dated by refund-success date and is not a perfect original-order cohort measure. |
-| Invalid-order-pressure guard | `invalid_order_pressure_gap_pct > 4` constrains activity-transfer and order-quality comparison. | Cancelled-order pressure may reflect fulfillment, stock, customer, or operational differences not visible in the current sample. |
+- `pairwise_comparison_decision`
 
-For a later 48-store version, these thresholds should be recalibrated with broader distributional evidence, store-type segmentation, repeated reporting windows, and manually reviewed operating outcomes.
+Current implemented values are:
 
-## Pairwise Gate Decisions
+- `comparable_with_limits`
+- `partially_comparable`
+- `not_comparable_for_strategy_transfer`
 
-The implemented SQL-derived decision field is `pairwise_comparison_decision`.
+`comparable_with_limits` means the pair can be compared for the selected narrow question, but limitation notes must still be preserved.
 
-| `pairwise_comparison_decision` | Meaning |
-|---|---|
-| `comparable_with_limits` | The pair can be compared for the selected narrow question, but limits must be preserved. |
-| `partially_comparable` | Some evidence is comparable, but gaps or context differences prevent a stronger conclusion. |
-| `not_comparable_for_strategy_transfer` | The pair is too different or incomplete for transferring an operating strategy. |
+`partially_comparable` means some evidence can be compared, but gaps or context differences prevent a stronger conclusion.
 
-These decisions are not store-stage labels and are not final operating recommendations.
+`not_comparable_for_strategy_transfer` means the pair is too different or incomplete for transferring an operating strategy under the current evidence contract.
 
-## Concrete Examples from Current Output
+This field is a comparability gate. It is not a final operating recommendation.
 
-### Example 1: Same pair, different question
+## 7. Limitation Notes
 
-Pair: Store B vs Store E
-Period: March 2026
+The main limitation field is:
 
-| Question type | Decision | Key evidence | How to read it |
-|---|---|---|---|
-| `search_entry_structure` | `comparable_with_limits` | `search_entry_share_gap_pct = 1.69` | The pair can be discussed for narrow search-entry structure, but this does not support copying activity strategy. |
-| `activity_transfer` | `not_comparable_for_strategy_transfer` | `activity_order_share_gap_pct = 19.64`, `refund_pressure_gap_pct = 8.34`, `invalid_order_pressure_gap_pct = 6.75` | The pair should not be used for direct activity-strategy transfer. |
-| `order_quality_pressure` | `partially_comparable` | refund and invalid-order pressure gaps are large | The pair can only support a limited order-quality discussion, not a broad operating recommendation. |
+- `pairwise_limit_notes`
 
-This example shows why Demo 3 is question-specific. The same store pair can be usable for one narrow comparison and unsafe for another.
+This field should be carried into any later answer.
 
-### Example 2: Same `region_type` does not mean same market area
+It prevents the answer layer from hiding context differences such as:
 
-Pair: Store B vs Store C
-Period: March 2026
+- activity gap;
+- activity-cost-ratio gap;
+- refund-pressure gap;
+- invalid-order-pressure gap;
+- store-type difference;
+- unresolved market classification;
+- top-SKU concentration difference.
 
-Both stores have the same `region_type` value, but Demo 3 still uses:
+A later answer should not summarize the pair as simply comparable or not comparable. It should explain which evidence supports the comparison and which limits still apply.
 
-- `region_type_value_matches_but_not_market_classification`
+## 8. Prototype Threshold Rationale
 
-The pair is not automatically treated as a reliable peer group.
+The current Demo 3 thresholds are prototype guardrails.
 
-For this pair, `search_entry_share_gap_pct = 19.9`, `activity_order_share_gap_pct = 17.77`, and `activity_cost_ratio_gap_pct = 14.67`.
+They make the comparison behavior explicit and testable on the current Stores B-F March 2026 sample.
 
-This is why Demo 3 does not use `region_type` alone as a comparability rule.
+They are not:
 
-### Example 3: Similar search-entry structure can still fail activity transfer
+- statistical significance thresholds;
+- universal Meituan operating rules;
+- final business-policy thresholds.
 
-Pair: Store B vs Store F
-Period: March 2026
+Current threshold use:
 
-| Question type | Decision | Key evidence |
-|---|---|---|
-| `search_entry_structure` | `comparable_with_limits` | `search_entry_share_gap_pct = 0.21` |
-| `activity_transfer` | `not_comparable_for_strategy_transfer` | `activity_cost_ratio_gap_pct = 11.96` |
-| `order_quality_pressure` | `comparable_with_limits` | refund and invalid-order pressure gaps stay within current prototype guardrails |
+- `search_entry_share_gap_pct` helps decide whether two stores can be discussed for `search_entry_structure`.
+- `activity_order_share_gap_pct` helps limit `activity_transfer` when activity involvement differs too much.
+- `activity_cost_ratio_gap_pct` helps limit `activity_transfer` when subsidy or activity-cost structure differs too much.
+- `refund_pressure_gap_pct` helps limit `activity_transfer` and `order_quality_pressure` comparison.
+- `invalid_order_pressure_gap_pct` helps limit `activity_transfer` and `order_quality_pressure` comparison.
+- `top3_sku_concentration_gap_pct` adds a product-mix limitation note when top-SKU concentration differs.
 
-This example shows the current gate logic: traffic-structure similarity is not enough to transfer activity or subsidy strategy.
+These thresholds should be recalibrated before any broader 48-store version.
 
-## Current Boundary
+A later version would need broader distributional evidence, repeated reporting windows, store-type segmentation, and manually reviewed operating outcomes.
 
-Demo 3 is a small comparability prototype over the current B-F March 2026 sample.
+## 9. Current Gap Fields
 
-It currently supports:
+Demo 3 uses SQL-derived gap fields to make comparison behavior explicit.
+
+Current implemented gap fields include:
+
+- `search_entry_share_gap_pct`
+- `activity_order_share_gap_pct`
+- `activity_cost_ratio_gap_pct`
+- `refund_pressure_gap_pct`
+- `invalid_order_pressure_gap_pct`
+- `top3_sku_concentration_gap_pct`
+
+These fields are diagnostic signals.
+
+They are not causal proof.
+
+For example, a large `activity_order_share_gap_pct` means the stores differ in activity involvement. It does not prove that activity caused the performance difference.
+
+A large `refund_pressure_gap_pct` means refund pressure differs between the two stores. It does not identify the exact cause of refund behavior.
+
+A large `top3_sku_concentration_gap_pct` means top-three SKU concentration differs. It does not represent full product-category sales share.
+
+## 10. Directionality Boundary
+
+`reference_store_id` and `candidate_store_id` identify the two stores in the pairwise output.
+
+They do not mean that the reference store's strategy should be copied to the candidate store.
+
+For example, a row with `reference_store_id = B`, `candidate_store_id = E`, and `comparison_question_type = activity_transfer` does not prove that Store B's activity strategy should transfer to Store E.
+
+It only means the current gate has tested whether the B/E pair can be discussed for the narrow `activity_transfer` question under the implemented evidence contract.
+
+Supported answer shape:
+
+- state the selected pair;
+- state the selected question type;
+- state the pairwise decision;
+- cite the relevant gap fields;
+- carry the limitation notes;
+- avoid final operating recommendations unless future evidence supports them.
+
+Unsupported answer shape:
+
+- Store B is better than Store E.
+- Copy Store B's promotion strategy to Store E.
+- These stores belong to the same market type.
+- The activity strategy caused the result.
+- Rank all stores by operating quality.
+
+## 11. Current Boundary
+
+Demo 3 currently supports:
 
 - pairwise comparison over the existing Demo 2 output;
 - three narrow question types;
 - documented SQL-derived gap fields;
-- validation and offline evaluation.
+- saved CSV output;
+- validation;
+- offline evaluation.
 
-It does not currently expose a retrieval endpoint.
+Demo 3 currently does not support:
 
-Expansion toward all 48 stores should keep the same field contract, threshold documentation, and limitation-preserving answer behavior.
+- full 48-store ranking;
+- market-area classification;
+- causal promotion-effect analysis;
+- final operating recommendation;
+- retrieval endpoint or API answer path.
+
+The next narrow implementation step is to expose the Demo 3 pairwise output through a file-backed answer path. That answer path should return the pairwise decision, relevant gap fields, and limitation notes before discussing any possible operating interpretation.
+
+## 12. Why This Matters
+
+The value of Demo 3 is not complexity.
+
+The value is that it makes comparison discipline explicit.
+
+In the actual business problem, Meituan backend data is rich but mainly designed for single-store operation. With many stores, the difficult part is not only collecting more metrics. The difficult part is deciding which stores can be compared, under what question, and with what limitations.
+
+Demo 3 is a small step toward that decision-support layer.
