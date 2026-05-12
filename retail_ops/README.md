@@ -2,7 +2,7 @@
 
 This folder extends the lifecycle-aware memory layer from livestream commerce facts to Meituan-style instant retail operations data.
 
-The purpose is to turn messy single-store backend metrics into a limited, traceable, and verifiable decision-support path for cross-store comparison.
+The purpose is to turn detailed single-store backend metrics into a limited, traceable, and verifiable decision-support path for cross-store comparison, because the Meituan merchant backend is rich but mainly designed for reviewing one store at a time rather than deciding which stores can be compared across a multi-store operation.
 
 ## Folder Scope
 
@@ -263,7 +263,7 @@ The answer should return:
 - supporting gap fields;
 - refusal or qualification when evidence is not enough.
 
-Expansion beyond the current B-F sample should keep the same discipline:
+Any later expansion beyond the current B-F sample should keep the same discipline:
 
 - aligned reporting period;
 - coarse market context;
