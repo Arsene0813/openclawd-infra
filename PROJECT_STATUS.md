@@ -18,7 +18,7 @@ Retail operations evidence: `retail_ops/`
 | Retail lineage | Implemented | `retail_ops/LINEAGE.md` |
 | Retail Demo 1 | Implemented | Store A month-over-month diagnostic |
 | Retail Demo 2 | Implemented | Stores B-F same-period cross-store diagnostic |
-| Retail Demo 3 | Implemented as offline SQL / output / evaluation | pairwise comparability gate over Demo 2 B-F output |
+| Retail Demo 3 | Implemented as offline SQL / output / evaluation plus narrow file-backed answer path | pairwise comparability gate and answer script over Demo 2 B-F output |
 | Retail data-contract validation | Implemented | `retail_ops/scripts/validate_retail_data_contract.py` |
 | Project consistency validation | Implemented | `scripts/validate_project_consistency.py` |
 
@@ -50,13 +50,13 @@ This repository does not claim to be a full 48-store automated Meituan operation
 | Automated daily operating recommendations | Not implemented |
 | Automated SKU category classification across the full catalog | Not implemented |
 | Causal attribution of performance change to one factor | Not implemented |
-| Demo 3 retrieval endpoint | Not implemented; Demo 3 is currently offline SQL / output / evaluation |
+| Demo 3 retrieval endpoint | Not implemented; Demo 3 currently has a narrow file-backed answer path, not a retrieval endpoint or API endpoint |
 
 ## 4. Next Development Step
 
-The most logical next technical step is a narrow Demo 3 answer path.
+The narrow Demo 3 answer path is now implemented as a file-backed script.
 
-That answer path should read:
+That answer path reads:
 
 `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
 
@@ -94,10 +94,10 @@ Current project checks:
 
 `python3 eval/eval_retail_demo2_answer_behavior.py`
 
-`python3 eval/eval_retail_demo3_pairwise_gate.py`
+`python3 eval/eval_retail_demo3_pairwise_gate.py` `python3 eval/eval_retail_demo3_pairwise_answer_path.py`
 
 If `eval/eval_livestream.py` fails because `httpx` is missing, that is a local Python dependency issue rather than a project consistency failure.
 
 ## 6. One-Line Status
 
-This repository currently demonstrates lifecycle-aware product memory plus a staged Meituan-style retail decision-support prototype: Store A month-over-month diagnosis, B-F same-period diagnostic comparison, and B-F pairwise comparability gating.
+This repository currently demonstrates lifecycle-aware product memory plus a staged Meituan-style retail decision-support prototype: Store A month-over-month diagnosis, B-F same-period diagnostic comparison, B-F pairwise comparability gating, and a narrow file-backed Demo 3 answer path.
