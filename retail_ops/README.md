@@ -281,7 +281,7 @@ Demo 3 pairwise gate evaluation checks whether pairwise output preserves three n
 
 ## Future Work
 
-The next step is to expose the Demo 3 pairwise comparability output through a narrow retrieval or file-backed answer path.
+Demo 3 now includes a narrow file-backed answer path. The next step is to decide whether to keep it as a deterministic script or expose the same boundary through a narrow retrieval/API layer.
 
 The intended query shape is small:
 
