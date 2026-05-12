@@ -405,3 +405,21 @@ Demo 2 reuses existing canonical retail memory slots:
 - single_metric_attribution_guard
 
 Demo 2 does not introduce store-stage labels or best-store rankings.
+
+## Demo 2 Carry-Through Note: Order and Payment Amount Fields
+
+This patch carries `order_amount` and `payment_amount` from `retail_ops/data/demo2_store_period_metrics.csv` into `retail_ops/outputs/demo2_cross_store_comparability_output.csv` and `retail_ops/outputs/generated_demo2_retail_memory_facts.json`.
+
+Lineage:
+
+- `demo2_store_period_metrics.csv`
+- `02_demo2_cross_store_comparability.sql`
+- `demo2_cross_store_comparability_output.csv`
+- `generate_demo2_retail_memory_facts.py`
+- `generated_demo2_retail_memory_facts.json`
+
+Interpretation boundary:
+
+- `order_amount` is read with `order_users`, `order_times`, and `order_conversion_rate_pct`.
+- `payment_amount` is read with `payment_users` and `payment_conversion_rate_pct`.
+- `transaction_amount` remains a separate transaction metric and should not be merged with order-submission or payment-funnel amount fields.

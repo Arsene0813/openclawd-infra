@@ -58,6 +58,15 @@ REQUIRED_FILES = [
 
     "eval/eval_retail_report.md",
     "eval/eval_report.md",
+
+    # Demo 3 pairwise comparability gate artifacts.
+    "retail_ops/sql/03_demo2_pairwise_comparability_gate.sql",
+    "retail_ops/scripts/run_demo3_pairwise_gate.py",
+    "retail_ops/scripts/validate_demo3_pairwise_gate_output.py",
+    "retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv",
+    "retail_ops/demo/demo_3_pairwise_comparability_gate.md",
+    "eval/eval_retail_demo3_pairwise_gate.py",
+    "eval/results/eval_retail_demo3_pairwise_gate_result.txt",
 ]
 
 REQUIRED_DOC_REFERENCES = {
@@ -74,6 +83,7 @@ REQUIRED_DOC_REFERENCES = {
         "retail_ops/outputs/retail_data_contract_validation_result.txt",
         "generated_retail_memory_facts.json",
         "eval/eval_retail_report.md",
+        "region_type_comparison_note",
     ],
     "PROJECT_STATUS.md": [
         "Current Implemented Scope",
@@ -107,6 +117,33 @@ REQUIRED_DOC_REFERENCES = {
         "sku_name_en",
         "search_term_en",
     ],
+    "retail_ops/COMPARABILITY_GATE_V0.md": [
+        "Prototype Threshold Rationale",
+        "pairwise_comparison_decision",
+        "comparable_with_limits",
+        "not a market-area classification",
+        "activity_cost_ratio_pct",
+    ],
+
+    "retail_ops/FIELD_USAGE_REVIEW.md": [
+        "Existing / SQL-derived field",
+        "order_amount",
+        "payment_amount",
+        "comparison_question_type",
+        "pairwise_comparison_decision",
+        "pairwise_limit_notes",
+        "region_type_comparison_note",
+    ],
+
+    "retail_ops/demo/demo_3_pairwise_comparability_gate.md": [
+        "Demo 3: Pairwise Comparability Gate",
+        "search_entry_structure",
+        "activity_transfer",
+        "order_quality_pressure",
+        "pairwise_comparison_decision",
+        "Prototype Threshold Rationale",
+    ],
+
 }
 
 ENDPOINT_IMPLEMENTATION_CHECKS = {

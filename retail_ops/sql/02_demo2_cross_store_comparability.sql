@@ -46,8 +46,10 @@ diagnostics AS (
         CAST(m.order_users AS INTEGER) AS order_users,
         CAST(m.order_times AS INTEGER) AS order_times,
         CAST(m.order_conversion_rate_pct AS REAL) AS order_conversion_rate_pct,
+        CAST(m.order_amount AS REAL) AS order_amount,
 
         CAST(m.payment_users AS INTEGER) AS payment_users,
+        CAST(m.payment_amount AS REAL) AS payment_amount,
         CAST(m.payment_conversion_rate_pct AS REAL) AS payment_conversion_rate_pct,
 
         CAST(m.search_exposure_users AS INTEGER) AS search_exposure_users,
@@ -130,7 +132,9 @@ SELECT
     order_users,
     order_times,
     order_conversion_rate_pct,
+    order_amount,
     payment_users,
+    payment_amount,
     payment_conversion_rate_pct,
 
     search_exposure_users,

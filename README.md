@@ -89,7 +89,7 @@ The retail extension currently has three implemented demos:
 
 Demo 1 analyzes Store A, a self-operated Qingdao store, across February, March, and April 2026. It shows why traffic, transaction amount, conversion, activity cost, refund pressure, invalid orders, and top-SKU evidence should not be interpreted from one metric alone.
 
-Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window. It does not rank stores as simply better or worse. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
+Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
 Demo 3 turns the Demo 2 B-F output into a pairwise comparability gate. It compares every store pair under three narrow question types:
 
@@ -213,9 +213,9 @@ The output uses fields such as:
 - `pairwise_limit_notes`
 - `region_type_comparison_note`
 
-Demo 3 keeps `region_type` as weak context. It does not treat `region_type` as a hard grouping rule.
+Demo 3 keeps `region_type` as weak context rather than a hard grouping rule.
 
-Demo 3 is not a best-store ranking system. It is a gate for deciding whether a comparison is usable before copying an operating pattern from one store to another.
+Demo 3 is a gate for deciding whether a comparison is usable before copying an operating pattern from one store to another.
 
 ## Retail Data Contract
 
@@ -243,7 +243,7 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
 | Retail Demo 2 comparability-gate consistency evaluation | consistency checks for the limited B-F cross-store comparability gate | 5/5 passed |
 | Retail Demo 2 answer-behavior boundary evaluation | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
-| Retail Demo 3 pairwise gate evaluation | checks pairwise output shape, question boundaries, region-type boundary, and no best-store ranking | 9/9 passed |
+| Retail Demo 3 pairwise gate evaluation | checks pairwise output shape, question boundaries, region-type boundary, and ranking-boundary behavior | 9/9 passed |
 | Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
 | Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |
 
@@ -452,5 +452,5 @@ This check focuses on whether pairwise comparison remains narrow:
 - activity-transfer comparison can refuse unsupported transfer;
 - search-entry and order-quality comparisons stay within their question boundaries;
 - `region_type` remains weak context instead of a hard grouping rule;
-- pairwise output does not become best-store ranking;
+- pairwise output remains a comparability gate rather than a ranking;
 - new pairwise fields are documented.

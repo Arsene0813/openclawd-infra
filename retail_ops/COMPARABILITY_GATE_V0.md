@@ -99,3 +99,21 @@ The current Demo 3 pairwise output uses `pairwise_comparison_decision` as an imp
 9. Do not mix periods casually when activity intensity, ranking, refunds, or competition may differ.
 10. Do not treat `region_type` as a mature market-area classification.
 11. Do not use `region_type` alone to decide peer-store comparability.
+
+## Prototype Threshold Rationale
+
+The current Demo 3 thresholds are prototype guardrails. They are used to make pairwise comparability behavior explicit, reproducible, and testable on the current Stores B-F March 2026 sample.
+
+They are not statistical significance thresholds, not universal Meituan operating rules, and not final business-policy thresholds.
+
+Current implemented examples:
+
+| Threshold use | Current rule | Interpretation boundary |
+|---|---:|---|
+| Search-entry structure | `search_entry_share_gap_pct <= 15` can support `comparable_with_limits` for `search_entry_structure`. | This only supports a narrow traffic-structure comparison. It does not support copying pricing, subsidy, SKU, or ranking actions. |
+| Activity-transfer guard | `activity_order_share_gap_pct > 15` constrains activity-transfer comparison. | Large activity-order-share gaps mean activity involvement differs too much for direct transfer. |
+| Activity-cost guard | `activity_cost_ratio_gap_pct > 10` constrains activity-transfer comparison. | Activity-cost-ratio gaps describe different subsidy/cost structures, not ROI or profit margin. |
+| Refund-pressure guard | `refund_pressure_gap_pct > 5` constrains activity-transfer and order-quality comparison. | Refund amount is dated by refund-success date and is not a perfect original-order cohort measure. |
+| Invalid-order-pressure guard | `invalid_order_pressure_gap_pct > 4` constrains activity-transfer and order-quality comparison. | Cancelled-order pressure may reflect fulfillment, stock, customer, or operational differences not visible in the current sample. |
+
+For a later 48-store version, these thresholds should be recalibrated with broader distributional evidence, store-type segmentation, repeated reporting windows, and manually reviewed operating outcomes.

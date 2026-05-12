@@ -55,25 +55,25 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 
 These fields are new SQL-derived pairwise comparability-gate outputs. They do not rename existing fields.
 
-| New field | Dictionary definition / boundary | Use location | Rename existing field? |
+| Existing / SQL-derived field | Dictionary definition / boundary | Use location | Rename? |
 |---|---|---|---|
-| reference_store_id | First store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. New field. |
-| candidate_store_id | Second store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. New field. |
-| comparison_question_type | Narrow comparison question being tested: search_entry_structure, activity_transfer, or order_quality_pressure. | Demo 3 pairwise SQL output and eval. | No. New field. |
-| reference_region_type | Existing region_type value for the reference store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. New field. |
-| candidate_region_type | Existing region_type value for the candidate store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. New field. |
-| region_type_comparison_note | Compares existing region_type values while explicitly preserving that region_type is not a market-area classification. | Demo 3 pairwise SQL output and eval. | No. New field. |
-| reference_store_type | Existing store_type value for the reference store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. New field. |
-| candidate_store_type | Existing store_type value for the candidate store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. New field. |
-| store_type_comparison_note | Compares existing store_type values as operating-format context, not as a performance label. | Demo 3 pairwise SQL output and eval. | No. New field. |
-| search_entry_share_gap_pct | Absolute gap between two stores' search_entry_share_pct values. | Demo 3 pairwise SQL output. | No. New field. |
-| activity_order_share_gap_pct | Absolute gap between two stores' activity_order_share_pct values. | Demo 3 pairwise SQL output. | No. New field. |
-| activity_cost_ratio_gap_pct | Absolute gap between two stores' activity_cost_ratio_pct values. | Demo 3 pairwise SQL output. | No. New field. |
-| refund_pressure_gap_pct | Absolute gap between two stores' refund_pressure_pct values. | Demo 3 pairwise SQL output. | No. New field. |
-| invalid_order_pressure_gap_pct | Absolute gap between two stores' invalid_order_pressure_pct values. | Demo 3 pairwise SQL output. | No. New field. |
-| top3_sku_concentration_gap_pct | Absolute gap between two stores' top3_sku_transaction_amount_share_pct values; still not full product-category share. | Demo 3 pairwise SQL output. | No. New field. |
-| pairwise_comparison_decision | SQL-derived gate outcome for the selected comparison question. | Demo 3 pairwise SQL output and eval. | No. New field. |
-| pairwise_limit_notes | Interpretation notes for why the pair is comparable, partially comparable, or not comparable for strategy transfer. | Demo 3 pairwise SQL output and eval. | No. New field. |
+| reference_store_id | First store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| candidate_store_id | Second store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| comparison_question_type | Narrow comparison question being tested: search_entry_structure, activity_transfer, or order_quality_pressure. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
+| reference_region_type | Existing region_type value for the reference store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| candidate_region_type | Existing region_type value for the candidate store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| region_type_comparison_note | Compares existing region_type values while explicitly preserving that region_type is not a market-area classification. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
+| reference_store_type | Existing store_type value for the reference store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| candidate_store_type | Existing store_type value for the candidate store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| store_type_comparison_note | Compares existing store_type values as operating-format context, not as a performance label. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
+| search_entry_share_gap_pct | Absolute gap between two stores' search_entry_share_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| activity_order_share_gap_pct | Absolute gap between two stores' activity_order_share_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| activity_cost_ratio_gap_pct | Absolute gap between two stores' activity_cost_ratio_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| refund_pressure_gap_pct | Absolute gap between two stores' refund_pressure_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| invalid_order_pressure_gap_pct | Absolute gap between two stores' invalid_order_pressure_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| top3_sku_concentration_gap_pct | Absolute gap between two stores' top3_sku_transaction_amount_share_pct values; still not full product-category share. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
+| pairwise_comparison_decision | SQL-derived gate outcome for the selected comparison question. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
+| pairwise_limit_notes | Interpretation notes for why the pair is comparable, partially comparable, or not comparable for strategy transfer. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
 
 ## Patch Rule
 
@@ -130,3 +130,32 @@ Any future field-name change must pass this table before implementation. The cur
 | `order_quality_pressure_profile` | Canonical retail memory slot for refund and invalid-order pressure. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
 | `single_metric_attribution_guard` | Canonical retail memory slot for attribution boundary. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
 | `top3_sku_product_mix_note` | Canonical retail memory slot for lightweight top-SKU evidence. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
+
+## Demo 2 Carry-Through Review: `order_amount` and `payment_amount`
+
+This review patch does not rename any field.
+
+`order_amount` and `payment_amount` are already defined in `retail_ops/data/DATA_DICTIONARY.md` and already exist in `retail_ops/data/demo2_store_period_metrics.csv`.
+
+This patch carries them through the Demo 2 SQL output and Demo 2 `transaction_conversion_profile` memory facts so that the order-submission and payment-funnel amount fields remain visible alongside `order_users`, `payment_users`, `order_conversion_rate_pct`, and `payment_conversion_rate_pct`.
+
+| Existing field | Dictionary definition / boundary | Current use location after this patch | Rename? |
+|---|---|---|---|
+| `order_amount` | Backend-reported total actual paid commodity amount of submitted orders during the selected period. | Demo 2 source CSV, Demo 2 SQL output, Demo 2 `transaction_conversion_profile` memory facts. | No. Keep unchanged. |
+| `payment_amount` | Backend-reported total actual paid commodity amount of paid orders during the selected period. | Demo 2 source CSV, Demo 2 SQL output, Demo 2 `transaction_conversion_profile` memory facts. | No. Keep unchanged. |
+
+These fields should not be confused with `transaction_amount`.
+
+`order_amount` and `payment_amount` belong to the order-submission and payment funnel view, while `transaction_amount` follows the backend transaction metric definition documented in the dictionary.
+
+## Period Granularity Field Review
+
+This review patch does not rename any field.
+
+`period_granularity` is a documentation and validation field used to describe the reporting level of a row, such as monthly store-period data. It is not a replacement for `period_start`, `period_end`, `store_id`, or any Meituan backend metric.
+
+| Existing / SQL-derived field | Dictionary definition / boundary | Use location | Rename? |
+|---|---|---|---|
+| `period_granularity` | Describes the reporting granularity of the row, for example a monthly store-period row. | Data dictionary, Demo 2 comparability-gate consistency evaluation, documentation boundary checks. | No. Keep unchanged. |
+
+`period_granularity` should be used only to clarify the time/reporting level of a row. It should not be used to merge mismatched periods or to imply that two stores are comparable when activity intensity, refunds, ranking, or competition may differ.

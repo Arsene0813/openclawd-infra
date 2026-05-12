@@ -24,6 +24,8 @@ EXPECTED_REQUIRED_COLUMNS = [
     "transaction_orders",
     "valid_orders",
     "invalid_orders",
+    "order_amount",
+    "payment_amount",
     "search_entry_rate_pct",
     "search_entry_share_pct",
     "activity_order_share_pct",

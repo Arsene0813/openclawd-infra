@@ -45,7 +45,9 @@ REQUIRED_TRANSACTION_FIELDS = {
     "order_users",
     "order_times",
     "order_conversion_rate_pct",
+    "order_amount",
     "payment_users",
+    "payment_amount",
     "payment_conversion_rate_pct",
 }
 

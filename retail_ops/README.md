@@ -69,7 +69,7 @@ It uses five anonymized stores, B-F, all from the same reporting window:
 
 - 2026-03-01 to 2026-03-31
 
-Demo 2 does not rank stores as simply better or worse. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
+Demo 2 structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
 Core supporting files:
 
@@ -130,7 +130,7 @@ Demo 3 does not classify stores by market area and does not use `region_type` as
 
 It keeps `region_type` only as weak context through `region_type_comparison_note`.
 
-The purpose is to make comparability testable before any store comparison, ranking, or operating strategy transfer is attempted.
+The purpose is to make comparability testable before any store comparison or operating strategy transfer is attempted.
 
 Demo 3 is currently implemented as SQL output, saved CSV output, documentation, validation, and offline evaluation.
 

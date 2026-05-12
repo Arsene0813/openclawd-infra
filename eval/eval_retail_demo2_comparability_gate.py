@@ -109,7 +109,8 @@ def main() -> int:
         (
             "period_granularity_is_reviewed_without_rename",
             "period_granularity" in field_usage_text
-            and "No. New field." in field_usage_text,
+            and "Period Granularity Field Review" in field_usage_text
+            and "No. Keep unchanged." in field_usage_text,
             "period_granularity should be reviewed without renaming existing fields.",
         )
     )
