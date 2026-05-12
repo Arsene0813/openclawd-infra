@@ -4,15 +4,17 @@
 
 This demo tests whether five anonymized Meituan instant-retail stores can be compared under the same reporting window before making any operating interpretation.
 
-The purpose is not to rank stores as better or worse. The purpose is to structure backend metrics into a comparable diagnostic format and record the limits that should constrain interpretation.
+The purpose is to structure backend metrics into a comparable diagnostic format and record the limits that should constrain interpretation.
 
 ## Business Problem
 
-Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time. With many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which signals are strong enough to support cautious operating judgment.
+Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time.
+
+With many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which signals are strong enough to support cautious operating judgment.
 
 In this project, instant-retail competition is understood through the operating chain:
 
-    being seen -> being entered -> being ordered -> being selected again or maintaining share
+being seen -> being entered -> being ordered -> being selected again or maintaining share.
 
 Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions are operating levers inside this chain. They should not be interpreted as isolated goals.
 
@@ -50,7 +52,7 @@ This field records whether the row is inside the current Demo 2 comparison scope
 
 In the current Demo 2 output, all B-F stores use the same March 2026 reporting window and are marked:
 
-    same_period_diagnostic_ready
+`same_period_diagnostic_ready`
 
 This means the rows are ready for the current same-period diagnostic. It does not mean the stores are fully comparable in every business sense.
 
@@ -67,11 +69,13 @@ Examples include:
 - top-3 SKU transaction-amount concentration;
 - the need to compare with region, store type, activity, and refund limits.
 
-These notes are not operating recommendations. They are interpretation guardrails.
+These notes are interpretation guardrails.
 
 ## What This Demo Supports
 
-This demo supports cautious same-period diagnostic comparison. It can help identify whether a store's metrics should be read with extra caution because of activity involvement, search-entry dependence, refund pressure, invalid-order pressure, or SKU concentration.
+This demo supports cautious same-period diagnostic comparison.
+
+It can help identify whether a store's metrics should be read with extra caution because of activity involvement, search-entry dependence, refund pressure, invalid-order pressure, or SKU concentration.
 
 ## What This Demo Does Not Support
 
@@ -87,7 +91,9 @@ This demo does not support:
 
 ## Why This Matters for the Memory Layer
 
-The memory layer should not answer cross-store questions by retrieving isolated metrics. It should preserve each store's period, evidence, comparison scope, and interpretation limits.
+The memory layer should not answer cross-store questions by retrieving isolated metrics.
+
+It should preserve each store's period, evidence, comparison scope, and interpretation limits.
 
 For this reason, Demo 2 converts SQL diagnostics into generated retail memory facts using the existing retail slots:
 
@@ -98,4 +104,6 @@ For this reason, Demo 2 converts SQL diagnostics into generated retail memory fa
 - `top3_sku_product_mix_note`
 - `single_metric_attribution_guard`
 
-The memory facts are currently file-backed for Demo 2. This is enough to test the data contract, SQL diagnostic output, fact generation, and limitation-preserving answer behavior, but it is not yet a full 48-store decision-support system.
+The memory facts are currently file-backed for Demo 2.
+
+This is enough to test the data contract, SQL diagnostic output, fact generation, and limitation-preserving answer behavior, but it is not yet a full 48-store decision-support system.

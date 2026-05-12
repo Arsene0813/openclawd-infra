@@ -67,6 +67,10 @@ REQUIRED_FILES = [
     "retail_ops/demo/demo_3_pairwise_comparability_gate.md",
     "eval/eval_retail_demo3_pairwise_gate.py",
     "eval/results/eval_retail_demo3_pairwise_gate_result.txt",
+    "retail_ops/scripts/answer_demo3_pairwise_gate.py",
+    "retail_ops/demo/demo_3_pairwise_answer_path.md",
+    "eval/eval_retail_demo3_pairwise_answer_path.py",
+    "eval/results/eval_retail_demo3_pairwise_answer_path_result.txt",
 ]
 
 REQUIRED_DOC_REFERENCES = {
@@ -142,6 +146,16 @@ REQUIRED_DOC_REFERENCES = {
         "order_quality_pressure",
         "pairwise_comparison_decision",
         "Prototype Threshold Rationale",
+    ],
+    "retail_ops/demo/demo_3_pairwise_answer_path.md": [
+        "Demo 3",
+        "answer_demo3_pairwise_gate.py",
+        "demo3_pairwise_comparability_gate_output.csv",
+        "search_entry_structure",
+        "activity_transfer",
+        "order_quality_pressure",
+        "pairwise_comparison_decision",
+        "pairwise_limit_notes",
     ],
 
 }

@@ -14,20 +14,18 @@ Meituan's merchant backend provides detailed store-level metrics, but the backen
 
 The current retail prototype uses SQL to organize selected Meituan backend exports into consistent diagnostic outputs. It then connects those outputs to a memory / retrieval design that preserves evidence, metric definitions, limitations, and conservative operating profiles.
 
-The goal is not to let an LLM make operating decisions directly. The goal is to reduce unsupported comparison, preserve the evidence boundary behind each answer, and make future multi-store decision support more reliable.
-
 ## 3. Business Problem
 
 In Meituan-style instant retail, stores compete through an operating chain:
 
 | Operating step | Meaning |
 |---|---|
-| Being seen | whether consumers can discover the store or product |
-| Being entered | whether exposure turns into store visits |
-| Being ordered | whether visits turn into orders |
-| Being selected again or maintaining share | whether the store can sustain demand and customer trust |
+| Being seen | Whether consumers can discover the store or product |
+| Being entered | Whether exposure turns into store visits |
+| Being ordered | Whether visits turn into orders |
+| Being selected again or maintaining share | Whether the store can sustain demand and customer trust |
 
-Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are not isolated goals. They are operating levers inside this chain.
+Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are operating levers inside this chain.
 
 Activity cost or subsidy level should not be judged only as a simple ROI question. A new store may need activity support to gain visibility. A store under strong local competition may need price pressure or subsidy to maintain share. A store with high search exposure may still fail if entry, order conversion, refund pressure, invalid orders, or SKU structure create friction.
 
@@ -51,7 +49,7 @@ The expected output is:
 - relevant metric definitions;
 - comparable scope;
 - limitation notes;
-- a refusal or warning when the evidence is not strong enough.
+- refusal or warning when the evidence is not strong enough.
 
 ## 5. Livestream Memory Layer
 
@@ -86,20 +84,20 @@ Key files:
 
 | File | Purpose |
 |---|---|
-| `retail_ops/data/DATA_DICTIONARY.md` | canonical Meituan-style metric definitions and field names |
-| `retail_ops/LINEAGE.md` | claim-to-field lineage and interpretation limits |
-| `retail_ops/scripts/validate_retail_data_contract.py` | validation script for field contract |
-| `retail_ops/outputs/retail_data_contract_validation_result.txt` | validation result |
+| `retail_ops/data/DATA_DICTIONARY.md` | Canonical Meituan-style metric definitions and field names |
+| `retail_ops/LINEAGE.md` | Claim-to-field lineage and interpretation limits |
+| `retail_ops/scripts/validate_retail_data_contract.py` | Validation script for field contract |
+| `retail_ops/outputs/retail_data_contract_validation_result.txt` | Saved validation result for the original Store A / Demo 1 data contract |
 
 Important examples:
 
 | Field | Boundary |
 |---|---|
-| `order_conversion_rate_pct` | follows the backend formula `order_users / entry_users * 100`; it must not be recomputed as `valid_orders / entry_users` |
-| `activity_cost_ratio_pct` | describes activity cost divided by activity original transaction amount; it should not be described as traditional ROI |
-| `estimated_income_proxy` | treated as a platform-displayed estimated income proxy, not audited profit |
-| `refund_amount` | counted by refund-success date, so SQL-derived refund pressure should not be treated as a perfect original-order cohort refund rate |
-| `region_type` | weak region or market-context metadata; not a store-stage label, not a mature market-area classification, and not a hard peer-store grouping rule |
+| `order_conversion_rate_pct` | Follows the backend formula `order_users / entry_users * 100`; it must not be recomputed as `valid_orders / entry_users` |
+| `activity_cost_ratio_pct` | Describes activity cost divided by activity original transaction amount; it should not be described as traditional ROI |
+| `estimated_income_proxy` | Treated as a platform-displayed estimated income proxy, not audited profit |
+| `refund_amount` | Counted by refund-success date, so SQL-derived refund pressure should not be treated as a perfect original-order cohort refund rate |
+| `region_type` | Weak region or market-context metadata; not a store-stage label, not a mature market-area classification, and not a hard peer-store grouping rule |
 
 ## 7. Retail Demo 1
 
@@ -128,7 +126,7 @@ It uses normalized Meituan-style backend metrics such as:
 
 The demo shows why operational performance should not be interpreted from one metric alone. April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. At the same time, refund pressure and invalid-order pressure improved.
 
-The point is not to label April as simply good or bad. The point is to preserve a more careful operating profile.
+The point is to preserve a careful operating profile, not to label one month as simply good or bad.
 
 Canonical retail memory slots currently used include:
 
@@ -143,11 +141,9 @@ Canonical retail memory slots currently used include:
 
 Demo 2 extends the retail analysis from one store to selected Stores B-F under the same March 2026 reporting window.
 
-This step is important because multi-store operations create a different problem from single-store review. A store can have different traffic structure, activity involvement, refund pressure, invalid-order pressure, store type, SKU concentration, and local market context.
+A store can have different traffic structure, activity involvement, refund pressure, invalid-order pressure, store type, SKU concentration, and local market context. Demo 2 creates a cautious cross-store diagnostic layer before any operating recommendation is made.
 
-Demo 2 creates a cautious cross-store diagnostic layer before any operating recommendation is made.
-
-It does not rank stores as winners or losers. It organizes comparable backend fields and SQL-derived diagnostics so that later comparison can preserve scope and limitations.
+It organizes comparable backend fields and SQL-derived diagnostics so that later comparison can preserve scope and limitations.
 
 ## 9. Retail Demo 3
 
@@ -159,15 +155,11 @@ It compares every store pair across three narrow question types:
 - `activity_transfer`
 - `order_quality_pressure`
 
-The key idea is that the same pair of stores may be comparable for one question but not for another.
+The key idea is that the same pair of stores may be comparable for one question but not for another. For example, two stores may have similar search-entry structure, making a narrow traffic-structure comparison usable. The same two stores may still be unsafe for activity-strategy transfer if activity-order share, activity-cost ratio, refund pressure, invalid-order pressure, or store type differ too much.
 
-For example, two stores may have similar search-entry structure, making a narrow traffic-structure comparison usable. The same two stores may still be unsafe for activity-strategy transfer if activity-order share, activity-cost ratio, refund pressure, invalid-order pressure, or store type differ too much.
-
-Demo 3 currently exists as offline SQL output and evaluation. It is not yet exposed through a retrieval endpoint.
+Demo 3 currently exists as offline SQL output, validation, evaluation, and a narrow file-backed answer path.
 
 ## 10. How SQL and Memory Work Together
-
-The SQL layer is not used to create artificial store labels.
 
 The SQL layer organizes backend metrics into a more comparable structure and derives limited diagnostic fields such as:
 
@@ -206,7 +198,8 @@ Current boundaries:
 
 - automated Meituan backend ingestion is not implemented;
 - full 48-store automated decision support is not implemented;
-- Demo 3 is currently offline SQL / output / evaluation, not yet a retrieval endpoint;
+- Demo 3 is currently SQL output, saved CSV output, validation, evaluation, and a narrow file-backed answer path;
+- Demo 3 is not yet exposed through a retrieval endpoint or API endpoint;
 - SKU-level category classification across the full catalog is not implemented;
 - causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
 - `region_type` is not treated as a market-area classification;
@@ -217,16 +210,17 @@ These boundaries are part of the project design. The purpose is to avoid oversta
 ## 13. Recommended Reading Path
 
 | Order | File | Why read it |
-|---|---|---|
-| 1 | `README.md` | technical overview and implementation boundary |
-| 2 | `PROJECT_STATUS.md` | current implemented scope |
-| 3 | `retail_ops/README.md` | retail operations extension overview |
+|---:|---|---|
+| 1 | `README.md` | Technical overview and implementation boundary |
+| 2 | `PROJECT_STATUS.md` | Current implemented scope |
+| 3 | `retail_ops/README.md` | Retail operations extension overview |
 | 4 | `retail_ops/data/DATA_DICTIONARY.md` | Meituan backend metric definitions and canonical field names |
-| 5 | `retail_ops/LINEAGE.md` | claim-to-field lineage and interpretation limits |
+| 5 | `retail_ops/LINEAGE.md` | Claim-to-field lineage and interpretation limits |
 | 6 | `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` | Store A month-over-month diagnostic |
 | 7 | `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` | B-F same-period diagnostic |
-| 8 | `retail_ops/demo/demo_3_pairwise_comparability_gate.md` | pairwise comparability gate |
-| 9 | `eval/` | scenario-based evaluation and boundary checks |
+| 8 | `retail_ops/demo/demo_3_pairwise_comparability_gate.md` | Pairwise comparability gate |
+| 9 | `retail_ops/demo/demo_3_pairwise_answer_path.md` | Narrow file-backed Demo 3 answer path |
+| 10 | `eval/` | Scenario-based evaluation and boundary checks |
 
 SQL files, generated outputs, validation scripts, and result files are supporting evidence. They should be read after the summary and demo documents.
 

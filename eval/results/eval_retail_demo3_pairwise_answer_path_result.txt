@@ -1,0 +1,8 @@
+PASS test_activity_transfer_answer_preserves_gate_boundary
+PASS test_search_entry_structure_answer_stays_narrow
+PASS test_order_quality_pressure_answer_includes_quality_gaps
+PASS test_broad_48_store_ranking_is_refused
+PASS test_missing_store_pair_is_reported
+PASS test_missing_question_type_is_reported
+
+Retail Demo 3 pairwise answer-path eval result: 6/6 passed

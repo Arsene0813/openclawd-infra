@@ -357,6 +357,7 @@ Saved evaluation outputs include:
 - `eval/results/eval_retail_demo2_comparability_gate_result.txt`
 - `eval/results/eval_retail_demo2_answer_behavior_result.txt`
 - `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
+- `eval/results/eval_retail_demo3_pairwise_answer_path_result.txt`
 
 ## Repository Structure
 
@@ -449,6 +450,7 @@ Demo 3 includes an offline pairwise-gate evaluation:
 
 - `eval/eval_retail_demo3_pairwise_gate.py`
 - `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
+- `eval/results/eval_retail_demo3_pairwise_answer_path_result.txt`
 
 This check focuses on whether pairwise comparison remains narrow:
 

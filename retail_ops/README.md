@@ -4,25 +4,23 @@ This folder extends the lifecycle-aware memory layer from livestream commerce fa
 
 The purpose is to turn messy single-store backend metrics into a limited, traceable, and verifiable decision-support path for cross-store comparison.
 
-The purpose is not to automatically label stores as good or bad.
-
 ## Folder Scope
 
 This folder contains the retail evidence layer:
 
 | Component | Purpose |
 |---|---|
-| `data/` | selected Meituan-style source tables and metric definitions |
-| `sql/` | diagnostic SQL for Demo 1, Demo 2, and Demo 3 |
-| `outputs/` | generated SQL outputs, validation results, and memory facts |
-| `scripts/` | local validation, generation, and loading scripts |
-| `demo/` | readable diagnostic write-ups |
+| `data/` | Selected Meituan-style source tables and metric definitions |
+| `sql/` | Diagnostic SQL for Demo 1, Demo 2, and Demo 3 |
+| `outputs/` | Generated SQL outputs, validation results, and memory facts |
+| `scripts/` | Local validation, generation, and loading scripts |
+| `demo/` | Readable diagnostic write-ups |
 
-Demo 1 covers Store A month-over-month diagnosis.
+The current retail path has three fixed demos:
 
-Demo 2 covers a same-period Stores B-F comparability diagnostic.
-
-Demo 3 covers a pairwise comparability gate over the current Demo 2 B-F sample.
+1. Demo 1: Store A month-over-month diagnosis.
+2. Demo 2: same-period Stores B-F comparability diagnostic.
+3. Demo 3: pairwise comparability gate over the current Demo 2 B-F sample.
 
 ## Current Demos
 
@@ -34,9 +32,7 @@ Store A is analyzed across February, March, and April 2026, using natural calend
 - 2026-03-01 to 2026-03-31
 - 2026-04-01 to 2026-04-30
 
-The demo shows that store performance cannot be interpreted from one metric alone.
-
-Exposure, entry, ranking, transaction scale, order conversion, average order value, activity cost, refund pressure, invalid-order pressure, and top-SKU evidence can move in different directions.
+The demo shows that store performance cannot be interpreted from one metric alone. Exposure, entry, ranking, transaction scale, order conversion, average order value, activity cost, refund pressure, invalid-order pressure, and top-SKU evidence can move in different directions.
 
 Main file:
 
@@ -99,9 +95,7 @@ The Demo 2 API endpoint is:
 
 - `/chat_retail_ops_demo2_kb`
 
-This endpoint is file-backed and uses generated Demo 2 retail memory facts.
-
-It is separate from `/chat_retail_ops_kb`, which remains the Store A Demo 1 endpoint.
+This endpoint is file-backed and uses generated Demo 2 retail memory facts. It is separate from `/chat_retail_ops_kb`, which remains the Store A Demo 1 endpoint.
 
 ### Demo 3: Pairwise Comparability Gate
 
@@ -122,33 +116,30 @@ Core supporting files:
 - `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
 - `retail_ops/scripts/run_demo3_pairwise_gate.py`
 - `retail_ops/scripts/validate_demo3_pairwise_gate_output.py`
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+- `retail_ops/scripts/answer_demo3_pairwise_gate.py`
+- `retail_ops/demo/demo_3_pairwise_answer_path.md`
 - `eval/eval_retail_demo3_pairwise_gate.py`
 - `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
-- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+- `eval/eval_retail_demo3_pairwise_answer_path.py`
+- `eval/results/eval_retail_demo3_pairwise_answer_path_result.txt`
 
-Demo 3 does not classify stores by market area and does not use `region_type` as a hard grouping rule.
+Demo 3 keeps `region_type` only as weak context through `region_type_comparison_note`. The purpose is to make comparability testable before any store comparison or operating strategy transfer is attempted.
 
-It keeps `region_type` only as weak context through `region_type_comparison_note`.
-
-The purpose is to make comparability testable before any store comparison or operating strategy transfer is attempted.
-
-Demo 3 is currently implemented as SQL output, saved CSV output, documentation, validation, and offline evaluation.
-
-It is not yet exposed through a retrieval endpoint.
+Demo 3 is currently implemented as SQL output, saved CSV output, documentation, validation, offline evaluation, and a narrow file-backed answer path.
 
 ## Implemented Retail Path
 
 The current retail path is intentionally staged:
 
-Meituan-style backend metrics -> DATA_DICTIONARY.md metric definitions -> canonical CSV fields -> SQL diagnostics -> SQL-derived output tables -> generated retail memory facts -> data-contract validation -> retrieval or offline evaluation -> cautious answer, qualified comparison, or refusal
+Meituan-style backend metrics -> DATA_DICTIONARY.md metric definitions -> canonical CSV fields -> SQL diagnostics -> SQL-derived output tables -> generated retail memory facts -> data-contract validation -> retrieval or offline evaluation -> cautious answer, qualified comparison, or refusal.
 
 This now includes:
 
 1. a Store A month-over-month diagnostic;
 2. a same-period B-F cross-store diagnostic;
 3. a B-F pairwise comparability gate for narrow operating questions.
-
-It does not yet represent a full 48-store decision-support system.
 
 ## Readable Architecture
 
@@ -164,17 +155,11 @@ Retrieval and evaluation check whether later answers stay inside the supported e
 
 Meituan instant-retail stores compete through a chain of operating conditions:
 
-being seen -> being entered -> being ordered -> being selected again or maintaining market share
+being seen -> being entered -> being ordered -> being selected again or maintaining market share.
 
 Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are treated as operating levers inside this chain.
 
-Short-term activity-cost efficiency is not always the primary target.
-
-A new store may need subsidy to gain exposure and first orders.
-
-A store under external price pressure may need pricing or activity tools to defend visibility and market share.
-
-A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
+Short-term activity-cost efficiency is not always the primary target. A new store may need subsidy to gain exposure and first orders. A store under external price pressure may need pricing or activity tools to defend visibility and market share. A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
 
 The SQL layer therefore prepares comparison-ready diagnostic signals:
 
@@ -205,6 +190,8 @@ Saved validation output:
 
 - `retail_ops/outputs/retail_data_contract_validation_result.txt`
 
+`retail_data_contract_validation_result.txt` validates the original Store A / Demo 1 retail data contract. Demo 2 and Demo 3 use additional dedicated validators and evaluation files for cross-store comparability and pairwise gate behavior.
+
 ## Comparability-Gate Documentation
 
 This folder includes three review documents for disciplined cross-store comparison:
@@ -234,32 +221,6 @@ The current generated retail memory facts use these canonical slots:
 
 Supporting SQL observations such as transaction recovery, order-conversion decline, average-order-value decline, refund-pressure improvement, invalid-order-pressure improvement, activity-order share, and activity-cost ratio can support interpretation, but they are not standalone store-stage labels.
 
-## Important Limitations
-
-Promotion cycle dates are unknown in the current retail demos.
-
-Activity metrics are treated as operating-lever evidence, not as a clean intervention.
-
-Demo 1, Demo 2, and Demo 3 can support cautious interpretation, but they cannot support broad causal claims, full 48-store generalization, or store-stage diagnosis.
-
-Demo 2 includes cross-store diagnostics, but only for five anonymized stores in the same March 2026 reporting window.
-
-Demo 3 compares store pairs only inside the current B-F sample and only for three question types:
-
-- `search_entry_structure`
-- `activity_transfer`
-- `order_quality_pressure`
-
-Demo 3 is not a best-store ranking system.
-
-It is not a market-area classifier.
-
-It does not treat `region_type` as a hard grouping rule.
-
-It is not yet connected to a retrieval endpoint.
-
-The current retail path should be read as a staged decision-support prototype, not as a complete multi-store operating system.
-
 ## Current Evaluation Boundary
 
 The Store A retail retrieval evaluation checks whether the system can:
@@ -279,9 +240,15 @@ Demo 2 answer-behavior boundary evaluation checks whether comparison answers pre
 
 Demo 3 pairwise gate evaluation checks whether pairwise output preserves three narrow question types, keeps `region_type` as weak context, avoids best-store ranking, and documents the new pairwise fields.
 
-## Future Work
+Demo 3 answer-path evaluation checks whether the file-backed answer path answers supported pairwise questions, includes limitation notes, reports missing pairs or missing question types, and refuses full 48-store ranking.
 
-Demo 3 now includes a narrow file-backed answer path. The next step is to decide whether to keep it as a deterministic script or expose the same boundary through a narrow retrieval/API layer.
+## Current Boundary and Next Step
+
+The current retail path should be read as a staged decision-support prototype, not as a complete multi-store operating system.
+
+Promotion cycle dates are unknown in the current retail demos. Activity metrics are treated as operating-lever evidence, not as a clean intervention. Demo 1, Demo 2, and Demo 3 can support cautious interpretation, but they cannot support broad causal claims, full 48-store generalization, or store-stage diagnosis.
+
+The next technical step is not to create a new demo. The next step is to decide whether the existing Demo 3 file-backed answer path should remain deterministic or be exposed through a narrow retrieval/API layer.
 
 The intended query shape is small:
 
@@ -296,8 +263,6 @@ The answer should return:
 - supporting gap fields;
 - refusal or qualification when evidence is not enough.
 
-Only after this pairwise check should the system generate cross-store operational interpretation or suggest whether a strategy from one store may transfer to another.
-
 Expansion beyond the current B-F sample should keep the same discipline:
 
 - aligned reporting period;
@@ -311,35 +276,3 @@ Expansion beyond the current B-F sample should keep the same discipline:
 - dominant top-SKU evidence;
 - data completeness;
 - explicit limitation notes.
-
-## Retail Demo 2 Answer-Behavior Boundary Evaluation
-
-Demo 2 includes an offline answer-boundary check:
-
-- `eval/eval_retail_demo2_answer_behavior.py`
-- `eval/results/eval_retail_demo2_answer_behavior_result.txt`
-
-This check focuses on whether comparison answers preserve the implemented metric contract:
-
-- `activity_cost_ratio_pct` is treated as activity-cost-ratio evidence, not ROI or profit margin.
-- `top3_sku_transaction_amount_share_pct` is treated as lightweight top-SKU concentration evidence, not full product-category sales share.
-- search-entry comparison stays tied to `search_entry_rate_pct`, `search_entry_share_pct`, `search_entry_users`, and `entry_users`.
-- promotion or subsidy strategy transfer is qualified unless activity, subsidy, refund, invalid-order, and comparison-limit evidence support it.
-
-This turns the current Demo 2 comparison boundary into a testable behavior.
-
-## Retail Demo 3 Pairwise Comparability Boundary
-
-Demo 3 includes an offline pairwise-gate evaluation:
-
-- `eval/eval_retail_demo3_pairwise_gate.py`
-- `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
-
-This check focuses on whether pairwise comparison remains narrow:
-
-- pairwise output has the expected three question types;
-- activity-transfer comparison can refuse unsupported transfer;
-- search-entry and order-quality comparisons stay within their question boundaries;
-- `region_type` remains weak context instead of a hard grouping rule;
-- pairwise output does not become best-store ranking;
-- new pairwise fields are documented.
