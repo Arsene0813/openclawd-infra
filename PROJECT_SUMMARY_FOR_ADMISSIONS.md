@@ -6,30 +6,18 @@ Meituan Instant Retail Cross-Store Decision Support Prototype
 
 Repository name: livestream-agent-memory-layer
 
-## Admissions Review Focus
+## Review Focus
 
-This project should be read as a staged prototype built from a real Meituan instant-retail operating problem.
+This summary is written for readers assessing analytical reasoning, data-system design, and retrieval-based AI applications.
 
-The main contribution is not a polished dashboard or a general-purpose enterprise system. The main contribution is a controlled decision-support workflow:
+The project is not a polished dashboard or a broad enterprise platform. It is a staged prototype showing how a real multi-store operating problem can be converted into a controlled decision-support workflow:
 
 1. preserve Meituan backend metric definitions;
 2. organize selected store-period data with SQL;
-3. record source fields, limits, confidence, and interpretation boundaries;
+3. record source fields, confidence, limitations, and interpretation boundaries;
 4. test whether later answers preserve comparison limits instead of making unsupported recommendations.
 
-Current implemented scope:
-
-| Area | Current evidence |
-|---|---|
-| Single-store temporal diagnosis | Store A Demo 1 |
-| Same-period cross-store comparison | Stores B-F Demo 2 |
-| Metric contract | `retail_ops/data/DATA_DICTIONARY.md` |
-| Claim lineage | `retail_ops/LINEAGE.md` |
-| Comparability boundary | `retail_ops/COMPARABILITY_GATE_V0.md` |
-| Answer-boundary behavior | `eval/eval_retail_demo2_answer_behavior.py` |
-| Full 48-store automation | Not implemented yet |
-
-The project is intentionally staged. It shows how a real multi-store operating problem can be converted into a verifiable data and memory-layer prototype without overstating what the current data can prove.
+The current repository supports Store A month-over-month diagnosis and a same-period Stores B-F comparability diagnostic. It does not claim full 48-store automation.
 
 ## 1. Core Problem
 
@@ -250,7 +238,7 @@ because valid_orders is an order-status metric, while order_users is a user-leve
 | Estimated income interpretation | Supported as platform-displayed proxy. | Not audited profit. |
 | Top-SKU interpretation | Supported as lightweight leading-SKU evidence. | Not full product-category sales-share analysis. |
 | Memory-layer retrieval | Supported by generated retail memory facts and evaluation files. | The memory layer should qualify or refuse unsupported claims. |
-| Full 48-store decision system | Not implemented yet. | Current project is a staged prototype. |
+| Full 48-store decision system | Not implemented yet. | Current implementation supports only the documented Demo 1 and Demo 2 scope. |
 | Automated Meituan backend ingestion | Not implemented yet. | Current data is manually prepared from selected backend exports. |
 
 ## 11. What the Prototype Demonstrates
@@ -322,7 +310,7 @@ Recommended files for admissions review:
 12. retail_ops/outputs/generated_demo2_retail_memory_facts.json
 13. eval/results/eval_retail_demo2_facts_result.txt
 
-SQL files, generated outputs, validation scripts, and result files are supporting evidence. They show that the project is not only a written idea, but a staged prototype with data contract, lineage, validation, and evaluation.
+SQL files, generated outputs, validation scripts, and result files are supporting evidence. They show that the project is not only a written idea, but a working evidence path with data contract, lineage, validation, and evaluation.
 
 ## 15. One-Sentence Summary
 

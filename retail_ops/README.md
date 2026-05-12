@@ -4,19 +4,19 @@ This folder extends the lifecycle-aware memory layer from livestream commerce fa
 
 The purpose is to turn messy single-store backend metrics into a limited, traceable, and verifiable decision-support path for cross-store comparison. The purpose is not to automatically label stores as good or bad.
 
-## Retail Review Focus
+## Folder Scope
 
-This folder should be read as the evidence layer for the retail decision-support prototype.
+This folder contains the retail evidence layer:
 
-The main purpose is to show how selected Meituan backend metrics are moved through a controlled path:
+| Component | Purpose |
+|---|---|
+| `data/` | selected Meituan-style source tables and metric definitions |
+| `sql/` | diagnostic SQL for Demo 1 and Demo 2 |
+| `outputs/` | generated SQL outputs, validation results, and memory facts |
+| `scripts/` | local validation, generation, and loading scripts |
+| `demo/` | readable diagnostic write-ups |
 
-1. canonical field definitions;
-2. SQL diagnostics;
-3. generated store-period memory facts;
-4. validation checks;
-5. evaluation cases that preserve comparison limits.
-
-The retail extension is intentionally limited. Demo 1 supports Store A month-over-month diagnosis. Demo 2 supports a same-period B-F comparability diagnostic. It does not claim full 48-store automation.
+Demo 1 covers Store A month-over-month diagnosis. Demo 2 covers a same-period Stores B-F comparability diagnostic.
 
 ## Current Demos
 
