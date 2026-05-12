@@ -53,17 +53,25 @@ For example:
 | Top-SKU evidence | sku_name, sku_transaction_amount, sales_volume, top3_sku_transaction_amount_share_pct | Concentrated leading SKUs may affect transferability of operating signals. | Top-3 SKU evidence is lightweight product-mix evidence, not full product-category sales share. |
 | Missing evidence | comparison_limit_notes | Missing data should create limits instead of being silently treated as zero. | Missing top-SKU evidence, missing transaction amount, or missing valid orders should constrain interpretation. |
 
-## Conceptual Gate Outcomes
+## Implemented SQL Scope Flags
 
-These are conceptual review outcomes, not current implemented SQL columns.
+The current Demo 2 SQL output uses `comparison_scope_flag` as an implemented SQL-derived scope/readiness field. These are current implemented values, not future conceptual labels.
+
+| `comparison_scope_flag` value | Meaning | Allowed interpretation | Not allowed |
+|---|---|---|---|
+| `same_period_diagnostic_ready` | The row is inside the current Demo 2 same-period diagnostic scope. | Discuss same-period diagnostic evidence with limits. | Treat as a performance ranking or final operating recommendation. |
+| `not_comparable_period_mismatch` | The row does not match the Demo 2 reporting window. | Refuse or qualify same-period comparison. | Mix periods casually as if demand, activity, and competition were aligned. |
+| `insufficient_data` | One or more required diagnostic fields are missing. | State the missing evidence and constrain interpretation. | Treat missing evidence as zero, normal, or comparable. |
+
+## Future Pairwise Gate Outcomes
+
+These are conceptual review outcomes for future pairwise or group-level comparison. They are not current SQL output columns and not current memory slots.
 
 | Outcome | Meaning | Allowed interpretation | Not allowed |
 |---|---|---|---|
-| same_period_diagnostic_ready | The row is inside the current Demo 2 same-period diagnostic scope. | Discuss same-period diagnostic evidence with limits. | Treat as a performance ranking. |
-| comparable_with_limits | Two store-period rows share enough context for a narrow comparison. | Compare the specific supported signal. | Transfer a full strategy without checking missing context. |
-| partially_comparable | Some signals are comparable, but important context differs or is missing. | Explain which signal can be compared and which cannot. | Collapse the result into good or bad. |
-| not_comparable_for_strategy_transfer | The evidence is too different or incomplete for transferring an operating action. | Refuse or qualify strategy transfer. | Recommend subsidy, price, SKU, or ranking action directly. |
-| insufficient_data | Required evidence is missing. | State the missing evidence. | Treat missing evidence as zero or normal. |
+| `comparable_with_limits` | Two store-period rows share enough context for a narrow comparison. | Compare the specific supported signal while preserving limits. | Transfer a full strategy without checking missing context. |
+| `partially_comparable` | Some signals are comparable, but important context differs or is missing. | Explain which signal can be compared and which cannot. | Collapse the result into good or bad. |
+| `not_comparable_for_strategy_transfer` | The evidence is too different or incomplete for transferring an operating action. | Refuse or qualify strategy transfer. | Recommend subsidy, price, SKU, or ranking action directly. |
 
 ## Hard Rules
 

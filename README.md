@@ -24,8 +24,8 @@ The project began from an earlier lifecycle-aware memory layer for livestream co
 | Retail data-contract validation | Implemented | `retail_ops/scripts/validate_retail_data_contract.py`, `retail_ops/outputs/retail_data_contract_validation_result.txt` |
 | Retail memory facts generation | Implemented as JSON exports | `retail_ops/outputs/generated_retail_memory_facts.json`, `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
 | Retail facts Qdrant loading path | Implemented for Store A Demo 1 facts | `retail_ops/scripts/load_retail_facts_to_qdrant.py` |
-| Retail retrieval endpoint | Implemented for Store A Demo 1 and file-backed Demo 2 facts | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb` |
-| Retail retrieval evaluation | Implemented for Store A Demo 1; Demo 2 facts have offline eval | `eval/eval_retail.py`, `eval/eval_retail_demo2_facts.py` |
+| Retail answer endpoints | Store A Demo 1 uses the Qdrant-backed retail retrieval path; Demo 2 uses a separate file-backed answer path | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb` |
+| Retail retrieval evaluation | Implemented for Store A Demo 1; Demo 2 facts and comparability-gate consistency have offline evals | `eval/eval_retail.py`, `eval/eval_retail_demo2_facts.py`, `eval/eval_retail_demo2_comparability_gate.py` |
 | Limited cross-store comparability diagnostic | Implemented as Demo 2 same-period B-F comparability diagnostic | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
 | Automated Meituan backend ingestion | Not implemented yet | Future work |
 | Full 48-store decision-support system | Not implemented yet | Future work |
@@ -349,35 +349,63 @@ api/
 
 scripts/
   init_qdrant_collections.py
+  validate_demo2_api_endpoint.py
+  validate_project_consistency.py
 
 eval/
   eval_livestream.py
   eval_livestream_cases.json
   eval_retail.py
   eval_retail_cases.json
+  eval_retail_demo2_facts.py
   eval_report.md
   eval_retail_report.md
   results/
+    eval_result_11_pass.txt
+    eval_retail_result.txt
+    eval_retail_demo2_facts_result.txt
 
 retail_ops/
   README.md
   LINEAGE.md
+  FIELD_USAGE_REVIEW.md
+  COMPARABILITY_GATE_V0.md
+  EXPERIMENT_RESULTS.md
+
   data/
     DATA_DICTIONARY.md
+    PERIOD_CONVENTIONS.md
     store_a_monthly_metrics.csv
     store_a_top_skus.csv
+    demo2_source_notes.md
+    demo2_store_period_metrics.csv
+    demo2_top_search_terms.csv
+    demo2_top_skus_by_sales_volume.csv
+    demo2_top_skus_by_transaction_amount.csv
+
   sql/
     01_store_a_month_over_month_diagnostic.sql
+    02_demo2_cross_store_comparability.sql
+
   outputs/
     store_a_demo1_sql_output.csv
     store_a_demo1_interpretation_summary.csv
     generated_retail_memory_facts.json
     retail_data_contract_validation_result.txt
+    demo2_cross_store_comparability_output.csv
+    generated_demo2_retail_memory_facts.json
+
   scripts/
     load_retail_facts_to_qdrant.py
     validate_retail_data_contract.py
+    validate_demo2_staging_data.py
+    validate_demo2_comparability_output.py
+    generate_demo2_retail_memory_facts.py
+    validate_demo2_retail_memory_facts.py
+
   demo/
     demo_1_store_a_month_over_month_diagnostic.md
+    demo_2_cross_store_comparability_diagnostic.md
 
 case_studies/
   from_livestream_to_retail_decision_support.md

@@ -43,6 +43,7 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 | top3_sku_transaction_amount_share_pct | SQL-derived lightweight product-mix evidence. It is not full product-category sales share. | SQL output and top-SKU memory note. | No. |
 | comparison_scope_flag | SQL-derived data-readiness and comparison-scope guardrail for Demo 2. | Demo 2 SQL output and Demo 2 memory facts. | No. |
 | comparison_limit_notes | SQL-derived interpretation-boundary notes for Demo 2. | Demo 2 SQL output and Demo 2 memory facts. | No. |
+| period_granularity | Memory-fact metadata recording the time grain of the fact, currently `month`; it is not a Meituan backend metric. | Generated retail memory facts. | No. |
 | visibility_entry_profile | Retrieval-facing memory slot for exposure, ranking, entry, and search-entry structure. | Generated retail memory facts. | No. |
 | activity_lever_profile | Retrieval-facing memory slot for activity orders, activity cost, subsidy, and activity-cost ratio. | Generated retail memory facts. | No. |
 | transaction_conversion_profile | Retrieval-facing memory slot for transaction scale, order conversion, payment, and average order value. | Generated retail memory facts. | No. |

@@ -227,9 +227,9 @@ This demo does not support:
 
 ## Future Work
 
-The next step is to add a cross-store comparability gate.
+Demo 1 has already led into the current Demo 2 comparability path. The next step is to make comparability rules more testable and expand the same field contract to more store-period records.
 
-That gate should check whether stores can be compared by:
+Future expansion should check whether stores can be compared by:
 
 - aligned reporting period;
 - coarse market context;
@@ -242,4 +242,4 @@ That gate should check whether stores can be compared by:
 - dominant top-SKU evidence;
 - data completeness.
 
-Only after this comparability check should the system attempt cross-store interpretation or store-stage diagnosis.
+Only after this comparability check should the system attempt cross-store interpretation. Store-stage diagnosis should remain out of scope until the project has stronger evidence on promotion cycles, competition, fulfillment conditions, rating/review signals, and stockout history.

@@ -26,6 +26,8 @@ A single-store dashboard can show whether one store improved or declined. It doe
 
 This project is my attempt to turn rich but single-store-oriented Meituan backend data into a structured decision-support prototype.
 
+Current staged evidence: the real business context involves many stores, but the repository does not pretend to automate all stores yet. The current evidence is deliberately staged: Demo 1 uses Store A for month-over-month diagnosis, and Demo 2 uses Stores B-F for a same-period cross-store comparability diagnostic. This keeps the prototype small enough to verify while still reflecting the larger operating problem.
+
 ## 2. Business Context
 
 The business operates in Meituan-style instant retail.

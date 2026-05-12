@@ -18,7 +18,7 @@ Admissions-facing narrative belongs in PROJECT_SUMMARY_FOR_ADMISSIONS.md. The te
 | Demo 2 SQL diagnostic output | Implemented | retail_ops/sql/02_demo2_cross_store_comparability.sql, retail_ops/outputs/demo2_cross_store_comparability_output.csv |
 | Retail memory-facing facts | Implemented for Store A Demo 1 and Demo 2 B-F facts | retail_ops/outputs/generated_retail_memory_facts.json, retail_ops/outputs/generated_demo2_retail_memory_facts.json |
 | Retail validation | Implemented | retail_ops/scripts/validate_retail_data_contract.py, Demo 2 validation scripts, scripts/validate_project_consistency.py |
-| Retail retrieval evaluation | Implemented for Store A Demo 1; Demo 2 facts have offline eval | eval/eval_retail.py, eval/eval_retail_demo2_facts.py |
+| Retail retrieval evaluation | Implemented for Store A Demo 1; Demo 2 facts and comparability-gate consistency have offline evals | eval/eval_retail.py, eval/eval_retail_demo2_facts.py, eval/eval_retail_demo2_comparability_gate.py |
 | Retail API endpoints | Implemented as separate Demo 1 and Demo 2 endpoints | /chat_retail_ops_kb, /chat_retail_ops_demo2_kb |
 
 ## Current Boundary
@@ -53,6 +53,7 @@ Current project checks are expected to pass with:
 - python3 retail_ops/scripts/validate_demo2_comparability_output.py
 - python3 retail_ops/scripts/validate_demo2_retail_memory_facts.py
 - python3 eval/eval_retail_demo2_facts.py
+- python3 eval/eval_retail_demo2_comparability_gate.py
 - python3 retail_ops/scripts/validate_retail_data_contract.py
 - python3 scripts/validate_project_consistency.py
 
