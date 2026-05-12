@@ -6,6 +6,31 @@ Meituan Instant Retail Cross-Store Decision Support Prototype
 
 Repository name: livestream-agent-memory-layer
 
+## Admissions Review Focus
+
+This project should be read as a staged prototype built from a real Meituan instant-retail operating problem.
+
+The main contribution is not a polished dashboard or a general-purpose enterprise system. The main contribution is a controlled decision-support workflow:
+
+1. preserve Meituan backend metric definitions;
+2. organize selected store-period data with SQL;
+3. record source fields, limits, confidence, and interpretation boundaries;
+4. test whether later answers preserve comparison limits instead of making unsupported recommendations.
+
+Current implemented scope:
+
+| Area | Current evidence |
+|---|---|
+| Single-store temporal diagnosis | Store A Demo 1 |
+| Same-period cross-store comparison | Stores B-F Demo 2 |
+| Metric contract | `retail_ops/data/DATA_DICTIONARY.md` |
+| Claim lineage | `retail_ops/LINEAGE.md` |
+| Comparability boundary | `retail_ops/COMPARABILITY_GATE_V0.md` |
+| Answer-boundary behavior | `eval/eval_retail_demo2_answer_behavior.py` |
+| Full 48-store automation | Not implemented yet |
+
+The project is intentionally staged. It shows how a real multi-store operating problem can be converted into a verifiable data and memory-layer prototype without overstating what the current data can prove.
+
 ## 1. Core Problem
 
 This project grew out of a real operating problem in Meituan instant retail.

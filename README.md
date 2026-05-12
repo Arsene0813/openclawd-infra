@@ -12,6 +12,30 @@ The goal is not to let an LLM make operating decisions directly. The goal is to 
 
 The project began from an earlier lifecycle-aware memory layer for livestream commerce. That earlier system handled changing product facts such as price, promotion, stock status, shipping policy, and product features. The same design principle is now being applied to retail operations data: changing commercial information should be structured, checked, updated, retrieved with traceable sources, and refused when the available evidence is not enough.
 
+## Admissions-Facing Quick Review
+
+This repository is best read as a staged decision-support prototype built from a real Meituan instant-retail operating problem.
+
+The core issue is not missing data. Meituan's merchant backend provides detailed single-store metrics, but the backend is not designed for structured cross-store comparison. The prototype therefore focuses on three questions:
+
+1. which store-period records can be compared;
+2. what evidence supports the comparison;
+3. when the system should qualify or refuse an operating conclusion.
+
+Current implemented evidence:
+
+| Evidence layer | Current implementation |
+|---|---|
+| Store A month-over-month diagnostic | Implemented as Demo 1 |
+| Stores B-F same-period comparability diagnostic | Implemented as Demo 2 |
+| Metric dictionary and field contract | Implemented in `retail_ops/data/DATA_DICTIONARY.md` |
+| Claim-to-field lineage | Implemented in `retail_ops/LINEAGE.md` |
+| Demo 2 comparability gate | Implemented as documentation and offline consistency evaluation |
+| Demo 2 answer-boundary behavior | Implemented as offline evaluation |
+| Full 48-store automation | Not implemented yet |
+
+The current project should be understood as a verifiable prototype, not a finished operating platform.
+
 ## Current Implementation Boundary
 
 | Layer | Current Status | Evidence |
