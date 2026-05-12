@@ -12,7 +12,7 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 |---|---|---|---|
 | store_id | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, demo outputs. | No. |
 | entity_id | Retrieval-layer identifier generated from store_id using entity_id = "store_" + store_id. | Generated retail memory facts. | No. |
-| region_type | Coarse region or market-context label from available store evidence. It is not a fully normalized city/county/community classification. | Demo source data and Demo 2 comparability output. | No. |
+| region_type | Weak region or market-context metadata from available store evidence. It is not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo source data, Demo 2 comparability output, Demo 3 pairwise context note. | No. Keep unchanged. |
 | store_type | Store metadata field used to separate operating formats. | Source CSVs and SQL output. | No. |
 | business_district_rank | Backend-provided ranking-related field when available in the Demo 2 source. | Demo 2 source/output evidence. | No. |
 | transaction_amount | Transaction amount for same-day paid and same-day not-cancelled orders, following the backend transaction metric page. | Source CSVs, SQL output, transaction/conversion profile. | No. |
@@ -51,19 +51,37 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 | single_metric_attribution_guard | Retrieval-facing memory slot that prevents unsupported interpretation from one metric alone. | Generated retail memory facts. | No. |
 | top3_sku_product_mix_note | Retrieval-facing memory slot for limited top-SKU evidence. | Generated retail memory facts. | No. |
 
+## Demo 3 New Field Review Table
+
+These fields are new SQL-derived pairwise comparability-gate outputs. They do not rename existing fields.
+
+| New field | Dictionary definition / boundary | Use location | Rename existing field? |
+|---|---|---|---|
+| reference_store_id | First store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. New field. |
+| candidate_store_id | Second store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. New field. |
+| comparison_question_type | Narrow comparison question being tested: search_entry_structure, activity_transfer, or order_quality_pressure. | Demo 3 pairwise SQL output and eval. | No. New field. |
+| reference_region_type | Existing region_type value for the reference store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. New field. |
+| candidate_region_type | Existing region_type value for the candidate store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. New field. |
+| region_type_comparison_note | Compares existing region_type values while explicitly preserving that region_type is not a market-area classification. | Demo 3 pairwise SQL output and eval. | No. New field. |
+| reference_store_type | Existing store_type value for the reference store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. New field. |
+| candidate_store_type | Existing store_type value for the candidate store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. New field. |
+| store_type_comparison_note | Compares existing store_type values as operating-format context, not as a performance label. | Demo 3 pairwise SQL output and eval. | No. New field. |
+| search_entry_share_gap_pct | Absolute gap between two stores' search_entry_share_pct values. | Demo 3 pairwise SQL output. | No. New field. |
+| activity_order_share_gap_pct | Absolute gap between two stores' activity_order_share_pct values. | Demo 3 pairwise SQL output. | No. New field. |
+| activity_cost_ratio_gap_pct | Absolute gap between two stores' activity_cost_ratio_pct values. | Demo 3 pairwise SQL output. | No. New field. |
+| refund_pressure_gap_pct | Absolute gap between two stores' refund_pressure_pct values. | Demo 3 pairwise SQL output. | No. New field. |
+| invalid_order_pressure_gap_pct | Absolute gap between two stores' invalid_order_pressure_pct values. | Demo 3 pairwise SQL output. | No. New field. |
+| top3_sku_concentration_gap_pct | Absolute gap between two stores' top3_sku_transaction_amount_share_pct values; still not full product-category share. | Demo 3 pairwise SQL output. | No. New field. |
+| pairwise_comparison_decision | SQL-derived gate outcome for the selected comparison question. | Demo 3 pairwise SQL output and eval. | No. New field. |
+| pairwise_limit_notes | Interpretation notes for why the pair is comparable, partially comparable, or not comparable for strategy transfer. | Demo 3 pairwise SQL output and eval. | No. New field. |
+
 ## Patch Rule
 
-This patch does not introduce new SQL output fields, new source CSV fields, or new canonical retail memory slots.
+This patch does not rename existing fields, does not introduce new source CSV fields, and does not introduce new canonical retail memory slots.
 
-The new comparability-gate documentation may use conceptual terms such as comparable, partially comparable, or insufficient evidence, but those terms are not current SQL columns or memory slots.
+This patch does introduce documented Demo 3 SQL-derived pairwise output fields. Those fields are listed in DATA_DICTIONARY.md and in the Demo 3 New Field Review Table above before being used in SQL output, validation, or evaluation.
 
-If any of them later become implemented fields, they must first be documented in:
-
-1. retail_ops/data/DATA_DICTIONARY.md
-2. retail_ops/LINEAGE.md
-3. SQL output documentation
-4. generated memory fact logic
-5. validation and evaluation cases
+Conceptual terms such as comparable, partially comparable, or not comparable for strategy transfer are now implemented only as Demo 3 pairwise gate outputs. They must not be treated as store-stage labels or final operating recommendations.
 
 ## Field Rename Gate for Future Changes
 

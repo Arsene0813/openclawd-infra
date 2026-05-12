@@ -3,7 +3,7 @@ Passed: 5
 Failed: 0
 
 PASS implemented_sql_scope_flags_are_documented
-PASS future_pairwise_outcomes_are_separate
+PASS demo3_pairwise_outcomes_are_implemented_separately
 PASS period_granularity_is_defined_in_dictionary
 PASS period_granularity_is_reviewed_without_rename
 PASS generated_demo2_facts_preserve_scope_and_limits

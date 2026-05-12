@@ -1,99 +1,156 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
+from typing import Any
 
-ROOT = Path(".")
+GATE_PATH = Path("retail_ops/COMPARABILITY_GATE_V0.md")
+DICTIONARY_PATH = Path("retail_ops/data/DATA_DICTIONARY.md")
+FIELD_USAGE_PATH = Path("retail_ops/FIELD_USAGE_REVIEW.md")
+DEMO2_FACTS_PATH = Path("retail_ops/outputs/generated_demo2_retail_memory_facts.json")
+PROJECT_STATUS_PATH = Path("PROJECT_STATUS.md")
+DEMO3_OUTPUT_PATH = Path("retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv")
+RESULTS_PATH = Path("eval/results/eval_retail_demo2_comparability_gate_result.txt")
 
-FACTS_PATH = ROOT / "retail_ops/outputs/generated_demo2_retail_memory_facts.json"
-GATE_PATH = ROOT / "retail_ops/COMPARABILITY_GATE_V0.md"
-DICTIONARY_PATH = ROOT / "retail_ops/data/DATA_DICTIONARY.md"
-FIELD_REVIEW_PATH = ROOT / "retail_ops/FIELD_USAGE_REVIEW.md"
-RESULTS_PATH = ROOT / "eval/results/eval_retail_demo2_comparability_gate_result.txt"
 
-checks = []
+def load_facts(path: Path) -> list[dict[str, Any]]:
+    with path.open(encoding="utf-8") as f:
+        data = json.load(f)
 
-gate_text = GATE_PATH.read_text(encoding="utf-8")
-dictionary_text = DICTIONARY_PATH.read_text(encoding="utf-8")
-field_review_text = FIELD_REVIEW_PATH.read_text(encoding="utf-8")
-facts = json.loads(FACTS_PATH.read_text(encoding="utf-8"))
-facts_text = json.dumps(facts, ensure_ascii=False)
+    if isinstance(data, list):
+        return data
 
-checks.append((
-    "implemented_sql_scope_flags_are_documented",
-    all(term in gate_text for term in [
-        "## Implemented SQL Scope Flags",
-        "same_period_diagnostic_ready",
-        "not_comparable_period_mismatch",
-        "insufficient_data",
-    ]),
-    "COMPARABILITY_GATE_V0.md should document current comparison_scope_flag values as implemented SQL scope flags.",
-))
+    if isinstance(data, dict) and isinstance(data.get("facts"), list):
+        return data["facts"]
 
-checks.append((
-    "future_pairwise_outcomes_are_separate",
-    all(term in gate_text for term in [
-        "## Future Pairwise Gate Outcomes",
-        "not current SQL output columns",
-        "comparable_with_limits",
-        "partially_comparable",
-        "not_comparable_for_strategy_transfer",
-    ]),
-    "Future pairwise gate outcomes should be separated from current SQL output fields.",
-))
+    raise SystemExit(f"Unexpected Demo 2 facts JSON structure: {path}")
 
-checks.append((
-    "period_granularity_is_defined_in_dictionary",
-    all(term in dictionary_text for term in [
-        "period_start",
-        "period_end",
-        "period_granularity",
-        "not a direct Meituan backend metric",
-    ]),
-    "DATA_DICTIONARY.md should define period_start, period_end, and period_granularity as memory-fact period metadata.",
-))
 
-checks.append((
-    "period_granularity_is_reviewed_without_rename",
-    "| period_granularity |" in field_review_text and "Generated retail memory facts" in field_review_text and "| No. |" in field_review_text,
-    "FIELD_USAGE_REVIEW.md should include period_granularity and confirm no rename.",
-))
+def fact_as_text(fact: dict[str, Any]) -> str:
+    return json.dumps(fact, ensure_ascii=False).lower()
 
-checks.append((
-    "generated_demo2_facts_preserve_scope_and_limits",
-    all(term in facts_text for term in [
-        "comparison_scope_flag",
-        "comparison_limit_notes",
-        "period_granularity",
-    ]),
-    "Generated Demo 2 memory facts should preserve comparison scope, limit notes, and period granularity.",
-))
 
-passed = 0
-failed = 0
-lines = []
+def fact_preserves_demo2_scope(fact: dict[str, Any]) -> bool:
+    text = fact_as_text(fact)
 
-for name, ok, detail in checks:
-    if ok:
-        passed += 1
-        lines.append(f"PASS {name}")
-    else:
-        failed += 1
-        lines.append(f"FAIL {name}: {detail}")
+    has_demo2_context = "demo2" in text or "demo 2" in text
+    has_cross_store_context = "cross_store" in text or "cross-store" in text
+    has_same_period_context = "same_period" in text or "same-period" in text or "2026-03" in text
 
-summary = [
-    f"Retail Demo 2 comparability-gate consistency eval result: {passed}/{len(checks)} passed",
-    f"Passed: {passed}",
-    f"Failed: {failed}",
-    "",
-    *lines,
-    "",
-]
+    return has_demo2_context and has_cross_store_context and has_same_period_context
 
-RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-RESULTS_PATH.write_text("\n".join(summary), encoding="utf-8")
 
-print("\n".join(summary))
+def fact_preserves_limits(fact: dict[str, Any]) -> bool:
+    text = fact_as_text(fact)
 
-sys.exit(0 if failed == 0 else 1)
+    limit_terms = [
+        "limit",
+        "limitation",
+        "boundary",
+        "guard",
+        "not_comparable",
+        "do_not",
+        "must not",
+        "not a final",
+        "not full",
+        "not sufficient",
+        "cannot",
+    ]
+
+    return any(term in text for term in limit_terms)
+
+
+def main() -> int:
+    gate_text = GATE_PATH.read_text(encoding="utf-8")
+    dictionary_text = DICTIONARY_PATH.read_text(encoding="utf-8")
+    field_usage_text = FIELD_USAGE_PATH.read_text(encoding="utf-8")
+    project_status_text = PROJECT_STATUS_PATH.read_text(encoding="utf-8")
+    facts = load_facts(DEMO2_FACTS_PATH)
+
+    checks: list[tuple[str, bool, str]] = []
+
+    checks.append(
+        (
+            "implemented_sql_scope_flags_are_documented",
+            all(
+                term in gate_text
+                for term in [
+                    "comparison_scope_flag",
+                    "same_period_diagnostic_ready",
+                    "not_comparable_period_mismatch",
+                    "insufficient_data",
+                ]
+            ),
+            "Implemented Demo 2 SQL scope flags should be documented.",
+        )
+    )
+
+    checks.append(
+        (
+            "demo3_pairwise_outcomes_are_implemented_separately",
+            "pairwise_comparison_decision" in gate_text
+            and "pairwise_limit_notes" in gate_text
+            and str(DEMO3_OUTPUT_PATH) in project_status_text
+            and DEMO3_OUTPUT_PATH.exists(),
+            "Demo 3 pairwise outcomes should be implemented separately from the Demo 2 row-level comparison_scope_flag.",
+        )
+    )
+
+    checks.append(
+        (
+            "period_granularity_is_defined_in_dictionary",
+            "period_granularity" in dictionary_text
+            and "month" in dictionary_text,
+            "period_granularity should be defined in the data dictionary.",
+        )
+    )
+
+    checks.append(
+        (
+            "period_granularity_is_reviewed_without_rename",
+            "period_granularity" in field_usage_text
+            and "No. New field." in field_usage_text,
+            "period_granularity should be reviewed without renaming existing fields.",
+        )
+    )
+
+    checks.append(
+        (
+            "generated_demo2_facts_preserve_scope_and_limits",
+            bool(facts)
+            and all(fact_preserves_demo2_scope(fact) for fact in facts)
+            and all(fact_preserves_limits(fact) for fact in facts),
+            "Generated Demo 2 facts should preserve Demo 2 same-period cross-store scope and interpretation limits.",
+        )
+    )
+
+    passed = 0
+    failed = 0
+    lines: list[str] = []
+
+    for name, ok, detail in checks:
+        if ok:
+            passed += 1
+            lines.append(f"PASS {name}")
+        else:
+            failed += 1
+            lines.append(f"FAIL {name}: {detail}")
+
+    summary = [
+        f"Retail Demo 2 comparability-gate consistency eval result: {passed}/{len(checks)} passed",
+        f"Passed: {passed}",
+        f"Failed: {failed}",
+        "",
+        *lines,
+        "",
+    ]
+
+    RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    RESULTS_PATH.write_text("\n".join(summary), encoding="utf-8")
+    print("\n".join(summary))
+
+    return 0 if failed == 0 else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

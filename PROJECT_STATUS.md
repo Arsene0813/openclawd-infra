@@ -33,13 +33,40 @@ Demo 2 does not rank stores as simply better or worse. It is a comparability-fir
 
 The current implementation does not yet perform full multi-store comparability grouping across all 48 stores.
 
+## Demo 3 Pairwise Comparability Gate
+
+Demo 3 is implemented as a small pairwise comparability gate over the current Demo 2 B-F March 2026 output.
+
+It adds:
+
+- `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
+- `retail_ops/scripts/run_demo3_pairwise_gate.py`
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+- `retail_ops/scripts/validate_demo3_pairwise_gate_output.py`
+- `eval/eval_retail_demo3_pairwise_gate.py`
+- `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
+- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+
+Demo 3 tests whether store pairs can be compared for narrow questions:
+
+- `search_entry_structure`
+- `activity_transfer`
+- `order_quality_pressure`
+
+It does not classify stores by market area, does not treat `region_type` as a hard peer-grouping rule, does not rank stores, and does not generate final operating recommendations.
+
+Current validation status:
+
+- Demo 3 pairwise output validation: passed.
+- Demo 3 pairwise gate eval: 9/9 passed.
+
 ## Not Yet Implemented
 
 | Area | Current boundary |
 |---|---|
 | Automated Meituan backend ingestion | Not implemented |
 | Full 48-store cross-store comparison | Not implemented |
-| Store-stage classification across all stores | Not implemented |
+| Store-stage classification across all stores | Not implemented; Demo 3 deliberately avoids premature market-area or store-stage classification |
 | Production deployment | Not implemented |
 | Automated daily operating recommendations | Not implemented |
 | Direct Qdrant loading path for Demo 2 facts | Not implemented; Demo 2 endpoint is currently file-backed |
@@ -54,6 +81,9 @@ Current project checks are expected to pass with:
 - python3 retail_ops/scripts/validate_demo2_retail_memory_facts.py
 - python3 eval/eval_retail_demo2_facts.py
 - python3 eval/eval_retail_demo2_comparability_gate.py
+- python3 retail_ops/scripts/run_demo3_pairwise_gate.py
+- python3 retail_ops/scripts/validate_demo3_pairwise_gate_output.py
+- python3 eval/eval_retail_demo3_pairwise_gate.py
 - python3 retail_ops/scripts/validate_retail_data_contract.py
 - python3 scripts/validate_project_consistency.py
 

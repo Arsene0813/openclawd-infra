@@ -89,6 +89,33 @@ The Demo 2 API endpoint is:
 
 This endpoint is file-backed and uses generated Demo 2 retail memory facts. It is separate from /chat_retail_ops_kb, which remains the Store A Demo 1 endpoint.
 
+## Demo 3: Pairwise Comparability Gate
+
+Demo 3 turns the Demo 2 B-F same-period diagnostic into a pairwise comparability gate.
+
+It compares every pair of stores for three narrow question types:
+
+- `search_entry_structure`
+- `activity_transfer`
+- `order_quality_pressure`
+
+The output is:
+
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+
+Core supporting files:
+
+- `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
+- `retail_ops/scripts/run_demo3_pairwise_gate.py`
+- `retail_ops/scripts/validate_demo3_pairwise_gate_output.py`
+- `eval/eval_retail_demo3_pairwise_gate.py`
+- `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
+- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+
+Demo 3 does not classify stores by market area and does not use `region_type` as a hard grouping rule. It keeps `region_type` only as weak context through `region_type_comparison_note`.
+
+The purpose is to make comparability testable before any store comparison, ranking, or operating strategy transfer is attempted.
+
 ## Implemented Retail Path
 
 The current retail path is intentionally staged:
@@ -101,7 +128,7 @@ Meituan-style backend metrics
 -> data-contract validation
 -> retail retrieval / facts evaluation
 
-This now includes a limited multi-store Demo 2 comparability diagnostic, but it does not yet represent a full 48-store decision-support system.
+This now includes a limited multi-store Demo 2 comparability diagnostic and a Demo 3 pairwise comparability gate, but it does not yet represent a full 48-store decision-support system.
 
 ## Readable Architecture
 

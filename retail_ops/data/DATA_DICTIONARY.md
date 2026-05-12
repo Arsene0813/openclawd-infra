@@ -57,22 +57,21 @@ Example:
 
 Current status: `region_type` is retained as the implemented metadata field used by the current retail data contract.
 
-In the current demo, `region_type` should be read as a coarse region or market-context label from available store evidence. It should not be interpreted as a fully normalized city/county/community classification.
+In the current demo, `region_type` should be read only as a weak region or market-context field from available store evidence. It is not a store-stage label, not a mature market-area classification, and not a sufficient condition for deciding whether two stores are comparable.
 
-This limitation is intentional. At the current stage, classifying stores into city, county, or community categories would rely too heavily on subjective operating experience. Different stores in the same city may still face different purchasing power, delivery radius, local competition, rent structure, promotion pressure, and customer behavior. Therefore, `region_type` alone must not be used as a strong comparability condition.
+This limitation is intentional. The current sample is too small to support a reliable data-driven regional classification. Classifying stores by subjective experience, intuition, address impression, or habitual labels would create false confidence. Different stores with similar visible region labels may still face different purchasing power, delivery radius, local competition, rent structure, promotion pressure, customer behavior, stockout risk, and fulfillment constraints.
 
-Future cross-store comparison should combine `region_type` with period alignment, store type, order volume, activity profile, visibility/ranking signals, entry and order conversion, refund and invalid-order pressure, SKU evidence, and data completeness.
+Therefore, `region_type` alone must not be used as a hard comparability gate. In the current project, it can only appear as context that should be combined with period alignment, store type, order volume, visibility and ranking signals, entry and order conversion, activity profile, refund and invalid-order pressure, SKU evidence, data completeness, and future external market evidence.
 
-If future demos introduce a more specific market-area classification, it should be added as a new documented field rather than silently changing the meaning of `region_type`.
+Future market-area classification should be created only when the project has enough store coverage and supporting evidence. If a future demo introduces such a classification, it must be added as new documented fields rather than silently changing the meaning of `region_type`.
 
 Possible future fields:
 
-- `market_area_type`: a documented classification such as city_center, county, community, or warehouse_area.
+- `market_area_type`: a documented data-supported market-area classification.
 - `market_area_type_source`: the evidence or rule used for the classification.
-- `market_area_type_confidence`: whether the classification is objective, manually inferred, or uncertain.
+- `market_area_type_confidence`: whether the classification is data-supported, manually reviewed, or uncertain.
 
 Until those fields are defined, the system should treat market-area classification as an unresolved comparability issue rather than a hard label.
-
 
 ## Source Metrics vs SQL-Derived Diagnostics / 后台原始指标与 SQL 派生诊断边界
 
@@ -93,6 +92,34 @@ Current derived outputs are separated into two layers.
 Memory-facing slots are generated from multiple source fields and SQL-derived columns. They are not raw Meituan backend fields and should not be treated as SQL output headers. The SQL layer must not silently rename, redefine, or reverse-engineer Meituan backend metrics. It also must not turn one threshold into a fixed store-stage label. For example, `order_conversion_rate_pct` follows the backend definition and must not be recomputed from `valid_orders / entry_users`.
 
 Any new SQL-derived field must be explicitly documented before it is used in generated outputs or memory facts.
+
+
+### Demo 3 Pairwise Comparability-Gate Fields
+
+The following fields are SQL-derived Demo 3 pairwise comparability-gate outputs. They are not Meituan backend metrics and they do not rename existing Demo 1 or Demo 2 fields.
+
+| Field | Definition / boundary |
+|---|---|
+| `reference_store_id` | The first store in a pairwise comparison. It uses the existing `store_id` value and does not replace `store_id`. |
+| `candidate_store_id` | The second store in a pairwise comparison. It uses the existing `store_id` value and does not replace `store_id`. |
+| `comparison_question_type` | The narrow question being tested by the pairwise gate. Current implemented values are `search_entry_structure`, `activity_transfer`, and `order_quality_pressure`. |
+| `reference_region_type` | The existing `region_type` value for the reference store in a pairwise output. It is weak context only, not a market-area classification. |
+| `candidate_region_type` | The existing `region_type` value for the candidate store in a pairwise output. It is weak context only, not a market-area classification. |
+| `region_type_comparison_note` | A note comparing the two existing `region_type` values. It must not be read as a market-area classification. |
+| `reference_store_type` | The existing `store_type` value for the reference store in a pairwise output. It is operating-format context, not a performance label. |
+| `candidate_store_type` | The existing `store_type` value for the candidate store in a pairwise output. It is operating-format context, not a performance label. |
+| `store_type_comparison_note` | A note comparing the two existing `store_type` values. It is operating-format context, not a performance label. |
+| `search_entry_share_gap_pct` | Absolute gap between the two stores' `search_entry_share_pct` values. |
+| `activity_order_share_gap_pct` | Absolute gap between the two stores' `activity_order_share_pct` values. |
+| `activity_cost_ratio_gap_pct` | Absolute gap between the two stores' `activity_cost_ratio_pct` values. |
+| `refund_pressure_gap_pct` | Absolute gap between the two stores' `refund_pressure_pct` values. |
+| `invalid_order_pressure_gap_pct` | Absolute gap between the two stores' `invalid_order_pressure_pct` values. |
+| `top3_sku_concentration_gap_pct` | Absolute gap between the two stores' `top3_sku_transaction_amount_share_pct` values. This remains lightweight top-SKU evidence, not full product-category share. |
+| `pairwise_comparison_decision` | SQL-derived gate outcome for the narrow question. Current values are `comparable_with_limits`, `partially_comparable`, and `not_comparable_for_strategy_transfer`. |
+| `pairwise_limit_notes` | SQL-derived interpretation notes explaining why the pair can or cannot be compared for the selected question. Missing context should create limits rather than be treated as zero or normal. |
+
+These fields are pairwise diagnostic outputs. They do not create a final store ranking, a full 48-store classification, or an automated operating recommendation.
+
 
 ### Demo 1 SQL-Derived Diagnostic Details
 

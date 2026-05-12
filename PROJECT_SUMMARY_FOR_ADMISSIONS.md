@@ -232,6 +232,7 @@ because valid_orders is an order-status metric, while order_users is a user-leve
 |---|---|---|
 | Store A month-over-month diagnostic | Supported by Demo 1. | Single-store case only; not cross-store comparison. |
 | B-F same-period diagnostic | Supported by Demo 2. | March 2026 sample only; not full 48-store grouping. |
+| Pairwise comparability gate | Supported by Demo 3. | Tests narrow pairwise comparison questions; not a final strategy-transfer system. |
 | Field-name consistency | Supported by DATA_DICTIONARY.md, LINEAGE.md, and validation scripts. | New fields require documentation before use. |
 | Order-conversion interpretation | Supported by backend-formula preservation. | Must not be recomputed from valid_orders. |
 | Activity and subsidy interpretation | Supported as operating-lever evidence. | Not a clean causal intervention and not a general profit-efficiency metric. |
@@ -264,6 +265,7 @@ Current limitations include:
 
 - Demo 1 is based on one Store A month-over-month case;
 - Demo 2 uses five anonymized stores, B-F, from the same March 2026 reporting window;
+- Demo 3 tests pairwise comparability over the current Demo 2 output;
 - the current system does not yet perform full 48-store grouping;
 - automated Meituan backend ingestion is not implemented;
 - promotion cycle dates are unknown;
@@ -283,7 +285,7 @@ The next development step is to expand the current comparability-first path from
 The planned next work is:
 
 - include more stores while preserving the same metric contract;
-- implement a clearer comparability gate before comparing stores;
+- expand the current pairwise comparability gate with more stores and stronger external context;
 - separate same-period, same-region, same-store-type, and different-region comparisons;
 - improve peer-store selection logic;
 - distinguish reusable operating signals from one-store-only observations;
@@ -315,3 +317,33 @@ SQL files, generated outputs, validation scripts, and result files are supportin
 ## 15. One-Sentence Summary
 
 This project turns rich but single-store-oriented Meituan backend data into a staged cross-store decision-support prototype, using SQL, metric lineage, and memory facts to help decide when store comparisons are valid, limited, or unsupported.
+
+## Completed Retail Demo 3: Pairwise Comparability Gate
+
+Demo 3 adds a small pairwise comparability gate over the current Demo 2 B-F March 2026 output.
+
+It tests whether a pair of store-period rows can be compared for three narrow operating questions:
+
+- `search_entry_structure`
+- `activity_transfer`
+- `order_quality_pressure`
+
+This is a limited but important step because it turns the comparability problem into testable behavior. A pair of stores may be comparable for search-entry structure but not comparable for activity strategy transfer. The output therefore records `pairwise_comparison_decision` and `pairwise_limit_notes` instead of ranking stores or recommending actions directly.
+
+Demo 3 also preserves the `region_type` boundary. The project does not classify stores by market area from subjective experience, intuition, or a small sample. `region_type` remains weak context only. Future market-area classification would require broader store coverage and stronger supporting evidence such as purchasing power, delivery radius, competition, activity intensity, refund pressure, invalid-order pressure, and SKU evidence.
+
+Supporting files:
+
+- `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
+- `retail_ops/scripts/run_demo3_pairwise_gate.py`
+- `retail_ops/scripts/validate_demo3_pairwise_gate_output.py`
+- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
+- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+- `eval/eval_retail_demo3_pairwise_gate.py`
+- `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
+
+Current validation status:
+
+- Demo 3 pairwise output validation: passed.
+- Demo 3 pairwise gate eval: 9/9 passed.
+
