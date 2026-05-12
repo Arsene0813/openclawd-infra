@@ -86,15 +86,13 @@ SQL is used to organize selected backend metrics into comparable diagnostic outp
 
 The memory layer records each store's observed state, supporting evidence, calculation notes, confidence level, and limitations. It is not meant to make operating decisions directly. Its role is to preserve evidence and prevent unsafe reuse of isolated metrics across stores, periods, and operating contexts.
 
-## 5. Connection to the Earlier Memory Prototype
+## 5. Technical Origin of the Memory Layer
 
-The earlier livestream commerce memory prototype is the technical origin of this project. It handled changing product facts through structured fact extraction, typed memory, overwrite control, freshness filtering, traceable retrieval, and fallback when reliable information was unavailable.
+The earlier livestream-commerce prototype is the technical origin of the memory layer, not the main business claim of this project. It provided the structure for typed facts, overwrite control, freshness filtering, traceable retrieval, and fallback when evidence is weak.
 
-The retail extension applies the same reliability principle to store-operation data.
+The retail extension applies that structure to store-operation data. A store-period profile is treated as evidence with a time window, source fields, confidence level, and limitations. This keeps March evidence separate from April evidence, and prevents activity-heavy, refund-heavy, or top-SKU-concentrated cases from being reused as general operating rules.
 
-Store metrics also change by period and context. A store's March profile should not be casually mixed with another store's April profile. A promotion-heavy store should not be compared directly with a low-activity store without recording that limitation. A top-SKU signal should not be overstated as full product-category analysis.
-
-The technical idea is not simply to connect a language model to business data. The purpose is to control how operating evidence is stored, retrieved, compared, and limited.
+The current business problem is therefore cross-store decision support: which store-period records can be compared, what evidence supports the comparison, and when the answer should remain limited or refuse strategy transfer.
 
 ## 6. Completed Retail Demo 1
 

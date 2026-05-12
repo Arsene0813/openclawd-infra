@@ -61,3 +61,21 @@ Expected retail evaluation status:
 
 - Store A retail eval: Retail eval result: 8/8 passed
 - Demo 2 offline facts eval: Retail Demo 2 facts eval result: 6/6 passed
+- Demo 2 comparability-gate eval: Retail Demo 2 comparability-gate consistency eval result: 5/5 passed
+- Demo 2 answer-boundary eval: Retail Demo 2 answer-behavior boundary eval result: 4/4 passed
+
+## Retail Demo 2 Answer-Behavior Boundary Evaluation
+
+Demo 2 now includes an offline answer-boundary check:
+
+- `eval/eval_retail_demo2_answer_behavior.py`
+- `eval/results/eval_retail_demo2_answer_behavior_result.txt`
+
+This check focuses on whether comparison answers preserve the implemented metric contract:
+
+- `activity_cost_ratio_pct` is treated as activity-cost-ratio evidence, not ROI or profit margin.
+- `top3_sku_transaction_amount_share_pct` is treated as lightweight top-SKU concentration evidence, not full product-category sales share.
+- search-entry comparison stays tied to `search_entry_rate_pct`, `search_entry_share_pct`, `search_entry_users`, and `entry_users`.
+- promotion or subsidy strategy transfer is qualified unless activity, subsidy, refund, invalid-order, and comparison-limit evidence support it.
+
+This turns the current Demo 2 comparison boundary into a testable behavior.

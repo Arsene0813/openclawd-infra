@@ -64,3 +64,51 @@ If any of them later become implemented fields, they must first be documented in
 3. SQL output documentation
 4. generated memory fact logic
 5. validation and evaluation cases
+
+## Field Rename Gate for Future Changes
+
+Any future field-name change must pass this table before implementation. The current decision is to keep all implemented canonical names unchanged and preserve the definitions in `retail_ops/data/DATA_DICTIONARY.md`.
+
+| Existing field | Dictionary / implemented definition boundary | Current use position | Rename decision |
+|---|---|---|---|
+| `store_id` | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, validation scripts. | No. Keep unchanged. |
+| `entity_id` | Retrieval-layer identifier used in generated retail memory facts; current convention is `store_` + `store_id`. | Generated retail memory facts and retrieval/evaluation logic. | No. Keep unchanged. |
+| `region_type` | Coarse operating-context label used for current staged comparison; not a full geographic segmentation model. | Demo 2 source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
+| `store_type` | Store operating-type field used as a comparison boundary. | Source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
+| `business_district_rank` | Meituan backend ranking field; not a global market ranking. | Source metrics and SQL output. | No. Keep unchanged. |
+| `exposure_users` | Backend exposure-user metric. | Source metrics, SQL output, visibility memory facts. | No. Keep unchanged. |
+| `entry_users` | Backend entry-user metric. | Source metrics, SQL output, visibility and conversion memory facts. | No. Keep unchanged. |
+| `search_entry_users` | Backend search-entry-user metric. | Source metrics, SQL output, visibility memory facts. | No. Keep unchanged. |
+| `order_users` | Backend order-user metric used in the backend order-conversion formula. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
+| `order_conversion_rate_pct` | Backend formula field: `order_users / entry_users * 100`; must not be recomputed from `valid_orders / entry_users`. | Source metrics, SQL output, transaction/conversion facts, lineage. | No. Keep unchanged. |
+| `payment_users` | Backend successful-payment-user metric. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
+| `payment_conversion_rate_pct` | Backend payment-conversion metric. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
+| `transaction_amount` | Backend transaction amount for the selected period and scope. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
+| `transaction_orders` | Backend transaction-order count for the selected period and scope. | Source metrics, SQL output, activity and transaction facts. | No. Keep unchanged. |
+| `average_order_value` | Backend average-order-value field. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
+| `estimated_income_proxy` | Platform-displayed estimated income / estimated order income proxy; not audited profit. | Source metrics, SQL output, transaction/conversion facts, evidence-boundary docs. | No. Keep unchanged. |
+| `activity_original_transaction_amount` | Backend original transaction amount for orders that used activities. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
+| `activity_orders` | Backend activity-driven order count. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
+| `activity_cost` | Backend activity cost field. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
+| `merchant_subsidy_amount` | Merchant-borne subsidy amount. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
+| `platform_subsidy_amount` | Platform-borne subsidy amount. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
+| `activity_cost_ratio_pct` | Activity cost divided by activity original transaction amount; activity-cost-ratio evidence, not traditional ROI. | Source metrics, SQL output, activity facts, lineage. | No. Keep unchanged. |
+| `activity_order_share_pct` | SQL-derived activity-order share. | Demo 2 SQL output, generated facts, comparability review. | No. Keep unchanged. |
+| `refund_amount` | Backend refund amount counted by refund-success date. | Source metrics, SQL output, order-quality facts. | No. Keep unchanged. |
+| `valid_orders` | Backend valid-order count; order-status metric, not user-level order-conversion denominator. | Source metrics, SQL output, order-quality facts. | No. Keep unchanged. |
+| `invalid_orders` | Backend invalid-order count. | Source metrics, SQL output, order-quality facts. | No. Keep unchanged. |
+| `refund_pressure_pct` | SQL-derived refund-pressure signal. | SQL output, order-quality facts, comparability review. | No. Keep unchanged. |
+| `invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal. | SQL output, order-quality facts, comparability review. | No. Keep unchanged. |
+| `sku_transaction_amount` | SKU-level transaction amount; not store-period total transaction amount. | Top-SKU source tables and product-mix facts. | No. Keep unchanged. |
+| `top3_sku_transaction_amount_share_pct` | SQL-derived top-three SKU concentration signal; not full product-category sales share. | SQL output, top-SKU facts, evidence-boundary docs. | No. Keep unchanged. |
+| `comparison_scope_flag` | SQL-derived comparison-scope flag for current Demo 2 diagnostic readiness. | Demo 2 SQL output, generated facts, comparability-gate eval. | No. Keep unchanged. |
+| `comparison_limit_notes` | SQL-derived comparison-limit notes. | Demo 2 SQL output, generated facts, comparability-gate eval. | No. Keep unchanged. |
+| `period_start` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. Keep unchanged. |
+| `period_end` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. Keep unchanged. |
+| `period_granularity` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. Keep unchanged. |
+| `visibility_entry_profile` | Canonical retail memory slot. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
+| `activity_lever_profile` | Canonical retail memory slot. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
+| `transaction_conversion_profile` | Canonical retail memory slot. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
+| `order_quality_pressure_profile` | Canonical retail memory slot for refund and invalid-order pressure. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
+| `single_metric_attribution_guard` | Canonical retail memory slot for attribution boundary. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
+| `top3_sku_product_mix_note` | Canonical retail memory slot for lightweight top-SKU evidence. | Generated retail memory facts and retail evals. | No. Keep unchanged. |

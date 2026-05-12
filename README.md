@@ -436,3 +436,19 @@ Short-term improvements:
 - Add more Demo 2 retrieval/evaluation cases around comparison scope and limitation-preserving answers.
 - Add a dedicated metric-lineage retrieval eval case after adding the corresponding retrievable retail memory fact.
 - Update the evaluation runner so it automatically regenerates retail and livestream summary files after each run.
+
+## Retail Demo 2 Answer-Behavior Boundary Evaluation
+
+Demo 2 now includes an offline answer-boundary check:
+
+- `eval/eval_retail_demo2_answer_behavior.py`
+- `eval/results/eval_retail_demo2_answer_behavior_result.txt`
+
+This check focuses on whether comparison answers preserve the implemented metric contract:
+
+- `activity_cost_ratio_pct` is treated as activity-cost-ratio evidence, not ROI or profit margin.
+- `top3_sku_transaction_amount_share_pct` is treated as lightweight top-SKU concentration evidence, not full product-category sales share.
+- search-entry comparison stays tied to `search_entry_rate_pct`, `search_entry_share_pct`, `search_entry_users`, and `entry_users`.
+- promotion or subsidy strategy transfer is qualified unless activity, subsidy, refund, invalid-order, and comparison-limit evidence support it.
+
+This turns the current Demo 2 comparison boundary into a testable behavior.
