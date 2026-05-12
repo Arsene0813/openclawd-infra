@@ -124,7 +124,7 @@ The memory-facing facts record store-period observations, calculation notes, con
 
 Demo 1 and Demo 2 currently generate memory facts.
 
-Demo 3 currently produces pairwise gate rows, not memory facts. This is intentional for the current stage. The next narrow implementation step is to expose Demo 3 pairwise output through a file-backed answer path before attempting broader 48-store decision support.
+Demo 3 currently produces pairwise gate rows, not memory facts. It also has a narrow file-backed answer path that reads the saved pairwise output and returns the pairwise decision, relevant gap fields, and limitation notes.
 
 ## 5. Retrieval and Evaluation
 
@@ -140,7 +140,7 @@ Current API boundary:
 
 - `/chat_retail_ops_kb` supports Store A Demo 1.
 - `/chat_retail_ops_demo2_kb` supports the Demo 2 file-backed facts path.
-- Demo 3 is currently SQL output, saved CSV output, documentation, validation, and offline evaluation. It is not yet exposed through a retrieval endpoint.
+- Demo 3 is currently SQL output, saved CSV output, documentation, validation, offline evaluation, and a narrow file-backed answer script. It is not yet exposed through a retrieval endpoint or API endpoint.
 
 ## 6. Why This Architecture Fits the Business Problem
 

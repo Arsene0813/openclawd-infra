@@ -205,7 +205,8 @@ Demo 3 currently supports:
 - documented SQL-derived gap fields;
 - saved CSV output;
 - validation;
-- offline evaluation.
+- offline evaluation;
+- a narrow file-backed answer path.
 
 Demo 3 currently does not support:
 
@@ -213,9 +214,11 @@ Demo 3 currently does not support:
 - market-area classification;
 - causal promotion-effect analysis;
 - final operating recommendation;
-- retrieval endpoint or API answer path.
+- retrieval endpoint or API endpoint.
 
-The next narrow implementation step is to expose the Demo 3 pairwise output through a file-backed answer path. That answer path should return the pairwise decision, relevant gap fields, and limitation notes before discussing any possible operating interpretation.
+The file-backed answer path reads `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv` and returns the pairwise decision, relevant gap fields, and limitation notes.
+
+It should not be treated as a full LLM retrieval endpoint.
 
 ## 12. Why This Matters
 
