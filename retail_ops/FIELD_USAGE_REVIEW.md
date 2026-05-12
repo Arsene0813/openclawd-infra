@@ -148,6 +148,24 @@ These fields should not be confused with `transaction_amount`.
 
 `order_amount` and `payment_amount` belong to the order-submission and payment funnel view, while `transaction_amount` follows the backend transaction metric definition documented in the dictionary.
 
+## Additional Field-Boundary Review for Retail Narrative Refinement
+
+This review patch does not rename any field.
+
+The purpose of this section is to protect the current admissions-facing retail narrative from introducing new names or silently changing existing meanings.
+
+Existing field or concept | Dictionary definition / boundary | Current use location | Rename decision
+---|---|---|---
+`business_district_rank` | Backend-reported business-district ranking field when available. It is supplementary context, not a global market ranking and not a hard comparability condition. | Demo 2 source/output evidence and data dictionary. | No. Keep unchanged.
+`refund_order_pressure_pct` | SQL-derived order-count refund-pressure indicator based on `refund_orders_all_or_partial / transaction_orders * 100`. | Demo 1 output and dictionary. Demo 2/3 currently use `refund_pressure_pct` and `invalid_order_pressure_pct` as active order-quality comparison fields. | No. Keep unchanged.
+`refund_pressure_pct` | SQL-derived refund-pressure signal based on refund amount and transaction amount. | SQL output, order-quality facts, Demo 2/3 comparability output. | No. Keep unchanged.
+`invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal based on invalid and valid order counts. | SQL output, order-quality facts, Demo 2/3 comparability output. | No. Keep unchanged.
+`order_quality_pressure` | Demo 3 `comparison_question_type`; it is a narrow pairwise question type. | Demo 3 pairwise SQL output, Demo 3 answer path, Demo 3 eval. | No. Keep unchanged.
+`order_quality_pressure_profile` | Retrieval-facing memory slot for refund pressure, refund-order pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts and retail evals. | No. Keep unchanged.
+`top3_sku_concentration_gap_pct` | Demo 3 pairwise gap based on `top3_sku_transaction_amount_share_pct`; still lightweight top-SKU evidence, not full product-category share. | Demo 3 pairwise SQL output and dictionary. | No. Keep unchanged.
+
+Decision: the narrative may explain these boundaries, but it must not rename the fields or convert them into new store-stage labels.
+
 ## Period Granularity Field Review
 
 This review patch does not rename any field.

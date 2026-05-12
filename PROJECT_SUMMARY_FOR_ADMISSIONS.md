@@ -1,229 +1,174 @@
 # Project Summary for Admissions Review
 
-## 1. Project Title
+## Project title
 
 **Lifecycle-Aware AI Memory Layer for Retail Decision Support**
 
-Repository name: `livestream-agent-memory-layer`
+Repository: `livestream-agent-memory-layer`
 
-## 2. Short Summary
+## One-minute summary
 
-This project is a working local prototype built from a real Meituan-style instant retail operating problem.
+This project grew out of a real operating problem in my Meituan instant-retail stores.
 
-Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time. Once the business expands across many stores, the harder problem is not simply collecting more data. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and which operating signals are strong enough to support a cautious decision.
+The Meituan merchant backend gives detailed store-level data, but it is mainly designed for reviewing one store at a time. Once the operation expands across many stores, the harder problem is not collecting more backend metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgement the evidence can actually support.
 
-The current retail prototype uses SQL to organize selected Meituan backend exports into consistent diagnostic outputs. It then connects those outputs to a memory / retrieval design that preserves evidence, metric definitions, limitations, and conservative operating profiles.
+I built a staged prototype that uses a metric dictionary, SQL diagnostics, generated memory facts, and retrieval/evaluation checks to keep retail decision support inside an evidence boundary. The current retail demos do not try to rank stores or produce automatic recommendations. They test a more basic question first: whether a comparison is valid enough to discuss.
 
-## 3. Business Problem
+## Business problem
 
-In Meituan-style instant retail, stores compete through an operating chain:
+In Meituan instant retail, store competition is not only about whether a store has products online. It is about whether the store can move through an operating chain:
 
-| Operating step | Meaning |
+| Operating step | Practical meaning |
 |---|---|
-| Being seen | Whether consumers can discover the store or product |
-| Being entered | Whether exposure turns into store visits |
-| Being ordered | Whether visits turn into orders |
-| Being selected again or maintaining share | Whether the store can sustain demand and customer trust |
+| Being seen | The store or product can be discovered by consumers in a specific local context. |
+| Being entered | Exposure turns into store visits. |
+| Being ordered | Visits turn into submitted and paid orders. |
+| Being selected again / maintaining share | The store can sustain demand, trust, and local visibility over time. |
 
-Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are operating levers inside this chain.
+Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. They are not isolated goals.
 
-Activity cost or subsidy level should not be judged only as a simple ROI question. A new store may need activity support to gain visibility. A store under strong local competition may need price pressure or subsidy to maintain share. A store with high search exposure may still fail if entry, order conversion, refund pressure, invalid orders, or SKU structure create friction.
+This is why I do not treat activity cost as a simple ROI problem. A new store may need stronger activity support to gain first exposure and first orders. A store under local price pressure may need pricing or subsidy tools to defend visibility and market share. A store with high search exposure may still have weak results if entry, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
 
-This is why the project focuses on comparability before recommendation.
+The decision-support problem is therefore not: "Which store is best?"
 
-## 4. Supported Question Contract
+The better question is:
 
-The current retail prototype supports three levels of questions.
+> Which stores are comparable, for which question, under which metric definitions and limitations?
 
-| Level | Implemented demo | Supported question |
-|---|---|---|
-| Store-period diagnosis | Demo 1 | What changed inside one store across observed months, and which signals should not be interpreted alone? |
-| Same-period cross-store diagnosis | Demo 2 | How do selected Stores B-F compare under the same reporting window, and what limits apply before interpretation? |
-| Pairwise comparability gate | Demo 3 | For one selected store pair and one narrow question type, is the comparison usable, partially usable, or not usable for strategy transfer? |
+## Technical approach
 
-The expected output is not a simple label such as good store, bad store, or copy this strategy.
+The retail prototype has four layers.
 
-The expected output is:
-
-- supported evidence;
-- relevant metric definitions;
-- comparable scope;
-- limitation notes;
-- refusal or warning when the evidence is not strong enough.
-
-## 5. Livestream Memory Layer
-
-The original memory-layer prototype was built for an LLM-powered livestream commerce setting, where product information changes frequently.
-
-The livestream layer supports:
-
-- structured fact extraction from product-related input;
-- typed memory for product price, promotion, stock status, shipping policy, and product features;
-- product-level entity separation;
-- overwrite control and soft deactivation;
-- freshness-aware retrieval;
-- active-state filtering;
-- traceable retrieval output;
-- fallback or refusal when reliable memory is not available;
-- scenario-based evaluation.
-
-The main endpoints are:
-
-- `/chat_mem`
-- `/chat_livestream_kb`
-
-The value of this layer is not that it is a general chatbot. The value is that changing commercial facts are stored and retrieved with structure, source awareness, and lifecycle rules.
-
-## 6. Retail Data Contract
-
-The retail extension applies the same reliability principle to Meituan-style operating data.
-
-The project includes a metric dictionary and lineage layer because Meituan backend metrics should not be treated as generic business metrics without checking their original platform meaning, denominator, reporting window, and data grain.
-
-Key files:
-
-| File | Purpose |
+| Layer | What it does |
 |---|---|
-| `retail_ops/data/DATA_DICTIONARY.md` | Canonical Meituan-style metric definitions and field names |
-| `retail_ops/LINEAGE.md` | Claim-to-field lineage and interpretation limits |
-| `retail_ops/scripts/validate_retail_data_contract.py` | Validation script for field contract |
-| `retail_ops/outputs/retail_data_contract_validation_result.txt` | Saved validation result for the original Store A / Demo 1 data contract |
+| Metric dictionary | Preserves the original meaning of Meituan backend metrics and maps Chinese backend labels to canonical project field names. |
+| SQL diagnostics | Turns selected backend exports into store-period and pairwise comparison outputs. |
+| Memory facts | Store evidence, period, source fields, observed values, and limitations in a retrieval-facing structure. |
+| Evaluation and answer boundary checks | Test whether later answers preserve definitions, limits, and refusal behavior instead of producing unsupported advice. |
 
-Important examples:
+The SQL layer is not used to paste labels onto stores. It is used to organize backend metrics into a structure that makes cautious comparison possible.
 
-| Field | Boundary |
-|---|---|
-| `order_conversion_rate_pct` | Follows the backend formula `order_users / entry_users * 100`; it must not be recomputed as `valid_orders / entry_users` |
-| `activity_cost_ratio_pct` | Describes activity cost divided by activity original transaction amount; it should not be described as traditional ROI |
-| `estimated_income_proxy` | Treated as a platform-displayed estimated income proxy, not audited profit |
-| `refund_amount` | Counted by refund-success date, so SQL-derived refund pressure should not be treated as a perfect original-order cohort refund rate |
-| `region_type` | Weak region or market-context metadata; not a store-stage label, not a mature market-area classification, and not a hard peer-store grouping rule |
+The memory layer is not used to make final decisions for me. It is used to remember what was observed, what the evidence depends on, and where a comparison should stop.
 
-## 7. Retail Demo 1
+## Current implemented retail path
 
-Demo 1 analyzes Store A, a self-operated Qingdao store, across February, March, and April 2026.
+### Demo 1: Store A month-over-month diagnostic
 
-It uses normalized Meituan-style backend metrics such as:
+Demo 1 analyzes Store A across February, March, and April 2026.
 
-- exposure users;
-- exposure times;
-- average ranking;
-- entry users;
-- search entry users;
-- order users;
-- payment users;
-- transaction amount;
-- transaction orders;
-- estimated income proxy;
-- activity original transaction amount;
-- activity orders;
-- activity cost;
-- merchant subsidy amount;
-- refund amount;
-- valid orders;
-- invalid orders;
-- top-SKU evidence.
+It shows why one metric alone is not enough. For example, April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. Refund pressure and invalid-order pressure improved at the same time.
 
-The demo shows why operational performance should not be interpreted from one metric alone. April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. At the same time, refund pressure and invalid-order pressure improved.
+The purpose is to preserve a careful operating profile, not to label a month as simply good or bad.
 
-The point is to preserve a careful operating profile, not to label one month as simply good or bad.
+Main file:
 
-Canonical retail memory slots currently used include:
+- `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 
-- `visibility_entry_profile`
-- `activity_lever_profile`
-- `transaction_conversion_profile`
-- `order_quality_pressure_profile`
-- `single_metric_attribution_guard`
-- `top3_sku_product_mix_note`
+### Demo 2: Same-period cross-store diagnostic
 
-## 8. Retail Demo 2
+Demo 2 extends the analysis to selected Stores B-F under the same March 2026 reporting window.
 
-Demo 2 extends the retail analysis from one store to selected Stores B-F under the same March 2026 reporting window.
+The point is not to rank the stores. The point is to structure comparable fields before any operating interpretation is made. Store type, activity involvement, refund pressure, invalid-order pressure, search-entry structure, top-SKU evidence, and weak region context can all limit what a cross-store comparison means.
 
-A store can have different traffic structure, activity involvement, refund pressure, invalid-order pressure, store type, SKU concentration, and local market context. Demo 2 creates a cautious cross-store diagnostic layer before any operating recommendation is made.
+Main file:
 
-It organizes comparable backend fields and SQL-derived diagnostics so that later comparison can preserve scope and limitations.
+- `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
-## 9. Retail Demo 3
+### Demo 3: Pairwise comparability gate
 
 Demo 3 turns the Demo 2 output into a pairwise comparability gate.
 
-It compares every store pair across three narrow question types:
+It compares store pairs under three narrow question types:
 
 - `search_entry_structure`
 - `activity_transfer`
 - `order_quality_pressure`
 
-The key idea is that the same pair of stores may be comparable for one question but not for another. For example, two stores may have similar search-entry structure, making a narrow traffic-structure comparison usable. The same two stores may still be unsafe for activity-strategy transfer if activity-order share, activity-cost ratio, refund pressure, invalid-order pressure, or store type differ too much.
+The same two stores may be usable for one question and unsafe for another. For example, two stores can have similar search-entry structure but still be unsafe for activity-strategy transfer if activity-order share, activity-cost ratio, refund pressure, invalid-order pressure, or store type differ too much.
 
-Demo 3 currently exists as offline SQL output, validation, evaluation, and a narrow file-backed answer path.
+Main files:
 
-## 10. How SQL and Memory Work Together
+- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+- `retail_ops/demo/demo_3_pairwise_answer_path.md`
+- `retail_ops/demo/demo_3_pairwise_experiment_notes.md`
 
-The SQL layer organizes backend metrics into a more comparable structure and derives limited diagnostic fields such as:
+## How the original memory layer connects
 
-- `search_entry_share_pct`
-- `activity_order_share_pct`
-- `refund_pressure_pct`
-- `invalid_order_pressure_pct`
-- `top3_sku_transaction_amount_share_pct`
-- `pairwise_comparison_decision`
-- `pairwise_limit_notes`
+The original livestream memory layer is the technical base of this project.
 
-The memory layer is used to preserve:
+It was first built for a livestream commerce setting where product facts such as price, promotion, stock, shipping policy, and product features can change over time. The system stores facts with type, entity, slot, active state, overwrite behavior, freshness handling, and traceable retrieval.
 
-- the store entity;
-- the reporting period;
-- the metric source;
-- the relevant evidence;
-- the limitation;
-- the answer boundary.
+That same reliability problem appears in retail operations data. A store-period metric is also not useful unless the system remembers its time window, source field, definition, and limitation.
 
-This matters because a growing multi-store dataset can easily create false confidence. The system should remember not only what a metric says, but also when that metric is not enough to support a conclusion.
+The retail extension therefore applies the same idea to Meituan backend metrics:
 
-## 11. Relevance to Target Programmes
+- preserve metric definitions;
+- keep store-period evidence separate;
+- avoid stale or unsupported retrieval;
+- avoid using one metric as a full explanation;
+- carry limitation notes into later answers.
 
-This project is relevant to Business Decision Analytics because it starts from a real operating decision problem: how to compare stores before copying or rejecting an operating action.
+## Field contract examples
 
-It is relevant to Data Science because it uses documented metric definitions, SQL-derived diagnostics, field lineage, validation scripts, and scenario-based evaluation rather than relying on informal interpretation.
+The project keeps field names consistent with `retail_ops/data/DATA_DICTIONARY.md`.
 
-It is relevant to Language and Technology because the memory / retrieval layer is designed to answer with evidence and limitation awareness instead of producing fluent but unsupported business advice.
+Important examples:
 
-## 12. Current Boundary
+| Field | Boundary |
+|---|---|
+| `order_conversion_rate_pct` | Follows the backend formula `order_users / entry_users * 100`; it must not be recomputed from `valid_orders / entry_users`. |
+| `activity_cost_ratio_pct` | Means activity cost divided by activity original transaction amount; it should not be described as traditional ROI. |
+| `estimated_income_proxy` | Treated as a platform-displayed estimated income proxy, not audited profit. |
+| `refund_pressure_pct` | A selected-period refund-pressure signal, not a perfect original-order cohort refund rate. |
+| `region_type` | Weak region or market-context evidence; not a mature market-area classification and not a hard peer-grouping rule. |
+| `top3_sku_transaction_amount_share_pct` | Lightweight top-SKU concentration evidence, not full product-category sales share. |
 
-This repository is an ongoing prototype, not a finished production system.
+## Relevance to target programmes
 
-Current boundaries:
+This project is relevant to Business Decision Analytics because it starts from a real operating decision problem: how to compare stores before copying, rejecting, or adjusting an operating action.
 
+It is relevant to Data Science because the work depends on metric definitions, SQL-derived diagnostics, field lineage, validation, and scenario-based evaluation rather than informal interpretation.
+
+It is relevant to Language and Technology because the memory/retrieval layer is designed to answer with evidence and limitation awareness, instead of producing fluent but unsupported business advice.
+
+## Current scope
+
+This is an ongoing prototype, not a finished 48-store operating platform.
+
+Current scope:
+
+- selected Meituan backend data has been manually structured into canonical CSV files;
+- Demo 1, Demo 2, and Demo 3 are implemented as local staged diagnostics;
+- Demo 3 currently exists as SQL output, saved CSV output, validation, evaluation, and a narrow file-backed answer path;
 - automated Meituan backend ingestion is not implemented;
 - full 48-store automated decision support is not implemented;
-- Demo 3 is currently SQL output, saved CSV output, validation, evaluation, and a narrow file-backed answer path;
-- Demo 3 is not yet exposed through a retrieval endpoint or API endpoint;
-- SKU-level category classification across the full catalog is not implemented;
 - causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
-- `region_type` is not treated as a market-area classification;
-- top-SKU evidence is used as lightweight product-mix evidence, not full product-category sales share.
+- full SKU category classification across the catalogue is not implemented.
 
-These boundaries are part of the project design. The purpose is to avoid overstating what the current data can prove.
+The boundary is intentional. The current goal is to show how messy but real backend data can be turned into a cautious, traceable, and testable decision-support prototype.
 
-## 13. Recommended Reading Path
+## Recommended reading path
 
 | Order | File | Why read it |
 |---:|---|---|
-| 1 | `README.md` | Technical overview and implementation boundary |
-| 2 | `PROJECT_STATUS.md` | Current implemented scope |
-| 3 | `retail_ops/README.md` | Retail operations extension overview |
-| 4 | `retail_ops/data/DATA_DICTIONARY.md` | Meituan backend metric definitions and canonical field names |
-| 5 | `retail_ops/LINEAGE.md` | Claim-to-field lineage and interpretation limits |
-| 6 | `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` | Store A month-over-month diagnostic |
-| 7 | `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` | B-F same-period diagnostic |
-| 8 | `retail_ops/demo/demo_3_pairwise_comparability_gate.md` | Pairwise comparability gate |
-| 9 | `retail_ops/demo/demo_3_pairwise_answer_path.md` | Narrow file-backed Demo 3 answer path |
-| 10 | `eval/` | Scenario-based evaluation and boundary checks |
+| 1 | `README.md` | Overall project structure and implementation boundary. |
+| 2 | `retail_ops/README.md` | Retail operations extension overview. |
+| 3 | `retail_ops/data/DATA_DICTIONARY.md` | Canonical metric definitions and field names. |
+| 4 | `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` | Single-store monthly diagnostic. |
+| 5 | `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` | Same-period cross-store diagnostic. |
+| 6 | `retail_ops/demo/demo_3_pairwise_comparability_gate.md` | Pairwise comparability gate. |
+| 7 | `retail_ops/demo/demo_3_pairwise_experiment_notes.md` | Concrete examples showing why Demo 3 matters. |
+| 8 | `retail_ops/demo/demo_3_pairwise_answer_path.md` | Narrow file-backed answer path for Demo 3. |
+| 9 | `eval/` and `retail_ops/scripts/` | Validation and scenario-based evaluation checks. |
 
-SQL files, generated outputs, validation scripts, and result files are supporting evidence. They should be read after the summary and demo documents.
+## Supporting validation references
 
-## 14. One-Sentence Summary
+The following files are part of the project evidence and consistency contract:
 
-This project shows how changing commercial information and Meituan-style backend metrics can be normalized, checked, traced, retrieved with evidence, and used cautiously for retail decision support.
+- `retail_ops/LINEAGE.md`
+- `retail_ops/scripts/validate_retail_data_contract.py`
+- `retail_ops/outputs/retail_data_contract_validation_result.txt`
+
+## One-sentence summary
+
+This project shows how Meituan backend metrics can be normalized, checked, compared cautiously, and connected to a memory layer so that retail decision support preserves evidence, definitions, and limitations before making any operational judgement.

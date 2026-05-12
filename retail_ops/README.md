@@ -22,6 +22,19 @@ The current retail path has three fixed demos:
 2. Demo 2: same-period Stores B-F comparability diagnostic.
 3. Demo 3: pairwise comparability gate over the current Demo 2 B-F sample.
 
+## Suggested Retail Review Path
+
+For a quick review of the retail extension, read these files in order:
+
+1. `retail_ops/data/DATA_DICTIONARY.md`
+2. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
+3. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
+4. `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+5. `retail_ops/demo/demo_3_pairwise_experiment_notes.md`
+6. `retail_ops/demo/demo_3_pairwise_answer_path.md`
+
+This path shows the movement from metric definitions, to single-store diagnosis, to cross-store comparison, to pairwise comparability gating.
+
 ## Current Demos
 
 ### Demo 1: Store A Month-over-Month Diagnostic
