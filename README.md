@@ -12,7 +12,7 @@ The goal is not to let an LLM make operating decisions directly. The goal is to 
 
 ## How to Read This Repository
 
-This repository has two connected layers:
+This repository has two connected layers.
 
 | Layer | Where to look | What it shows |
 |---|---|---|
@@ -26,16 +26,15 @@ Recommended first read:
 3. `PROJECT_STATUS.md`
 4. `retail_ops/README.md`
 5. `retail_ops/data/DATA_DICTIONARY.md`
-6. `retail_ops/LINEAGE.md`
-7. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
-8. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
-9. `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+6. `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
+
+For deeper evidence, read `retail_ops/LINEAGE.md`, the SQL files, generated outputs, validation scripts, and evaluation files.
 
 The repository should be read as a staged prototype with explicit evidence boundaries, not as a finished operating platform.
 
 ## Current Implementation Boundary
 
-| Layer | Current Status | Evidence |
+| Area | Current status | Evidence |
 |---|---|---|
 | Livestream memory API | Implemented local prototype | `/chat_mem`, `/chat_livestream_kb`, `api/main.py` |
 | Structured memory lifecycle | Implemented for livestream product facts | overwrite control, soft deactivation, freshness filtering, active-state filtering |

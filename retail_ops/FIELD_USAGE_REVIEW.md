@@ -91,7 +91,7 @@ Any future field-name change must pass this table before implementation. The cur
 |---|---|---|---|
 | `store_id` | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, validation scripts. | No. Keep unchanged. |
 | `entity_id` | Retrieval-layer identifier used in generated retail memory facts; current convention is `store_` + `store_id`. | Generated retail memory facts and retrieval/evaluation logic. | No. Keep unchanged. |
-| `region_type` | Coarse operating-context label used for current staged comparison; not a full geographic segmentation model. | Demo 2 source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
+| `region_type` | Weak region or market-context metadata from available store evidence; not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo 2 source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
 | `store_type` | Store operating-type field used as a comparison boundary. | Source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
 | `business_district_rank` | Meituan backend ranking field; not a global market ranking. | Source metrics and SQL output. | No. Keep unchanged. |
 | `exposure_users` | Backend exposure-user metric. | Source metrics, SQL output, visibility memory facts. | No. Keep unchanged. |
