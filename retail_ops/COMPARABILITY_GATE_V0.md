@@ -54,7 +54,5 @@ Possible future fields could include:
 - `market_area_type`
 - `market_area_type_source`
 - `market_area_type_confidence`
-- `competition_context_note`
-- `activity_cycle_status`
 
 Until then, the project should stop at Demo 2 and describe the comparability gate as planned future work rather than an implemented conclusion.

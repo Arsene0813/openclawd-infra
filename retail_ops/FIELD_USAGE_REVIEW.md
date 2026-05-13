@@ -139,9 +139,9 @@ The purpose of this section is to protect the current admissions-facing retail n
 Existing field or concept | Dictionary definition / boundary | Current use location | Rename decision
 ---|---|---|---
 `business_district_rank` | Backend-reported business-district ranking field when available. It is supplementary context, not a global market ranking and not a hard comparability condition. | Demo 2 source/output evidence and data dictionary. | No. Keep unchanged.
-`refund_order_pressure_pct` | SQL-derived order-count refund-pressure indicator based on `refund_orders_all_or_partial / transaction_orders * 100`. | Demo 1 output and dictionary. Demo 2/3 currently use `refund_pressure_pct` and `invalid_order_pressure_pct` as active order-quality comparison fields. | No. Keep unchanged.
-`refund_pressure_pct` | SQL-derived refund-pressure signal based on refund amount and transaction amount. | SQL output, order-quality facts, Demo 2/3 comparability output. | No. Keep unchanged.
-`invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal based on invalid and valid order counts. | SQL output, order-quality facts, Demo 2/3 comparability output. | No. Keep unchanged.
+`refund_order_pressure_pct` | SQL-derived order-count refund-pressure indicator based on `refund_orders_all_or_partial / transaction_orders * 100`. | Demo 1 output and dictionary. The current Demo 2 output uses `refund_pressure_pct` and `invalid_order_pressure_pct` as active order-quality comparison fields. | No. Keep unchanged.
+`refund_pressure_pct` | SQL-derived refund-pressure signal based on refund amount and transaction amount. | SQL output, order-quality facts, current Demo 2 comparability output. | No. Keep unchanged.
+`invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal based on invalid and valid order counts. | SQL output, order-quality facts, current Demo 2 comparability output. | No. Keep unchanged.
 `order_quality_pressure_profile` | Retrieval-facing memory slot for refund pressure, refund-order pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts and retail evals. | No. Keep unchanged.
 
 Decision: the narrative may explain these boundaries, but it must not rename the fields or convert them into new store-stage labels.
