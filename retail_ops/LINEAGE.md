@@ -424,170 +424,50 @@ Interpretation boundary:
 
 ---
 
-## Future Pairwise Comparability Gate Pairwise Comparability Gate Lineage
-
-A future pairwise comparability gate would extend Demo 2 from same-period cross-store diagnostics into pairwise comparability checks.
-
-The input is:
-
-- `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
-
-The output is:
-
-A future pairwise comparability gate should not compare all stores globally. It should check whether two store-period rows can be compared for one narrow question at a time.
-
-### Supported question types
-
-Current supported `comparison_question_type` values are:
-
-- `order_quality_pressure`
-
-These values must stay consistent across:
-
-- `retail_ops/data/DATA_DICTIONARY.md`
-
-### Claim-to-field checks
-
-Claim: two stores can be checked as a pair for one narrow question.
-
-Supporting fields:
-
-- `reference_store_id`
-- `candidate_store_id`
-- `comparison_question_type`
-
-Interpretation limit:
-
-- This is not a full peer-grouping model.
-- This is not a global store ranking.
-
-Claim: the two stores may share or differ in weak region context.
-
-Supporting fields:
-
-- `reference_region_type`
-- `candidate_region_type`
-- `region_type_comparison_note`
-
-Interpretation limit:
-
-- `region_type` is weak context only.
-- It is not a market-area classification.
-- It is not a hard comparability condition.
-
-Claim: the two stores may share or differ in operating format.
-
-Supporting fields:
-
-- `reference_store_type`
-- `candidate_store_type`
-- `store_type_comparison_note`
-
-Interpretation limit:
-
-- `store_type` can constrain comparison.
-- It does not decide performance quality by itself.
-
-Claim: search-entry structure is close or far apart.
-
-Supporting field:
-
-- `search_entry_share_gap_pct`
-
-Interpretation limit:
-
-- This supports only a narrow traffic-structure comparison.
-- It does not prove that search caused order growth.
-
-Claim: activity involvement differs between two stores.
-
-Supporting field:
-
-- `activity_order_share_gap_pct`
-
-Interpretation limit:
-
-- Activity order share is operating-lever evidence.
-- It does not prove that promotion caused performance differences.
-
-Claim: activity cost structure differs between two stores.
-
-Supporting field:
-
-- `activity_cost_ratio_gap_pct`
-
-Interpretation limit:
-
-- This is activity-cost-ratio evidence.
-- It is not traditional ROI.
-- It is not profit margin.
-
-Claim: refund pressure differs between two stores.
-
-Supporting field:
-
-- `refund_pressure_gap_pct`
-
-Interpretation limit:
-
-- Refund amount is counted by refund-success date.
-- It is not a perfect original-order cohort refund rate.
-
-Claim: invalid-order pressure differs between two stores.
-
-Supporting field:
-
-- `invalid_order_pressure_gap_pct`
-
-Interpretation limit:
-
-- Cancelled-order pressure may reflect fulfillment, stock, customer, or operational differences not visible in the current sample.
-
-Claim: top-SKU concentration differs between two stores.
-
-Supporting field:
-
-- `top3_sku_concentration_gap_pct`
-
-Interpretation limit:
-
-- This is top-three SKU concentration evidence.
-- It is not full product-category sales share.
-
-Claim: a pair can be compared, partially compared, or refused for the selected question.
-
-Supporting fields:
-
-Interpretation limit:
-
-- This is a comparability gate.
-- It is not a final operating recommendation.
-
-### Directionality boundary
-
-Future pairwise comparability rows should be read as comparability checks, not directional strategy-transfer decisions.
-
-A later answer layer should avoid claims such as:
-
-- copy Store B's promotion strategy to Store E;
-- Store B is better than Store E;
-- Stores B and E belong to the same market type;
-- the activity strategy caused the performance difference.
-
-Supported wording is narrower:
-
-- whether the pair is comparable for the selected question;
-- which gap fields support or limit the comparison;
-- which missing or unresolved context prevents stronger advice.
-
-### Future Pairwise Comparability Gate answer boundary
-
-- `reference_store_id`
-- `candidate_store_id`
-- `comparison_question_type`
-- relevant gap fields
-
-If a user asks for a full 48-store ranking, market-area classification, causal promotion effect, or direct strategy recommendation, the answer should qualify or refuse the request unless future evidence has been added and documented.
+## Future Comparability-Gate Lineage
+
+The comparability gate is future work, not a finished demo in the current implementation.
+
+The current implemented retail lineage stops at Demo 2:
+- selected Meituan backend fields;
+- DATA_DICTIONARY.md definitions;
+- canonical CSV files;
+- Demo 1 and Demo 2 SQL diagnostics;
+- Demo 1 and Demo 2 output CSV files;
+- generated Demo 1 and Demo 2 retail memory facts;
+- validation and evaluation for the implemented scope.
+
+A future comparability gate should extend Demo 2 from same-period cross-store diagnostics into controlled comparability checks.
+
+The gate should not compare all stores globally. It should first ask whether selected store-period rows can be compared for a specific operating question, and under what limits.
+
+Reliable store comparability should depend on factors such as:
+- transaction order volume;
+- transaction amount;
+- activity or promotion status;
+- activity intensity;
+- store type;
+- region and market context;
+- competition environment;
+- SKU structure;
+- refund pressure;
+- invalid-order pressure;
+- repeated reporting windows.
+
+At the current sample size, `region_type` remains weak context only. It must not be used as a hard market-area classification, store-stage label, or peer-store grouping rule.
+
+Future pairwise fields, pairwise gap metrics, or market-area classifications should only be added after they are documented in DATA_DICTIONARY.md, LINEAGE.md, SQL output documentation, generated memory facts, and evaluation cases.
+
+The answer layer should continue to avoid unsupported claims such as:
+- ranking all stores as simply better or worse;
+- assigning stores to fixed market-area types from intuition;
+- copying one store's promotion strategy to another store;
+- claiming that activity, subsidy, price, ranking, or SKU structure caused performance differences without stronger evidence.
+
+Supported future wording should stay narrower:
+- whether selected stores are comparable for a specific operating question;
+- which evidence supports or limits that comparison;
+- which missing context prevents a stronger operating recommendation.
 
 ## Future Comparability-Gate Lineage
 

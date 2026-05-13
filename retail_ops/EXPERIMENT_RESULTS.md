@@ -6,7 +6,7 @@ This document records the current implemented retail experiment scope.
 
 The current implemented scope stops at Demo 2.
 
-A pairwise future pairwise comparability-gate design is planned as future work, but it is not currently implemented as a finished demo.
+A future comparability-gate design is planned as future work, but it is not currently implemented as a finished demo.
 
 ## Current Implemented Results
 
