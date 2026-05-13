@@ -137,6 +137,23 @@ The evaluations are scenario-based behavior checks. Their value is not proving t
 
 ---
 
+## Running the Project Locally
+
+This repository can be run as a local prototype with Docker Compose.
+
+Minimum local run path:
+
+1. Start services with `docker compose up -d`.
+2. Pull the chat model with `docker exec -it oc_ollama ollama pull qwen2.5:14b`.
+3. Pull the embedding model with `docker exec -it oc_ollama ollama pull bge-m3`.
+4. Initialize Qdrant collections with `python3 scripts/init_qdrant_collections.py`.
+5. Check the API with `curl http://127.0.0.1:8000/health`.
+6. Rebuild the API after code changes with `docker compose up -d --build api`.
+
+The local setup uses FastAPI, Ollama, and Qdrant. The retail evidence files, SQL outputs, and evaluation scripts can also be reviewed without running the API.
+
+---
+
 ## Reproduce Key Checks
 
 Retail data-contract validation:
