@@ -176,7 +176,7 @@ This folder includes three review documents for disciplined cross-store comparis
 
 Their role is to keep field usage, comparison rules, and limitation-preserving answers explicit before expanding toward broader store coverage.
 
-`FIELD_USAGE_REVIEW.md` records that this patch does not rename existing fields.
+`FIELD_USAGE_REVIEW.md` records the current decision not to rename existing fields before comparability-gate expansion.
 
 `COMPARABILITY_GATE_V0.md` records candidate future gate factors and the current non-implementation boundary.
 
@@ -224,7 +224,11 @@ The intended query shape is small:
 
 - `reference_store_id`
 - `candidate_store_id`
+- `period_start`
+- `period_end`
 - `comparison_question_type`
+
+The period fields are required because store comparability is not static. The same two stores may be more or less comparable under different promotion, refund, ranking, SKU, or competitive conditions.
 
 The answer should return:
 

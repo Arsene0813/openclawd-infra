@@ -410,7 +410,7 @@ Demo 2 does not introduce store-stage labels or best-store rankings.
 
 ## Demo 2 Carry-Through Note: Order and Payment Amount Fields
 
-This patch carries `order_amount` and `payment_amount` from `retail_ops/data/demo2_store_period_metrics.csv` into `retail_ops/outputs/demo2_cross_store_comparability_output.csv` and `retail_ops/outputs/generated_demo2_retail_memory_facts.json`.
+The current implementation carries `order_amount` and `payment_amount` from `retail_ops/data/demo2_store_period_metrics.csv` into `retail_ops/outputs/demo2_cross_store_comparability_output.csv` and `retail_ops/outputs/generated_demo2_retail_memory_facts.json`.
 
 Lineage:
 

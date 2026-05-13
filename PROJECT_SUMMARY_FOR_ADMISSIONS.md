@@ -162,4 +162,4 @@ The following files are part of the project evidence and consistency contract:
 
 This project shows how Meituan backend metrics can be normalized, checked, compared cautiously, and connected to a memory layer so that retail decision support preserves evidence, definitions, and limitations before making any operational judgement.
 
-The current repository documents its input signals and limits, but does not present it as a finished demo.
+The current repository implements two limited demos and documents their evidence boundaries; it does not present the work as a finished 48-store operating platform.

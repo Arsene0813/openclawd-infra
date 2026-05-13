@@ -2,7 +2,7 @@
 
 This file records the field-name review before expanding the retail comparability narrative.
 
-Current decision: no existing field is renamed in this patch.
+Current decision: no existing field is renamed before comparability-gate expansion.
 
 The purpose of this review is to protect the Meituan backend metric contract. Existing backend-derived fields, SQL-derived diagnostic fields, and retrieval-facing memory slots should not be mixed or renamed casually.
 
@@ -51,6 +51,27 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 | `order_quality_pressure_profile` | Retrieval-facing memory slot for refund pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts and retail evals. | No. |
 | `single_metric_attribution_guard` | Retrieval-facing memory slot that prevents unsupported interpretation from one metric alone. | Generated retail memory facts and retail evals. | No. |
 | `top3_sku_product_mix_note` | Retrieval-facing memory slot for limited top-SKU evidence. | Generated retail memory facts and retail evals. | No. |
+
+## Additional Current Fields to Protect Before Future Expansion
+
+The fields below already appear in current Demo 2 outputs or generated memory facts, but they should not be promoted into new labels or renamed during future comparability-gate work.
+
+| Existing field | Definition / boundary | Current use location | Rename? |
+|---|---|---|---|
+| `order_amount` | Backend order-submission amount field; read with `order_users`, `order_times`, and `order_conversion_rate_pct`; not profit and not the same as `transaction_amount`. | Demo 2 source metrics, SQL output, generated facts. | No. |
+| `entry_conversion_rate_pct` | Backend-reported entry conversion rate; should be read as a backend metric, not recomputed from unrelated order-status fields. | Demo 2 source metrics and SQL output. | No. |
+| `search_entry_rate_pct` | SQL-derived search-entry rate: `search_entry_users / search_exposure_users * 100`. | Demo 2 SQL output and visibility-entry facts. | No. |
+| `search_entry_share_pct` | SQL-derived search-entry share: `search_entry_users / entry_users * 100`; directional source-entry structure only because traffic-source users may overlap. | Demo 2 SQL output and visibility-entry facts. | No. |
+| `full_refund_orders` | Backend refund-order count field; used as order-quality context. | Demo 2 source metrics, SQL output, order-quality facts. | No. |
+| `refund_orders_all_or_partial` | Backend refund-order count including full and partial refund cases; used as order-quality context. | Demo 2 source metrics, SQL output, order-quality facts. | No. |
+| `top3_sku_transaction_amount` | Sum of top-three SKU transaction amount in the current lightweight product-mix evidence. | Demo 2 SQL output and top-SKU facts. | No. |
+| `source_fields` | Retrieval-facing metadata listing fields supporting a generated memory fact. | Generated retail memory facts. | No. |
+| `observed_values` | Retrieval-facing metadata carrying observed values used by a generated memory fact. | Generated retail memory facts. | No. |
+| `calculation` | Retrieval-facing explanation of the calculation or backend formula used by a generated memory fact. | Generated retail memory facts. | No. |
+| `confidence` | Evidence confidence for the generated memory fact; not causal confidence. | Generated retail memory facts. | No. |
+| `limitations` | Retrieval-facing limitation list that constrains later answers. | Generated retail memory facts. | No. |
+| `source_path` | Retrieval-facing path to the supporting output file. | Generated retail memory facts. | No. |
+| `lineage_path` | Retrieval-facing path to lineage documentation. | Generated retail memory facts. | No. |
 
 ## Current Path-Level Naming Decision
 

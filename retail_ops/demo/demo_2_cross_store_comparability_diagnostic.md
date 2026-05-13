@@ -33,6 +33,8 @@ Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions
 | SQL output | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
 | Memory facts | `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
 
+Some source traffic-channel fields are retained in the structured source file but not carried into the current Demo 2 diagnostic output. Demo 2 focuses on selected same-period diagnostic signals rather than exhaustive traffic-source decomposition.
+
 ## What the SQL Checks
 
 The SQL prepares a same-period diagnostic output with:
