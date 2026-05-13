@@ -79,6 +79,21 @@ The important design choice is that memory facts are not just summaries. They ca
 
 ---
 
+## Implemented API and Retrieval Scope
+
+The local FastAPI prototype includes general chat, memory, and retrieval endpoints. The key implemented paths are:
+
+- `/health`
+- `/chat`
+- `/chat_mem`
+- `/chat_livestream_kb`
+- `/chat_retail_ops_kb`
+- `/chat_retail_ops_demo2_kb`
+
+The retail endpoints are local prototype endpoints. Demo 2 currently uses file-backed generated retail memory facts; it is not a production Meituan API integration.
+
+---
+
 ## Retail Demo 1: Store A Month-over-Month Diagnostic
 
 Demo 1 analyzes one self-operated Qingdao store across February, March, and April 2026.
