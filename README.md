@@ -1,414 +1,223 @@
 # Lifecycle-Aware AI Memory Layer for Retail Decision Support
 
-Repository name: `livestream-agent-memory-layer`
+Repository: `livestream-agent-memory-layer`
 
-This repository is a working local prototype built from a real operating problem in Meituan-style instant retail.
+This is a local working prototype built from a real Meituan instant-retail operating problem.
 
-Meituan's merchant backend provides detailed store-level metrics, but the data is mainly designed for reviewing one store at a time. Once the business expands across many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which operating signals are strong enough to support a cautious decision.
+The merchant backend provides detailed single-store metrics, but it does not naturally answer cross-store decision questions. Once the operation expands across many stores, the harder problem is not collecting more metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgment the evidence can support.
 
-The current retail prototype uses SQL to organize selected Meituan backend exports into consistent diagnostic outputs, then uses a memory / retrieval layer to preserve evidence, limitations, and conservative operating profiles.
+This project turns that problem into a staged decision-support prototype:
 
-The goal is not to let an LLM make operating decisions directly. The goal is to reduce unsupported comparisons and preserve the evidence boundary behind each answer.
+1. preserve backend metric definitions;
+2. use SQL to structure selected store-period data;
+3. convert diagnostic evidence into memory facts with source fields, observed values, source paths, and limitations;
+4. test whether later answers stay inside the evidence boundary.
 
-## How to Read This Repository
+The goal is not to let an LLM make operating decisions directly. The goal is to reduce unsupported comparisons and preserve the evidence behind each answer.
 
-This repository has two connected layers.
+---
 
-| Layer | Where to look | What it shows |
-|---|---|---|
-| Memory-layer prototype | `api/`, `eval/`, `scripts/` | typed memory, overwrite control, retrieval, fallback, and evaluation |
-| Retail operations extension | `retail_ops/` | Meituan-style metric definitions, SQL diagnostics, generated memory facts, same-period diagnostics, scope/limit checks, and evaluation |
+## Fast Reading Path
 
-Recommended first read:
+For an admissions or project review, read in this order:
 
 1. `PROJECT_SUMMARY_FOR_ADMISSIONS.md`
-2. `README.md`
-3. `PROJECT_STATUS.md`
-4. `retail_ops/README.md`
-5. `retail_ops/data/DATA_DICTIONARY.md`
+   Short admissions-facing explanation of the project and why it matters.
 
-For deeper evidence, read `retail_ops/LINEAGE.md`, the SQL files, generated outputs, validation scripts, and evaluation files.
+2. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
+   Current retail Demo 2: same-period B-F cross-store diagnostic.
 
-The repository should be read as a staged prototype with explicit evidence boundaries, not as a finished operating platform.
+3. `retail_ops/data/DATA_DICTIONARY.md`
+   Canonical Meituan-style backend metric definitions and field naming rules.
 
-## Current Implementation Boundary
+4. `retail_ops/LINEAGE.md`
+   Source-to-SQL-to-memory lineage and interpretation limits.
 
-| Area | Current status | Evidence |
+5. `retail_ops/EXPERIMENTS.md`
+   Current analytical experiment map and failure modes.
+
+For implementation details, see `retail_ops/README.md`, `PROJECT_STATUS.md`, SQL files, scripts, generated outputs, and evaluation files.
+
+---
+
+## Current Scope
+
+| Area | Implemented now | Not claimed |
 |---|---|---|
-| Livestream memory API | Implemented local prototype | `/chat_mem`, `/chat`, `/health`, `api/main.py` |
-| Structured memory lifecycle | Implemented for livestream product facts | overwrite control, soft deactivation, freshness filtering, active-state filtering |
-| Livestream evaluation | Implemented | current implemented cases pass |
-| Retail metric dictionary and lineage | Implemented | `retail_ops/data/DATA_DICTIONARY.md`, `retail_ops/LINEAGE.md` |
-| Retail data-contract validation | Implemented as lightweight guardrail | `retail_ops/scripts/validate_retail_data_contract.py`, `retail_ops/outputs/retail_data_contract_validation_result.txt` |
-| Retail memory facts generation | Implemented for Store A Demo 1 and Demo 2 B-F facts | `retail_ops/outputs/generated_retail_memory_facts.json`, `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
-| Retail local answer endpoints | Implemented for Demo 1 and Demo 2 | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb`; file-backed/local retail evidence only |
-| Automated Meituan backend ingestion | Not implemented yet | future work |
-| Full 48-store decision-support system | Not implemented yet | future work |
+| Livestream memory layer | Typed product facts, overwrite control, soft deactivation, active-state retrieval, fallback/refusal, scenario evaluation | General-purpose production agent memory platform |
+| Retail metric dictionary | Meituan-style backend metric definitions and naming boundaries | Automatic ingestion from Meituan backend |
+| Retail Demo 1 | Store A month-over-month diagnostic across February, March, and April 2026 | Causal explanation of monthly performance |
+| Retail Demo 2 | Same-period B-F diagnostic with scope and limitation checks | Finished pairwise comparability gate, store ranking, or automatic strategy recommendation |
+| Retail memory facts | Generated facts with observed values, source fields, source paths, supporting source paths, confidence, and limitations | Full 48-store automated decision system |
+| Evaluation | Scenario-based checks for supported answers, unsupported-scope refusal, and metric-boundary preservation | Broad LLM benchmark |
 
-The retail extension currently has two implemented retail stages and one planned next stage:
+The current implemented retail scope stops at Demo 2. A pairwise comparability gate is future work.
 
-1. Demo 1: Store A month-over-month diagnostic.
-2. Demo 2: same-period Stores B-F cross-store diagnostic with scope/limit checks.
-3. Future work: a comparability gate for deciding which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
+---
 
-The comparability gate is not currently implemented as a finished demo. The current implemented retail scope stops at Demo 2.
+## Architecture
 
-## What Is Implemented
+The prototype has two connected layers.
 
-### Livestream Commerce Memory Layer
-
-The livestream memory layer supports:
-
-- structured fact extraction from product-related input;
-- typed memory for product price, promotion, stock status, shipping policy, and product features;
-- product-level entity separation;
-- overwrite control and soft deactivation;
-- freshness-aware retrieval and active-state filtering;
-- traceable retrieval outputs;
-- fallback or refusal when no reliable fact is available;
-- scenario-based evaluation.
-
-Current implemented API endpoints in `api/main.py` include:
-- `/health`
-- `/chat`
-- `/chat_mem`
-
-### Retail Operations Extension
-
-The retail extension applies the same lifecycle-aware memory principle to Meituan-style instant retail operations data.
-
-The retail extension currently has two implemented demos and one planned next stage:
-
-- Demo 1: `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
-- Demo 2: `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
-
-Demo 1 analyzes Store A, a self-operated Qingdao store, across February, March, and April 2026. It shows why traffic, transaction amount, conversion, activity cost, refund pressure, invalid orders, and top-SKU evidence should not be interpreted from one metric alone.
-
-Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
-
-A future pairwise comparability gate should build on the Demo 2 B-F structure, but it is not currently implemented as a finished demo.
-
-
-The future gate should avoid market-area classification until more store data and repeated reporting windows are available. The current project treats `region_type` as weak context only.
-
-The retail extension includes:
-
-- Meituan-style backend metric definitions;
-- Store A monthly metrics;
-- B-F same-period cross-store metrics;
-- SQL-derived diagnostic metrics;
-- claim-to-field lineage rules;
-- generated retail memory facts;
-- local data-contract checks;
-- Store A retail retrieval evaluation;
-- Demo 2 facts and answer-boundary evaluations;
-- future comparability-gate limitation notes;
-- refusal to overclaim from the current limited sample.
-
-## Core Memory Behavior
-
-Simple example:
-
-Initial fact: A product price is 99.
-
-Stored structured memory:
-
-- type: product_price
-- product_ref: product A
-- value: 99
-- slot: price
-- is_active: true
-
-Updated fact: the same product price is 89.
-
-Expected behavior:
-
-- the newer price becomes the active fact;
-- the older price is preserved but softly deactivated;
-- a later price query retrieves the current active price;
-- unsupported or stale information triggers fallback or refusal instead of a fabricated answer.
-
-## Architecture Overview
-
-The basic architecture is:
-
-User or operator input -> non-fact filtering -> structured fact extraction -> fact policy registry -> entity and slot assignment -> overwrite or soft deactivation -> typed knowledge store -> retrieval and fact-type routing -> freshness / active-state filtering -> traceable answer or fallback
-
-## Key Design Ideas
-
-| Design Choice | Problem It Addresses | Why It Matters |
+| Layer | Purpose | Main files |
 |---|---|---|
-| Structured fact extraction | Raw chat history is hard to update or verify | Converts interaction into explicit knowledge |
-| Typed memory | Different information types behave differently | Price, promotion, stock, and product features need different rules |
-| Entity and slot storage | Product facts can conflict across products | Prevents facts about different products from overwriting each other |
-| Soft deactivation | Old facts should not disappear silently | Preserves traceability while keeping current knowledge active |
-| Freshness filtering | Promotions and stock status become outdated quickly | Reduces the risk of using stale information |
-| Retrieval gating | Similarity alone does not prove reliability | Prevents weakly matched memory from being used as verified knowledge |
-| Traceable sources | Hidden memory use is hard to inspect | Makes answers easier to debug and evaluate |
-| Data-contract validation | Backend metric names can drift across files | Keeps CSV, SQL, memory facts, lineage, and documentation consistent |
-| Future comparability-gate design | Cross-store metrics can be misleading without scope control | Defines the future evidence boundary before strategy transfer |
+| Memory-layer prototype | Store and retrieve typed facts while handling updates, stale knowledge, and unsupported questions | `api/`, `scripts/`, `eval/` |
+| Retail operations extension | Structure Meituan-style backend metrics and preserve diagnostic evidence for cautious comparison | `retail_ops/` |
 
-## Retail Demo 1: Why It Matters
+Basic flow:
 
-The Store A demo shows why operational performance should not be interpreted from one metric alone.
+```text
+backend metrics / operator input
+-> metric dictionary and data contract
+-> SQL diagnostic output
+-> generated memory facts
+-> retrieval with source fields and limitations
+-> qualified answer or refusal
+```
 
-April 2026 showed traffic and transaction recovery, but order conversion and average order value declined. At the same time, refund pressure and invalid-order pressure improved.
+The important design choice is that memory facts are not just summaries. They carry source fields, observed values, calculation notes, source paths, supporting source paths, confidence labels, and limitations.
 
-The SQL layer therefore produces cautious retail memory slots such as:
+---
 
-- `visibility_entry_profile`
-- `activity_lever_profile`
-- `transaction_conversion_profile`
-- `order_quality_pressure_profile`
-- `single_metric_attribution_guard`
-- `top3_sku_product_mix_note`
+## Retail Demo 1: Store A Month-over-Month Diagnostic
 
-Traffic recovery, transaction recovery, conversion decline, average-order-value decline, refund-pressure improvement, and invalid-order-pressure improvement are supporting observations.
+Demo 1 analyzes one self-operated Qingdao store across February, March, and April 2026.
 
-They are not standalone canonical memory slots in the current retail memory facts. `refund_pressure_improved` may appear as SQL-derived supporting evidence, but it is not a canonical retail memory slot. The canonical memory slot for refund and invalid-order pressure is `order_quality_pressure_profile`.
+It shows why operational performance should not be interpreted from one metric alone. Traffic, ranking, transaction amount, order conversion, activity cost, refund pressure, invalid orders, and top-SKU evidence can move in different directions.
 
-The purpose is not to label a store as simply good or bad. The purpose is to prevent unsupported conclusions from incomplete, non-comparable, or promotion-distorted data.
+Main file:
 
-## Retail Demo 2: Why It Matters
+```text
+retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md
+```
 
-Demo 2 moves from single-store month-over-month diagnosis to same-period cross-store diagnosis.
+The purpose is not to label the store as simply good or bad. The purpose is to keep month-over-month interpretation inside a documented evidence boundary.
 
-It uses Stores B-F in the March 2026 reporting window.
+---
 
-The purpose is not to rank stores. The purpose is to organize comparable fields, preserve metric definitions, and test whether cross-store interpretation remains inside the evidence boundary.
+## Retail Demo 2: Same-Period B-F Diagnostic
+
+Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window.
+
+In this demo, comparability means row-level same-period diagnostic readiness. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
 
 Demo 2 includes:
 
-- same-period source CSVs for Stores B-F;
-- top search term evidence with English helper translations;
-- top SKU evidence with original Chinese SKU names and English helper translations;
-- SQL-derived scope/limit diagnostics;
+- same-period store-period metrics;
+- top search-term evidence;
+- top-SKU transaction-amount evidence;
+- SQL-derived diagnostic fields;
+- `comparison_scope_flag`;
+- `comparison_limit_notes`;
 - generated Demo 2 retail memory facts;
-- a file-backed local Demo 2 retail endpoint at `/chat_retail_ops_demo2_kb` using generated Demo 2 retail memory facts;
-- offline facts evaluation;
-- answer-boundary evaluation.
+- facts evaluation and answer-boundary evaluation.
 
+Main file:
 
-## Retail Data Contract
+```text
+retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md
+```
 
-The retail extension includes a data-contract layer for field consistency and metric lineage.
+The future pairwise comparability gate should build on this structure, but it is not currently implemented as a finished demo.
 
-Key files:
-
-- `retail_ops/data/DATA_DICTIONARY.md`
-- `retail_ops/LINEAGE.md`
-- `retail_ops/scripts/validate_retail_data_contract.py`
-- `retail_ops/outputs/retail_data_contract_validation_result.txt`
-
-This is important because Meituan backend metrics should not be treated as generic business metrics without checking their exact definitions.
-
-For example, backend-reported order conversion should not be recomputed from valid orders divided by entry users, because `valid_orders` is an order-status metric while `order_users` is a user-level funnel metric.
+---
 
 ## Evaluation Snapshot
 
-The evaluations are scenario-based behavior checks, not broad language-model benchmarks.
+The evaluations are scenario-based behavior checks. Their value is not proving that the model is generally correct. Their value is checking whether answers preserve metric definitions, source boundaries, and comparison limits.
 
-| Evaluation | Scope | Result |
+| Check | Scope | Result |
 |---|---|---:|
 | Livestream memory evaluation | fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | current implemented cases pass |
-| Retail retrieval evaluation | Store A retail-memory retrieval, attribution-warning behavior, unsupported-scope refusal | 8/8 passed |
-| Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
-| Retail Demo 2 comparison-boundary consistency evaluation | checks that Demo 2 remains a row-level same-period diagnostic and does not pretend to be a pairwise gate | 5/5 passed |
-| Retail Demo 2 offline answer-boundary check | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
-| Retail data-contract validation | required file presence, dictionary boundary phrases, Demo 1 / Demo 2 output headers, forbidden aliases, and generated fact structure | passed |
-| Project consistency validation | required current-scope files, Demo 2 boundary wording, stale future-work artifacts, and forbidden retail endpoint claims | passed |
+| Retail retrieval evaluation | Store A retail-memory retrieval and unsupported-scope refusal | 8/8 passed |
+| Retail Demo 2 facts evaluation | Store B-F generated fact coverage across diagnostic slots | 6/6 passed |
+| Retail Demo 2 answer-boundary evaluation | activity-cost ratio, top-SKU share, search-entry comparison, promotion-transfer limits | 4/4 passed |
+| Retail data-contract validation | dictionary phrases, source/output headers, forbidden aliases, generated fact structure | passed |
+| Project consistency validation | current-scope files, Demo 2 boundary wording, stale future-work artifacts, endpoint claims | passed |
 
-The evaluation value is not that the model is generally correct. The value is that the project has explicit checks for supported answers, unsupported-scope refusal, metric-boundary preservation, and comparability limits.
+---
 
-## What This Demonstrates
-
-This project demonstrates abilities relevant to AI, data science, business analytics, and language-technology-related study:
-
-- identifying a real reliability problem in AI-assisted commerce and retail operations;
-- representing changing commercial facts as structured data;
-- designing typed memory policies for different fact types;
-- managing current vs outdated knowledge through overwrite and active-state rules;
-- using retrieval with confidence, freshness, and source checks;
-- preparing Meituan-style backend metrics with SQL;
-- documenting metric definitions and lineage;
-- validating field consistency across data, SQL, memory facts, and documentation;
-- converting SQL-derived observations into cautious memory facts;
-- testing whether cross-store comparisons preserve their evidence boundary;
-- refusing or qualifying unsupported operational claims.
-
-## Recommended Review Path
-
-1. `PROJECT_SUMMARY_FOR_ADMISSIONS.md` — admissions-facing project summary.
-2. `README.md` — project overview, architecture, implementation boundary, and evaluation status.
-3. `PROJECT_STATUS.md` — short current implementation boundary.
-4. `retail_ops/README.md` — retail operations extension overview.
-5. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
-6. `retail_ops/LINEAGE.md` — source-to-SQL-to-memory lineage and interpretation limits.
-7. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — Store A month-over-month retail operations demo.
-8. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` — same-period B-F cross-store diagnostic.
-9. `retail_ops/FIELD_USAGE_REVIEW.md` — field-name review before future comparability-gate expansion.
-10. `retail_ops/COMPARABILITY_GATE_V0.md` — future pairwise comparability-gate design note.
-11. `retail_ops/EXPERIMENT_RESULTS.md` — comparability and limitation-preserving review cases.
-12. `eval/eval_report.md` and `eval/eval_retail_report.md` — scenario-based evaluation reports.
-
-## Running the Project
-
-This project is intended to run locally with Docker Compose.
-
-Prerequisites:
-
-- Docker and Docker Compose.
-- Python 3.10+ for local scripts.
-
-The local Docker Compose setup includes:
-
-- FastAPI API service;
-- Ollama for local model inference and embeddings;
-- Qdrant for vector storage and typed memory retrieval.
-
-Useful commands:
-
-- Start services: `docker compose up -d`
-- Pull Qwen model: `docker exec -it oc_ollama ollama pull qwen2.5:14b`
-- Pull embedding model: `docker exec -it oc_ollama ollama pull bge-m3`
-- Initialize Qdrant collections: `python3 scripts/init_qdrant_collections.py`
-- Check API health: `curl http://127.0.0.1:8000/health`
-- Rebuild API after code changes: `docker compose up -d --build api`
-
-## Running Validation and Evaluation
+## Reproduce Key Checks
 
 Retail data-contract validation:
 
-- `python3 retail_ops/scripts/validate_retail_data_contract.py`
+```bash
+python3 retail_ops/scripts/validate_retail_data_contract.py
+```
+
+Demo 2 fact coverage evaluation:
+
+```bash
+python3 eval/eval_retail_demo2_facts.py
+```
+
+Demo 2 answer-boundary evaluation:
+
+```bash
+python3 eval/eval_retail_demo2_answer_behavior.py
+```
 
 Project consistency validation:
 
-- `python3 scripts/validate_project_consistency.py`
+```bash
+python3 scripts/validate_project_consistency.py
+```
 
-Retail Demo 2 checks:
+For the full local API setup with Docker Compose, Qdrant, Ollama, and FastAPI, see `PROJECT_STATUS.md` and `docker-compose.yml`.
 
-- `python3 scripts/validate_demo2_retail_endpoint_boundary.py`
-- `python3 retail_ops/scripts/validate_demo2_staging_data.py`
-- `python3 retail_ops/scripts/validate_demo2_comparability_output.py`
-- `python3 retail_ops/scripts/validate_demo2_retail_memory_facts.py`
-- `python3 eval/eval_retail_demo2_facts.py`
-- `python3 eval/eval_retail_demo2_scope_boundary.py`
-- `python3 eval/eval_retail_demo2_answer_behavior.py`
+---
 
+## Key Evidence Files
 
-Retail retrieval evaluation:
+| File | Why it matters |
+|---|---|
+| `PROJECT_SUMMARY_FOR_ADMISSIONS.md` | Admissions-facing summary of the real business problem and prototype scope |
+| `retail_ops/data/DATA_DICTIONARY.md` | Canonical backend metric definitions and naming boundaries |
+| `retail_ops/LINEAGE.md` | How source fields support SQL diagnostics and memory facts |
+| `retail_ops/FIELD_USAGE_REVIEW.md` | Field-name review before future comparability-gate expansion |
+| `retail_ops/EXPERIMENTS.md` | Experiment questions, inputs, transformations, pass conditions, and failure modes |
+| `retail_ops/COMPARABILITY_GATE_V0.md` | Future pairwise comparability-gate design note |
+| `retail_ops/sql/` | SQL transformations for Demo 1 and Demo 2 |
+| `retail_ops/outputs/` | Generated diagnostic outputs and generated memory facts |
+| `eval/` | Scenario-based evaluation scripts and reports |
 
-- `python3 retail_ops/scripts/load_retail_facts_to_qdrant.py`
-- `python3 eval/eval_retail.py`
-- `cat eval/results/eval_retail_result.txt`
+---
 
-Livestream memory evaluation:
+## What This Demonstrates
 
-- `docker compose up -d --build`
-- `curl http://127.0.0.1:8000/health`
-- `docker compose exec api rm -rf /app/eval`
-- `docker compose cp eval api:/app/eval`
-- `docker compose exec api python /app/eval/eval_livestream.py`
+This project demonstrates:
 
-Saved evaluation outputs include:
+- turning a real retail operating problem into a structured data problem;
+- preserving exact backend metric definitions instead of treating them as generic business metrics;
+- using SQL to make selected store-period records comparable at the diagnostic level;
+- converting diagnostic outputs into retrieval-facing memory facts;
+- preserving source fields, observed values, source paths, supporting source paths, confidence, and limitations;
+- testing whether answers qualify or refuse unsupported operating claims;
+- defining future comparability requirements before strategy transfer.
 
-- `eval/results/eval_result_11_pass.txt`
-- `eval/results/eval_retail_result.txt`
-- `eval/results/eval_retail_demo2_facts_result.txt`
-- `eval/results/eval_retail_demo2_scope_boundary_result.txt`
-- `eval/results/eval_retail_demo2_answer_behavior_result.txt`
+The strongest point of the project is not that it is a finished operating platform. The strongest point is that it makes the evidence boundary explicit before comparing stores or suggesting operating actions.
 
-## Repository Structure
+---
 
-- `api/`
-  - `main.py`
-  - `Dockerfile`
-  - `requirements.txt`
-
-- `scripts/`
-  - `init_qdrant_collections.py`
-  - `validate_demo2_retail_endpoint_boundary.py`
-  - `validate_project_consistency.py`
-
-- `eval/`
-  - `eval_livestream.py`
-  - `eval_livestream_cases.json`
-  - `eval_retail.py`
-  - `eval_retail_cases.json`
-  - `eval_retail_demo2_facts.py`
-  - `eval_retail_demo2_scope_boundary.py`
-  - `eval_retail_demo2_answer_behavior.py`
-  - `eval_report.md`
-  - `eval_retail_report.md`
-  - `results/`
-
-- `retail_ops/`
-  - `README.md`
-  - `LINEAGE.md`
-  - `FIELD_USAGE_REVIEW.md`
-  - `COMPARABILITY_GATE_V0.md`
-  - `EXPERIMENT_RESULTS.md`
-  - `data/`
-  - `sql/`
-  - `outputs/`
-  - `scripts/`
-  - `demo/`
-
-- `case_studies/`
-  - `from_livestream_to_retail_decision_support.md`
-
-- `PROJECT_STATUS.md`
-- `PROJECT_SUMMARY_FOR_ADMISSIONS.md`
-- `README.md`
-- `docker-compose.yml`
-
-## Limitations
-
-This repository is a working prototype, not a finished production system.
+## Current Limitations
 
 Current limitations:
 
-- Demo 1 supports Store A month-over-month retail retrieval.
-- Demo 2 supports a limited same-period B-F cross-store comparability diagnostic.
-- Demo 2 memory facts are currently file-backed and exposed only through a local prototype endpoint, not a production retail API endpoint.
-- The comparability gate is planned as future work, not currently implemented as a finished demo.
-- The current implemented retail scope stops at Demo 2.
-- Automated Meituan backend ingestion is not implemented yet.
-- Full 48-store comparison, peer selection, and automated daily operating recommendations are not implemented yet.
+- Demo 1 covers Store A month-over-month analysis.
+- Demo 2 covers a limited same-period B-F diagnostic.
+- Automated Meituan backend ingestion is not implemented.
+- Full 48-store peer selection and daily automated recommendations are not implemented.
 - Promotion cycle dates, competitor density, delivery conditions, rating/review signals, and stockout history are not yet included.
 - Estimated income is treated as a platform-displayed proxy, not audited profit.
-- Top-SKU evidence is used qualitatively, not as full product-category sales share.
-- Full automated SKU classification is deferred to future work.
-
-Short-term improvements:
-
-- Revisit the comparability gate after broader 48-store data, repeated reporting windows, and stronger market-context evidence are available.
-- Keep the answer boundary narrow: given a store pair and a question type, return comparison decision, evidence fields, and limit notes.
-- Expand beyond the B-F sample only after the same field contract and evaluation checks are preserved.
-- Add more answer-boundary cases around `activity_cost_ratio_pct`, `region_type`, top-SKU concentration, refund pressure, invalid-order pressure, and strategy-transfer limits.
-- Update validators later when future comparability-gate fields are actually implemented.
-
-## Retail Demo 2 Answer-Behavior Boundary Evaluation
-
-Demo 2 includes an offline answer-boundary check:
-
-- `eval/eval_retail_demo2_answer_behavior.py`
-- `eval/results/eval_retail_demo2_answer_behavior_result.txt`
-
-This check focuses on whether comparison answers preserve the implemented metric contract:
-
-- `activity_cost_ratio_pct` is treated as activity-cost-ratio evidence, not ROI or profit margin.
-- `top3_sku_transaction_amount_share_pct` is treated as lightweight top-SKU concentration evidence, not full product-category sales share.
-- search-entry comparison stays tied to `search_entry_rate_pct`, `search_entry_share_pct`, `search_entry_users`, and `entry_users`.
-- promotion or subsidy strategy transfer is qualified unless activity, subsidy, refund, invalid-order, and comparison-limit evidence support it.
-
+- Top-SKU evidence is used as lightweight product-mix evidence, not full product-category sales share.
+- `region_type` is weak context only, not a hard market-area classification.
 
 ## Future Work: Comparability Gate
 
-The current implemented retail scope stops at Demo 2.
+Future work:
 
-A comparability gate is planned as future work. It should eventually help judge which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
-
-This is not currently implemented as a finished demo because the sample is still limited. Store comparability should depend on transaction order volume, transaction amount, whether the store is under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
-
-To avoid subjective regional classification, the current project treats `region_type` as weak context only. It is not a hard market-area classification or peer-store grouping rule.
+- build a pairwise comparability gate;
+- decide whether two stores are comparable, comparable with limits, not comparable, or insufficiently supported;
+- include order volume, transaction amount, activity status, activity intensity, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
+- avoid subjective regional classification until broader store data and stronger market-context evidence are available;
+- preserve the same field contract and evaluation checks when expanding beyond the current sample.
