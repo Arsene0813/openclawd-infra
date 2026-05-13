@@ -10,158 +10,64 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 
 | Existing field | Dictionary definition / boundary | Current use location | Rename? |
 |---|---|---|---|
-| store_id | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, demo outputs. | No. |
-| entity_id | Retrieval-layer identifier generated from store_id using entity_id = "store_" + store_id. | Generated retail memory facts. | No. |
-| region_type | Weak region or market-context metadata from available store evidence. It is not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo source data, Demo 2 comparability output, and future comparability-gate review notes. | No. Keep unchanged. |
-| store_type | Store metadata field used to separate operating formats. | Source CSVs and SQL output. | No. |
-| business_district_rank | Backend-provided ranking-related field when available in the Demo 2 source. | Demo 2 source/output evidence. | No. |
-| transaction_amount | Transaction amount for same-day paid and same-day not-cancelled orders, following the backend transaction metric page. | Source CSVs, SQL output, transaction/conversion profile. | No. |
-| transaction_orders | Transaction order count for same-day paid and same-day not-cancelled orders. | Source CSVs, SQL output, transaction/conversion profile. | No. |
-| average_order_value | Backend transaction metric page average order value, read with transaction_amount and transaction_orders. | Source CSVs, SQL output. | No. |
-| estimated_income_proxy | Platform-displayed estimated income / estimated order income proxy. It is not audited profit. | Source CSVs, SQL output, admissions summary boundary. | No. |
-| entry_users | Backend-reported users entering the store during the selected period. | Source CSVs, SQL output, visibility/entry profile. | No. |
-| search_entry_users | Backend-reported users entering from search during the selected period. | Source CSVs, SQL output, search-entry diagnostics. | No. |
-| order_users | Backend-reported users who submitted orders during the selected period. | Source CSVs, SQL output, order conversion definition. | No. |
-| order_conversion_rate_pct | Backend formula: order_users / entry_users * 100. It must not be recomputed as valid_orders / entry_users. | Source CSVs, SQL output, lineage, admissions summary. | No. |
-| payment_users | Backend-reported users who submitted and successfully paid. | Source CSVs, SQL output. | No. |
-| payment_amount | Backend-reported commodity paid amount for paid orders. | Source CSVs, SQL output. | No. |
-| activity_original_transaction_amount | Original transaction amount of orders that enjoyed activities. | Source CSVs, SQL output, activity profile. | No. |
-| activity_orders | Number of orders brought by marketing activities. | Source CSVs, SQL output, activity-order share. | No. |
-| activity_cost | merchant_subsidy_amount + platform_subsidy_amount. | Source CSVs, SQL output, activity profile. | No. |
-| merchant_subsidy_amount | Merchant-borne promotion subsidy. | Source CSVs, SQL output. | No. |
-| platform_subsidy_amount | Platform-borne promotion subsidy. | Source CSVs, SQL output. | No. |
-| activity_cost_ratio_pct | Backend-formula field: activity cost divided by activity original transaction amount. It should not be described as traditional ROI. | Source CSVs, SQL output, Demo 2 summary. | No. |
-| refund_amount | Successful actual refund amount in the selected period, dated by refund success date. | Source CSVs, SQL output, order-quality profile. | No. |
-| valid_orders | Accepted and not-cancelled order count. It is an order-status metric, not a user-funnel metric. | Source CSVs, SQL output. | No. |
-| invalid_orders | Cancelled order count. | Source CSVs, SQL output, invalid-order pressure. | No. |
-| sku_transaction_amount | SKU-level transaction amount. It must not be confused with store-level transaction_amount. | Top-SKU source files and top-SKU evidence. | No. |
-| search_entry_rate_pct | SQL-derived diagnostic signal, not a raw Meituan backend metric. | SQL output and Demo 2 diagnostics. | No. |
-| search_entry_share_pct | SQL-derived diagnostic signal for search-entry structure. | SQL output and visibility/entry profile. | No. |
-| activity_order_share_pct | SQL-derived diagnostic signal for activity-order involvement. | SQL output and activity profile. | No. |
-| refund_pressure_pct | SQL-derived diagnostic signal based on refund amount and transaction amount. | SQL output and order-quality profile. | No. |
-| invalid_order_pressure_pct | SQL-derived diagnostic signal based on invalid and valid order counts. | SQL output and order-quality profile. | No. |
-| top3_sku_transaction_amount_share_pct | SQL-derived lightweight product-mix evidence. It is not full product-category sales share. | SQL output and top-SKU memory note. | No. |
-| comparison_scope_flag | SQL-derived data-readiness and comparison-scope guardrail for Demo 2. | Demo 2 SQL output and Demo 2 memory facts. | No. |
-| comparison_limit_notes | SQL-derived interpretation-boundary notes for Demo 2. | Demo 2 SQL output and Demo 2 memory facts. | No. |
-| period_granularity | Memory-fact metadata recording the time grain of the fact, currently `month`; it is not a Meituan backend metric. | Generated retail memory facts. | No. |
-| visibility_entry_profile | Retrieval-facing memory slot for exposure, ranking, entry, and search-entry structure. | Generated retail memory facts. | No. |
-| activity_lever_profile | Retrieval-facing memory slot for activity orders, activity cost, subsidy, and activity-cost ratio. | Generated retail memory facts. | No. |
-| transaction_conversion_profile | Retrieval-facing memory slot for transaction scale, order conversion, payment, and average order value. | Generated retail memory facts. | No. |
-| order_quality_pressure_profile | Retrieval-facing memory slot for refund pressure, refund-order pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts. | No. |
-| single_metric_attribution_guard | Retrieval-facing memory slot that prevents unsupported interpretation from one metric alone. | Generated retail memory facts. | No. |
-| top3_sku_product_mix_note | Retrieval-facing memory slot for limited top-SKU evidence. | Generated retail memory facts. | No. |
+| `store_id` | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, demo outputs. | No. |
+| `entity_id` | Retrieval-layer identifier generated from `store_id` using the convention `store_` + `store_id`. | Generated retail memory facts. | No. |
+| `region_type` | Weak region or market-context metadata from available store evidence. It is not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo 2 source metrics, SQL output, generated facts, comparability review. | No. |
+| `store_type` | Store operating-type field used as comparison context. | Source metrics, SQL output, generated facts. | No. |
+| `business_district_rank` | Backend ranking-related field when available. It is supplementary context, not a global market ranking. | Demo 2 source/output evidence. | No. |
+| `transaction_amount` | Store-period transaction amount following the backend transaction metric definition. | Source CSVs, SQL output, transaction/conversion facts. | No. |
+| `transaction_orders` | Store-period transaction order count following the backend transaction metric definition. | Source CSVs, SQL output, transaction/conversion facts. | No. |
+| `average_order_value` | Backend average-order-value field read with `transaction_amount` and `transaction_orders`. | Source CSVs, SQL output. | No. |
+| `estimated_income_proxy` | Platform-displayed estimated income proxy; not audited profit. | Source CSVs, SQL output, evidence-boundary docs. | No. |
+| `entry_users` | Backend-reported users entering the store during the selected period. | Source CSVs, SQL output, visibility/entry facts. | No. |
+| `search_entry_users` | Backend-reported users entering from search during the selected period. | Source CSVs, SQL output, search-entry diagnostics. | No. |
+| `order_users` | Backend-reported users who submitted orders during the selected period. | Source CSVs, SQL output, order-conversion definition. | No. |
+| `order_conversion_rate_pct` | Backend formula field: `order_users / entry_users * 100`; must not be recomputed from `valid_orders / entry_users`. | Source CSVs, SQL output, lineage, admissions summary. | No. |
+| `payment_users` | Backend-reported users who submitted and successfully paid. | Source CSVs, SQL output. | No. |
+| `payment_amount` | Backend-reported commodity paid amount for paid orders. | Source CSVs, SQL output. | No. |
+| `payment_conversion_rate_pct` | Backend payment-conversion metric. | Source CSVs, SQL output, transaction/conversion facts. | No. |
+| `activity_original_transaction_amount` | Original transaction amount of orders that used activities. | Source CSVs, SQL output, activity facts. | No. |
+| `activity_orders` | Number of orders brought by marketing activities. | Source CSVs, SQL output, activity-order share. | No. |
+| `activity_cost` | `merchant_subsidy_amount + platform_subsidy_amount`. | Source CSVs, SQL output, activity facts. | No. |
+| `merchant_subsidy_amount` | Merchant-borne promotion subsidy. | Source CSVs, SQL output. | No. |
+| `platform_subsidy_amount` | Platform-borne promotion subsidy. | Source CSVs, SQL output. | No. |
+| `activity_cost_ratio_pct` | Activity cost divided by activity original transaction amount; activity-cost-ratio evidence, not traditional ROI. | Source CSVs, SQL output, activity facts. | No. |
+| `activity_order_share_pct` | SQL-derived activity-order share. | SQL output and activity facts. | No. |
+| `refund_amount` | Successful actual refund amount in the selected period, dated by refund success date. | Source CSVs, SQL output, order-quality facts. | No. |
+| `valid_orders` | Accepted and not-cancelled order count; order-status metric, not user-level funnel numerator. | Source CSVs, SQL output. | No. |
+| `invalid_orders` | Cancelled order count. | Source CSVs, SQL output, invalid-order pressure. | No. |
+| `refund_pressure_pct` | SQL-derived refund-pressure signal based on refund amount and transaction amount. | SQL output and order-quality facts. | No. |
+| `invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal based on invalid and valid order counts. | SQL output and order-quality facts. | No. |
+| `sku_transaction_amount` | SKU-level transaction amount; must not be confused with store-level `transaction_amount`. | Top-SKU source files and top-SKU evidence. | No. |
+| `top3_sku_transaction_amount_share_pct` | SQL-derived top-three SKU concentration signal; not full product-category sales share. | SQL output, top-SKU facts, evidence-boundary docs. | No. |
+| `comparison_scope_flag` | SQL-derived data-readiness and comparison-scope guardrail for Demo 2. | Demo 2 SQL output and Demo 2 memory facts. | No. |
+| `comparison_limit_notes` | SQL-derived interpretation-boundary notes for Demo 2. | Demo 2 SQL output and Demo 2 memory facts. | No. |
+| `period_start` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. |
+| `period_end` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. |
+| `period_granularity` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. |
+| `visibility_entry_profile` | Retrieval-facing memory slot for exposure, ranking, entry, and search-entry structure. | Generated retail memory facts and retail evals. | No. |
+| `activity_lever_profile` | Retrieval-facing memory slot for activity orders, activity cost, subsidy, and activity-cost ratio. | Generated retail memory facts and retail evals. | No. |
+| `transaction_conversion_profile` | Retrieval-facing memory slot for transaction scale, order conversion, payment, and average order value. | Generated retail memory facts and retail evals. | No. |
+| `order_quality_pressure_profile` | Retrieval-facing memory slot for refund pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts and retail evals. | No. |
+| `single_metric_attribution_guard` | Retrieval-facing memory slot that prevents unsupported interpretation from one metric alone. | Generated retail memory facts and retail evals. | No. |
+| `top3_sku_product_mix_note` | Retrieval-facing memory slot for limited top-SKU evidence. | Generated retail memory facts and retail evals. | No. |
 
+## Current Path-Level Naming Decision
 
-## Future Comparability-Gate Field Review
+The current SQL and output file names remain unchanged.
 
-Pairwise comparability-gate fields are not currently implemented.
+| Existing path | Reason to keep |
+|---|---|
+| `retail_ops/sql/02_demo2_cross_store_comparability.sql` | Already referenced by docs, outputs, and eval files. The file represents Demo 2 same-period diagnostic structure with comparability guardrails, not a finished pairwise gate. |
+| `retail_ops/outputs/demo2_cross_store_comparability_output.csv` | Already used by generated Demo 2 memory facts and evaluations. |
+| `retail_ops/outputs/retail_data_contract_validation_result.txt` | Canonical saved validation output. |
 
-The current implemented retail scope stops at Demo 2. Future pairwise comparability-gate fields should only be added after broader multi-store evidence and repeated reporting windows are available.
+## Future Field Gate
 
-No current source CSV field, SQL output field, generated memory slot, or evaluation field is renamed in this patch.
+Any future field-name change must pass this review format before implementation:
 
-A reliable future gate should consider transaction order volume, transaction amount, activity or promotion status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
-
-At the current sample size, `region_type` remains weak context only. It must not be used as a hard market-area classification, store-stage label, or peer-store grouping rule.
-
-
-## Field Rename Gate for Future Changes
-
-Any future field-name change must pass this table before implementation. The current decision is to keep all implemented canonical names unchanged and preserve the definitions in `retail_ops/data/DATA_DICTIONARY.md`.
-
-| Existing field | Dictionary / implemented definition boundary | Current use position | Rename decision |
+| Proposed field | Dictionary definition / boundary | Planned use location | Rename or new field decision |
 |---|---|---|---|
-| `store_id` | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, validation scripts. | No. Keep unchanged. |
-| `entity_id` | Retrieval-layer identifier used in generated retail memory facts; current convention is `store_` + `store_id`. | Generated retail memory facts and retrieval/evaluation logic. | No. Keep unchanged. |
-| `region_type` | Weak region or market-context metadata from available store evidence; not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo 2 source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
-| `store_type` | Store operating-type field used as a comparison boundary. | Source metrics, SQL output, generated facts, comparability review. | No. Keep unchanged. |
-| `business_district_rank` | Meituan backend ranking field; not a global market ranking. | Source metrics and SQL output. | No. Keep unchanged. |
-| `exposure_users` | Backend exposure-user metric. | Source metrics, SQL output, visibility memory facts. | No. Keep unchanged. |
-| `entry_users` | Backend entry-user metric. | Source metrics, SQL output, visibility and conversion memory facts. | No. Keep unchanged. |
-| `search_entry_users` | Backend search-entry-user metric. | Source metrics, SQL output, visibility memory facts. | No. Keep unchanged. |
-| `order_users` | Backend order-user metric used in the backend order-conversion formula. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
-| `order_conversion_rate_pct` | Backend formula field: `order_users / entry_users * 100`; must not be recomputed from `valid_orders / entry_users`. | Source metrics, SQL output, transaction/conversion facts, lineage. | No. Keep unchanged. |
-| `payment_users` | Backend successful-payment-user metric. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
-| `payment_conversion_rate_pct` | Backend payment-conversion metric. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
-| `transaction_amount` | Backend transaction amount for the selected period and scope. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
-| `transaction_orders` | Backend transaction-order count for the selected period and scope. | Source metrics, SQL output, activity and transaction facts. | No. Keep unchanged. |
-| `average_order_value` | Backend average-order-value field. | Source metrics, SQL output, transaction/conversion facts. | No. Keep unchanged. |
-| `estimated_income_proxy` | Platform-displayed estimated income / estimated order income proxy; not audited profit. | Source metrics, SQL output, transaction/conversion facts, evidence-boundary docs. | No. Keep unchanged. |
-| `activity_original_transaction_amount` | Backend original transaction amount for orders that used activities. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
-| `activity_orders` | Backend activity-driven order count. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
-| `activity_cost` | Backend activity cost field. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
-| `merchant_subsidy_amount` | Merchant-borne subsidy amount. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
-| `platform_subsidy_amount` | Platform-borne subsidy amount. | Source metrics, SQL output, activity facts. | No. Keep unchanged. |
-| `activity_cost_ratio_pct` | Activity cost divided by activity original transaction amount; activity-cost-ratio evidence, not traditional ROI. | Source metrics, SQL output, activity facts, lineage. | No. Keep unchanged. |
-| `activity_order_share_pct` | SQL-derived activity-order share. | Demo 2 SQL output, generated facts, comparability review. | No. Keep unchanged. |
-| `refund_amount` | Backend refund amount counted by refund-success date. | Source metrics, SQL output, order-quality facts. | No. Keep unchanged. |
-| `valid_orders` | Backend valid-order count; order-status metric, not user-level order-conversion denominator. | Source metrics, SQL output, order-quality facts. | No. Keep unchanged. |
-| `invalid_orders` | Backend invalid-order count. | Source metrics, SQL output, order-quality facts. | No. Keep unchanged. |
-| `refund_pressure_pct` | SQL-derived refund-pressure signal. | SQL output, order-quality facts, comparability review. | No. Keep unchanged. |
-| `invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal. | SQL output, order-quality facts, comparability review. | No. Keep unchanged. |
-| `sku_transaction_amount` | SKU-level transaction amount; not store-period total transaction amount. | Top-SKU source tables and product-mix facts. | No. Keep unchanged. |
-| `top3_sku_transaction_amount_share_pct` | SQL-derived top-three SKU concentration signal; not full product-category sales share. | SQL output, top-SKU facts, evidence-boundary docs. | No. Keep unchanged. |
-| `comparison_scope_flag` | SQL-derived comparison-scope flag for current Demo 2 diagnostic readiness. | Demo 2 SQL output, generated facts, comparability-gate eval. | No. Keep unchanged. |
-| `comparison_limit_notes` | SQL-derived comparison-limit notes. | Demo 2 SQL output, generated facts, comparability-gate eval. | No. Keep unchanged. |
-| `period_start` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. Keep unchanged. |
-| `period_end` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. Keep unchanged. |
-| `period_granularity` | Memory-fact period metadata; not a direct Meituan backend metric. | Generated retail memory facts. | No. Keep unchanged. |
-| `visibility_entry_profile` | Canonical retail memory slot. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
-| `activity_lever_profile` | Canonical retail memory slot. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
-| `transaction_conversion_profile` | Canonical retail memory slot. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
-| `order_quality_pressure_profile` | Canonical retail memory slot for refund and invalid-order pressure. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
-| `single_metric_attribution_guard` | Canonical retail memory slot for attribution boundary. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
-| `top3_sku_product_mix_note` | Canonical retail memory slot for lightweight top-SKU evidence. | Generated retail memory facts and retail evals. | No. Keep unchanged. |
 
-## Demo 2 Carry-Through Review: `order_amount` and `payment_amount`
+Possible future market-context fields such as `market_area_type`, `market_area_type_source`, and `market_area_type_confidence` are not implemented in the current repository. They should only be added after broader store data and repeated reporting windows provide enough evidence to support the classification.
 
-This review patch does not rename any field.
-
-`order_amount` and `payment_amount` are already defined in `retail_ops/data/DATA_DICTIONARY.md` and already exist in `retail_ops/data/demo2_store_period_metrics.csv`.
-
-This patch carries them through the Demo 2 SQL output and Demo 2 `transaction_conversion_profile` memory facts so that the order-submission and payment-funnel amount fields remain visible alongside `order_users`, `payment_users`, `order_conversion_rate_pct`, and `payment_conversion_rate_pct`.
-
-| Existing field | Dictionary definition / boundary | Current use location after this patch | Rename? |
-|---|---|---|---|
-| `order_amount` | Backend-reported total actual paid commodity amount of submitted orders during the selected period. | Demo 2 source CSV, Demo 2 SQL output, Demo 2 `transaction_conversion_profile` memory facts. | No. Keep unchanged. |
-| `payment_amount` | Backend-reported total actual paid commodity amount of paid orders during the selected period. | Demo 2 source CSV, Demo 2 SQL output, Demo 2 `transaction_conversion_profile` memory facts. | No. Keep unchanged. |
-
-These fields should not be confused with `transaction_amount`.
-
-`order_amount` and `payment_amount` belong to the order-submission and payment funnel view, while `transaction_amount` follows the backend transaction metric definition documented in the dictionary.
-
-## Additional Field-Boundary Review for Retail Narrative Refinement
-
-This review patch does not rename any field.
-
-The purpose of this section is to protect the current admissions-facing retail narrative from introducing new names or silently changing existing meanings.
-
-Existing field or concept | Dictionary definition / boundary | Current use location | Rename decision
----|---|---|---
-`business_district_rank` | Backend-reported business-district ranking field when available. It is supplementary context, not a global market ranking and not a hard comparability condition. | Demo 2 source/output evidence and data dictionary. | No. Keep unchanged.
-`refund_order_pressure_pct` | SQL-derived order-count refund-pressure indicator based on `refund_orders_all_or_partial / transaction_orders * 100`. | Demo 1 output and dictionary. The current Demo 2 output uses `refund_pressure_pct` and `invalid_order_pressure_pct` as active order-quality comparison fields. | No. Keep unchanged.
-`refund_pressure_pct` | SQL-derived refund-pressure signal based on refund amount and transaction amount. | SQL output, order-quality facts, current Demo 2 comparability output. | No. Keep unchanged.
-`invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal based on invalid and valid order counts. | SQL output, order-quality facts, current Demo 2 comparability output. | No. Keep unchanged.
-`order_quality_pressure_profile` | Retrieval-facing memory slot for refund pressure, refund-order pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts and retail evals. | No. Keep unchanged.
-
-Decision: the narrative may explain these boundaries, but it must not rename the fields or convert them into new store-stage labels.
-
-## Period Granularity Field Review
-
-This review patch does not rename any field.
-
-`period_granularity` is a documentation and validation field used to describe the reporting level of a row, such as monthly store-period data. It is not a replacement for `period_start`, `period_end`, `store_id`, or any Meituan backend metric.
-
-| Existing / SQL-derived field | Dictionary definition / boundary | Use location | Rename? |
-|---|---|---|---|
-| `period_granularity` | Describes the reporting granularity of the row, for example a monthly store-period row. | Data dictionary, Demo 2 comparability-gate consistency evaluation, documentation boundary checks. | No. Keep unchanged. |
-
-`period_granularity` should be used only to clarify the time/reporting level of a row. It should not be used to merge mismatched periods or to imply that two stores are comparable when activity intensity, refunds, ranking, or competition may differ.
-
-## Future Comparability-Gate Field Review
-
-Pairwise comparability-gate fields are not currently implemented.
-
-Future fields should only be added after broader multi-store evidence is available. A reliable gate should consider transaction order volume, transaction amount, activity or promotion status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
-
-At the current sample size, region_type remains weak context only. It must not be used as a hard market-area classification, store-stage label, or peer-store grouping rule.

@@ -35,13 +35,13 @@ The repository should be read as a staged prototype with explicit evidence bound
 
 | Area | Current status | Evidence |
 |---|---|---|
-| Livestream memory API | Implemented local prototype | `/chat_mem`, `/chat_livestream_kb`, `api/main.py` |
+| Livestream memory API | Implemented local prototype | `/chat_mem`, `/chat`, `/health`, `api/main.py` |
 | Structured memory lifecycle | Implemented for livestream product facts | overwrite control, soft deactivation, freshness filtering, active-state filtering |
 | Livestream evaluation | Implemented | current implemented cases pass |
 | Retail metric dictionary and lineage | Implemented | `retail_ops/data/DATA_DICTIONARY.md`, `retail_ops/LINEAGE.md` |
-| Retail data-contract validation | Implemented | `retail_ops/scripts/validate_retail_data_contract.py`, `retail_ops/outputs/retail_data_contract_validation_result.txt` |
+| Retail data-contract validation | Implemented as lightweight guardrail | `retail_ops/scripts/validate_retail_data_contract.py`, `retail_ops/outputs/retail_data_contract_validation_result.txt` |
 | Retail memory facts generation | Implemented for Store A Demo 1 and Demo 2 B-F facts | `retail_ops/outputs/generated_retail_memory_facts.json`, `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
-| Retail answer endpoints | Implemented for Demo 1 and Demo 2 only | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb` |
+| Retail local answer endpoints | Implemented for Demo 1 and Demo 2 | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb`; file-backed/local retail evidence only |
 | Automated Meituan backend ingestion | Not implemented yet | future work |
 | Full 48-store decision-support system | Not implemented yet | future work |
 
@@ -68,10 +68,10 @@ The livestream memory layer supports:
 - fallback or refusal when no reliable fact is available;
 - scenario-based evaluation.
 
-Current endpoints:
-
+Current implemented API endpoints in `api/main.py` include:
+- `/health`
+- `/chat`
 - `/chat_mem`
-- `/chat_livestream_kb`
 
 ### Retail Operations Extension
 
@@ -184,7 +184,7 @@ Demo 2 includes:
 - top SKU evidence with original Chinese SKU names and English helper translations;
 - SQL-derived scope/limit diagnostics;
 - generated Demo 2 retail memory facts;
-- a file-backed Demo 2 retail endpoint at `/chat_retail_ops_demo2_kb`;
+- a file-backed local Demo 2 retail endpoint at `/chat_retail_ops_demo2_kb` using generated Demo 2 retail memory facts;
 - offline facts evaluation;
 - answer-boundary evaluation.
 
@@ -215,8 +215,8 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
 | Retail Demo 2 comparison-boundary consistency evaluation | checks that Demo 2 remains a row-level same-period diagnostic and does not pretend to be a pairwise gate | 5/5 passed |
 | Retail Demo 2 offline answer-boundary check | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
-| Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
-| Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |
+| Retail data-contract validation | required file presence, dictionary boundary phrases, Demo 1 / Demo 2 output headers, forbidden aliases, and generated fact structure | passed |
+| Project consistency validation | required current-scope files, Demo 2 boundary wording, stale future-work artifacts, and forbidden retail endpoint claims | passed |
 
 The evaluation value is not that the model is generally correct. The value is that the project has explicit checks for supported answers, unsupported-scope refusal, metric-boundary preservation, and comparability limits.
 
@@ -287,7 +287,7 @@ Project consistency validation:
 
 Retail Demo 2 checks:
 
-- `python3 scripts/validate_demo2_api_endpoint.py`
+- `python3 scripts/validate_demo2_retail_endpoint_boundary.py`
 - `python3 retail_ops/scripts/validate_demo2_staging_data.py`
 - `python3 retail_ops/scripts/validate_demo2_comparability_output.py`
 - `python3 retail_ops/scripts/validate_demo2_retail_memory_facts.py`
@@ -327,7 +327,7 @@ Saved evaluation outputs include:
 
 - `scripts/`
   - `init_qdrant_collections.py`
-  - `validate_demo2_api_endpoint.py`
+  - `validate_demo2_retail_endpoint_boundary.py`
   - `validate_project_consistency.py`
 
 - `eval/`
@@ -370,7 +370,7 @@ Current limitations:
 
 - Demo 1 supports Store A month-over-month retail retrieval.
 - Demo 2 supports a limited same-period B-F cross-store comparability diagnostic.
-- Demo 2 memory facts are currently file-backed rather than loaded through the same Qdrant path as Store A Demo 1.
+- Demo 2 memory facts are currently file-backed and exposed only through a local prototype endpoint, not a production retail API endpoint.
 - The comparability gate is planned as future work, not currently implemented as a finished demo.
 - The current implemented retail scope stops at Demo 2.
 - Automated Meituan backend ingestion is not implemented yet.

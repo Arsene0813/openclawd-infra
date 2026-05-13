@@ -1,64 +1,88 @@
 # Retail Operations Architecture
 
-This document describes the current implemented retail-operations architecture.
+This file gives a compact map of the current retail decision-support prototype.
 
-The implemented retail scope stops at Demo 2.
+The purpose is not to present enterprise infrastructure. The purpose is to show how Meituan-style backend evidence moves through a controlled data path before any answer is allowed to make a comparison.
 
-A comparability gate is planned as future work, but it is not currently implemented as a finished demo.
+Data flow:
 
-## Current Implemented Flow
+    Meituan-style backend evidence
+        ↓
+    Canonical metric dictionary
+        ↓
+    Normalized store-period / search / SKU tables
+        ↓
+    Offline SQL diagnostics
+        ↓
+    SQL outputs with diagnostic ratios and limitation notes
+        ↓
+    Generated retail memory facts
+        ↓
+    Offline retrieval / evaluation checks
+        ↓
+    Cautious answer, qualification, or refusal
 
-The current retail flow is:
+## Layer 1: Backend Evidence
 
-Meituan backend metrics
--> DATA_DICTIONARY.md
--> canonical CSV files
--> SQL diagnostics
--> output CSV files
--> generated memory facts
--> validation and evaluation
+Current source files include:
 
-## Implemented Demos
+- `retail_ops/data/store_a_monthly_metrics.csv`
+- `retail_ops/data/store_a_top_skus.csv`
+- `retail_ops/data/demo2_store_period_metrics.csv`
+- `retail_ops/data/demo2_top_search_terms.csv`
+- `retail_ops/data/demo2_top_skus_by_transaction_amount.csv`
+- `retail_ops/data/demo2_top_skus_by_sales_volume.csv`
 
-| Demo | Status | Purpose |
-|---|---|---|
-| Demo 1 | Implemented | Store A month-over-month diagnostic. |
-| Demo 2 | Implemented | Stores B-F same-period cross-store diagnostic structure. |
-| Comparability gate | Future work | Not currently implemented as a finished demo. |
+These files are manually structured from Meituan merchant-backend evidence. They are not full automated ingestion.
 
-## Current Files
+## Layer 2: Metric Contract
 
-Current implemented SQL files:
+Main files:
 
-- retail_ops/sql/01_store_a_month_over_month_diagnostic.sql
-- retail_ops/sql/02_demo2_cross_store_comparability.sql
+- `retail_ops/data/DATA_DICTIONARY.md`
+- `retail_ops/LINEAGE.md`
 
-Current implemented output files:
+This layer preserves field names, backend definitions, calculation rules, and interpretation limits.
 
-- retail_ops/outputs/store_a_demo1_sql_output.csv
-- retail_ops/outputs/store_a_demo1_interpretation_summary.csv
-- retail_ops/outputs/demo2_cross_store_comparability_output.csv
+Existing Meituan backend metrics should not be silently renamed or redefined. For example, `order_conversion_rate_pct` follows `order_users / entry_users * 100`; it must not be recomputed from `valid_orders / entry_users`.
 
-Current implemented evaluation files:
+## Layer 3: SQL Diagnostics
 
-- eval/eval_retail_demo2_scope_boundary.py
+Main files:
 
-## Why the Comparability Gate Is Future Work
+- `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
+- `retail_ops/sql/02_demo2_cross_store_comparability.sql`
 
-The Meituan backend provides rich and usable store-level data. The limitation is not data quality. The limitation is that the backend workflow is mainly designed for reviewing one store at a time.
+SQL is used to prepare comparison-ready diagnostic evidence. It creates ratios, shares, pressure indicators, and limitation notes.
 
-For a 48-store operation, a later decision-support layer should help decide which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
+The SQL layer should not assign fixed store-stage labels or make final operating decisions.
 
-A reliable comparability gate should depend on transaction order volume, transaction amount, whether the store is under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+## Layer 4: Generated Memory Facts
 
-The current demo sample is still small. To avoid subjective regional classification, the current project treats region_type as weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
+Main files:
 
-## Boundary
+- `retail_ops/outputs/generated_retail_memory_facts.json`
+- `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
+- `retail_ops/scripts/generate_demo2_retail_memory_facts.py`
 
-The current architecture does not rank stores.
+The memory-facing facts record:
 
-The current architecture does not classify market areas.
+- store identity;
+- reporting period;
+- observed values;
+- source fields;
+- calculation notes;
+- confidence as evidence-trace confidence;
+- limitations.
 
-The current architecture does not claim to decide which operating action should be copied between stores.
+## Layer 5: Offline Evaluation and Boundary Checks
 
-The current architecture demonstrates how selected Meituan backend metrics can be converted into store-period diagnostic outputs with explicit field definitions and interpretation limits.
+Current retail evaluation checks whether later answers can stay inside supported evidence.
+
+Current boundary:
+
+- Demo 1: one Store A month-over-month diagnostic.
+- Demo 2: five anonymized stores, B-F, in the same March 2026 reporting window.
+- Demo 2 generated facts are file-backed and evaluated offline.
+- The future comparability gate is documented but not implemented as a finished demo.
+- Full 48-store automated grouping is not implemented.

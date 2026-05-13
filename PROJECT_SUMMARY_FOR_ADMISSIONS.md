@@ -12,7 +12,7 @@ This project grew out of a real operating problem in my Meituan instant-retail s
 
 The Meituan merchant backend gives detailed store-level data, but it is mainly designed for reviewing one store at a time. Once the operation expands across many stores, the harder problem is not collecting more backend metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgement the evidence can actually support.
 
-I built a staged prototype that uses a metric dictionary, SQL diagnostics, generated memory facts, and retrieval/evaluation checks to keep retail decision support inside an evidence boundary. The current retail demos do not try to rank stores or produce automatic recommendations. They test a more basic question first: whether a comparison is valid enough to discuss.
+I built a staged prototype that uses a metric dictionary, SQL diagnostics, generated memory facts, and retrieval/evaluation checks to keep retail decision support inside an evidence boundary. The current retail demos do not try to rank stores or produce automatic recommendations. They test a more basic question first: whether selected same-period store-period rows can be discussed inside a defined evidence boundary.
 
 ## Business problem
 
@@ -80,7 +80,7 @@ A pairwise comparability gate is planned as the next stage, but it is not presen
 
 The future gate needs more store-pair evidence, repeated reporting windows, and stronger market-context fields before it should be treated as an implemented decision rule. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, whether the store is currently under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
-The current demo sample is still small. To avoid subjective regional classification, I do not currently classify store locations into market-area types. The existing region field is treated as weak context only, not as a hard market-area label or peer-store grouping rule.
+The current demo sample is still small. To avoid subjective regional classification, I do not currently classify store locations into market-area types. The existing `region_type` field is treated as weak context only, not as a hard market-area label or peer-store grouping rule.
 
 A future 48-store version can revisit this gate after more stores and reporting windows are added.
 
@@ -161,3 +161,5 @@ The following files are part of the project evidence and consistency contract:
 ## One-sentence summary
 
 This project shows how Meituan backend metrics can be normalized, checked, compared cautiously, and connected to a memory layer so that retail decision support preserves evidence, definitions, and limitations before making any operational judgement.
+
+The current repository documents its input signals and limits, but does not present it as a finished demo.

@@ -101,11 +101,7 @@ Validation and evaluation files:
 - `eval/eval_retail_demo2_answer_behavior.py`
 - `eval/results/eval_retail_demo2_answer_behavior_result.txt`
 
-The Demo 2 API endpoint is:
-
-- `/chat_retail_ops_demo2_kb`
-
-This endpoint is file-backed and uses generated Demo 2 retail memory facts. It is separate from `/chat_retail_ops_kb`, which remains the Store A Demo 1 endpoint.
+Demo 2 currently uses file-backed generated retail memory facts through a local prototype endpoint. It is not a production retail API endpoint.
 
 ## Implemented Retail Path
 
@@ -154,11 +150,11 @@ The retail demo uses `DATA_DICTIONARY.md` as the metric definition layer and `LI
 
 The validation script checks that:
 
-- required canonical fields exist in the source and output files;
+- required current-scope files exist;
+- canonical dictionary boundary phrases are preserved;
+- Demo 1 and Demo 2 outputs expose required headers;
 - forbidden alias fields are not reintroduced;
-- generated memory facts reference known source fields;
-- the generated retail memory fact file is valid JSON;
-- source CSV, SQL output, metric dictionary, lineage, and generated facts remain consistent.
+- generated memory fact files keep expected structure, source paths, and known source fields.
 
 Main validation file:
 
@@ -168,7 +164,7 @@ Saved validation output:
 
 - `retail_ops/outputs/retail_data_contract_validation_result.txt`
 
-`retail_data_contract_validation_result.txt` validates the original Store A / Demo 1 retail data contract. Demo 2 uses additional dedicated validators and evaluation files for same-period cross-store diagnostic behavior.
+`retail_data_contract_validation_result.txt` captures the current lightweight data-contract guardrail for Demo 1 and Demo 2. Dedicated Demo 2 validators still cover staging data, SQL output, generated facts, and answer-boundary behavior.
 
 ## Future Comparability-Gate Design Notes
 

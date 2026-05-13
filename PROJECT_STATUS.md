@@ -8,18 +8,23 @@ This repository currently demonstrates two implemented retail-operations diagnos
 |---|---|---|
 | Demo 1 | Implemented | Store A month-over-month diagnostic. |
 | Demo 2 | Implemented | Stores B-F same-period cross-store diagnostic structure. |
-| Comparability gate | Future work | Not currently implemented as a finished demo. |
+| Comparability gate | Future work | Planned pairwise gate for judging whether selected stores can be compared for a selected operating question. |
 
 ## Current Retail Narrative
 
-The Meituan merchant backend provides rich and usable store-level data. The limitation is not data quality. The limitation is that the backend workflow is mainly designed for reviewing one store at a time.
+The Meituan merchant backend provides detailed store-level data. The harder technical problem is that the backend workflow is mainly designed for reviewing one store at a time.
 
-Because the business has 48 stores, the longer-term technical problem is to build a decision-support layer that can help decide which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
+Because the business has 48 stores, the longer-term decision-support problem is to decide:
+
+- which stores can be compared;
+- under what conditions they can be compared;
+- which metric changes support a cautious operating interpretation;
+- which comparisons should be refused or qualified.
 
 The current repository does not claim to solve the full 48-store comparison problem. It shows the first two implemented steps:
 
-1. convert selected Meituan backend metrics into a structured store-period diagnostic;
-2. compare selected stores in the same reporting window with explicit field definitions and interpretation limits.
+1. convert selected Meituan backend metrics into structured store-period diagnostics;
+2. compare selected same-period store rows with explicit field definitions and interpretation limits.
 
 ## Why the Comparability Gate Is Future Work
 
@@ -27,7 +32,7 @@ A reliable comparability gate should depend on factors such as:
 
 - transaction order volume;
 - transaction amount;
-- whether the store is currently under activity or promotion;
+- activity status;
 - activity intensity;
 - store type;
 - region and market context;
@@ -37,26 +42,28 @@ A reliable comparability gate should depend on factors such as:
 - invalid-order pressure;
 - repeated reporting windows.
 
-The current demo sample is still small. To avoid subjective regional classification, the project does not currently classify store locations into market-area types.
+The current demo sample is still small.
 
-The existing `region_type` field remains weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
+To avoid subjective regional classification, the project does not currently classify store locations into market-area types. The existing `region_type` field remains weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
 
 A future 48-store version can revisit the comparability gate after more store data, more reporting windows, and stronger market-context fields are available.
 
 ## Current Validation Focus
 
-Current validation should focus on:
+Current validation focuses on:
 
 - data dictionary consistency;
 - Demo 1 output consistency;
 - Demo 2 output consistency;
 - field-definition boundaries;
+- generated memory fact structure;
+- offline answer-boundary checks;
 - refusal to overclaim from limited sample data.
 
 ## Current Commands
 
 Run the current implemented checks with:
 
-python3 scripts/validate_project_consistency.py
-python3 retail_ops/scripts/validate_retail_data_contract.py
-python3 eval/eval_retail_demo2_scope_boundary.py
+    python3 retail_ops/scripts/validate_retail_data_contract.py
+    python3 scripts/validate_demo2_retail_endpoint_boundary.py
+    python3 scripts/validate_project_consistency.py

@@ -19,7 +19,10 @@ REQUIRED_FILES = [
     "retail_ops/sql/01_store_a_month_over_month_diagnostic.sql",
     "retail_ops/sql/02_demo2_cross_store_comparability.sql",
     "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "eval/eval_retail_demo2_scope_boundary.py",
+    "retail_ops/outputs/retail_data_contract_validation_result.txt",
+    "scripts/validate_demo2_retail_endpoint_boundary.py",
+    "eval/eval_retail_demo2_facts.py",
+    "eval/eval_retail_demo2_answer_behavior.py",
 ]
 
 CURRENT_SCOPE_REQUIRED_TERMS = {
@@ -30,43 +33,56 @@ CURRENT_SCOPE_REQUIRED_TERMS = {
     "PROJECT_STATUS.md": [
         "Demo 1",
         "Demo 2",
-        "Comparability gate",
         "Future work",
+        "comparability gate",
     ],
     "PROJECT_SUMMARY_FOR_ADMISSIONS.md": [
-        "A pairwise comparability gate is planned as the next stage",
-        "not presented as a finished demo",
+        "pairwise comparability gate",
+        "finished demo",
     ],
     "retail_ops/README.md": [
-        "The current implemented retail scope stops at Demo 2",
-        "Future Work: Comparability Gate",
+        "same-period",
+        "generated retail memory facts",
     ],
     "retail_ops/COMPARABILITY_GATE_V0.md": [
-        "A pairwise comparability gate is not currently implemented as a finished demo",
         "transaction order volume",
         "transaction amount",
-        "activity or promotion",
-        "region and market context",
-        "competition environment",
+        "activity status",
+        "activity intensity",
+        "region_type",
         "repeated reporting windows",
     ],
     "retail_ops/data/DATA_DICTIONARY.md": [
-        "Pairwise comparability-gate fields are not currently implemented",
         "region_type remains weak context only",
         "not a hard market-area classification",
+        "Pairwise comparability-gate fields are not currently implemented",
     ],
 }
 
-STALE_TERM_PARTS = [
-    ("eval_retail_", "demo3"),
-    ("run_", "demo3"),
-    ("validate_", "demo3"),
-    ("answer_", "demo3"),
-    ("demo_3_", "pairwise"),
-    ("demo3_", "pairwise"),
-    ("03_demo2_", "pairwise_comparability_gate"),
-    ("search_entry_", "structure"),
-    ("activity_", "transfer"),
+REQUIRED_API_PATTERNS = [
+    '@app.post("/chat_retail_ops_kb")',
+    '@app.post("/chat_retail_ops_demo2_kb")',
+]
+
+FORBIDDEN_DOC_OVERCLAIMS = [
+    "is a production retail API endpoint",
+    "production retail API endpoint is implemented",
+    "production-ready retail API endpoint",
+    "full 48-store automation is implemented",
+    "comparability gate is implemented",
+    "implemented comparability gate",
+    "finished comparability gate",
+]
+
+STALE_TERMS = [
+    "Demo 3",
+    "demo3",
+    "demo_3_",
+    "demo3_",
+    "run_demo3",
+    "validate_demo3",
+    "eval_retail_demo3",
+    "03_demo",
 ]
 
 SCAN_SUFFIXES = {
@@ -83,11 +99,8 @@ SCAN_SUFFIXES = {
 SKIP_STALE_SCAN_FILES = {
     "scripts/validate_project_consistency.py",
     "retail_ops/scripts/validate_retail_data_contract.py",
+    "scripts/validate_demo2_retail_endpoint_boundary.py",
 }
-
-
-def stale_terms() -> list[str]:
-    return [left + right for left, right in STALE_TERM_PARTS]
 
 
 def git_tracked_files() -> list[Path]:
@@ -98,11 +111,7 @@ def git_tracked_files() -> list[Path]:
         capture_output=True,
         text=True,
     )
-    return [
-        ROOT / line.strip()
-        for line in result.stdout.splitlines()
-        if line.strip()
-    ]
+    return [ROOT / line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
 def read_text(path: Path) -> str:
@@ -132,14 +141,41 @@ def main() -> int:
             if term not in text:
                 failures.append(f"{rel} missing required current-scope term: {term}")
 
-    deleted_terms = stale_terms()
+    api_path = ROOT / "api/main.py"
+    if not api_path.exists():
+        failures.append("Missing api/main.py")
+    else:
+        api_text = read_text(api_path)
+        for pattern in REQUIRED_API_PATTERNS:
+            if pattern not in api_text:
+                failures.append(f"api/main.py missing expected local retail endpoint pattern: {pattern}")
+
+    docs_to_check = [
+        "README.md",
+        "PROJECT_STATUS.md",
+        "PROJECT_SUMMARY_FOR_ADMISSIONS.md",
+        "retail_ops/README.md",
+        "retail_ops/ARCHITECTURE.md",
+        "retail_ops/EXPERIMENT_RESULTS.md",
+        "retail_ops/COMPARABILITY_GATE_V0.md",
+        "retail_ops/FIELD_USAGE_REVIEW.md",
+    ]
+
+    for rel in docs_to_check:
+        path = ROOT / rel
+        if not path.exists():
+            continue
+
+        lowered = read_text(path).lower()
+        for claim in FORBIDDEN_DOC_OVERCLAIMS:
+            if claim.lower() in lowered:
+                failures.append(f"{rel} contains overclaim: {claim}")
 
     for path in git_tracked_files():
         if not is_text_file(path):
             continue
 
         rel = path.relative_to(ROOT).as_posix()
-
         if rel in SKIP_STALE_SCAN_FILES:
             continue
 
@@ -149,15 +185,11 @@ def main() -> int:
             continue
 
         lowered = text.lower()
-
-        for term in deleted_terms:
+        for term in STALE_TERMS:
             if term.lower() in lowered:
-                failures.append(
-                    f"{rel} still contains deleted Demo3 artifact term: {term}"
-                )
+                failures.append(f"{rel} still contains stale Demo 3 term: {term}")
 
     dictionary = read_text(ROOT / "retail_ops/data/DATA_DICTIONARY.md")
-
     dictionary_required_boundaries = [
         "activity_cost_ratio_pct",
         "not traditional ROI",
@@ -167,6 +199,7 @@ def main() -> int:
         "order_users / entry_users",
         "top3_sku_transaction_amount_share_pct",
         "not full product-category share",
+        "region_type remains weak context only",
     ]
 
     for term in dictionary_required_boundaries:
@@ -174,14 +207,17 @@ def main() -> int:
             failures.append(f"DATA_DICTIONARY.md missing boundary term: {term}")
 
     if failures:
+        print("Project consistency validation FAILED.")
         for failure in failures:
             print(f"[FAIL] {failure}")
         return 1
 
     print("[PASS] Project consistency validation passed.")
     print("[PASS] Current implemented retail scope stops at Demo 2.")
+    print("[PASS] Local retail endpoints exist in api/main.py.")
+    print("[PASS] Demo 2 is documented as file-backed/local evidence.")
     print("[PASS] Comparability gate is documented as future work.")
-    print("[PASS] Deleted Demo3 artifact references are absent from project docs and artifacts.")
+    print("[PASS] Stale Demo 3 references are absent from tracked text artifacts.")
     return 0
 
 
