@@ -1,53 +1,56 @@
 # Demo 2 Source Notes
 
-Demo 2 uses anonymized store-period records manually transcribed from the Meituan Waimai merchant backend.
+## Source
 
-All records use the same reporting window: 2026-03-01 to 2026-03-31.
+Demo 2 uses manually transcribed Meituan Waimai merchant-backend metrics for anonymized stores B-F.
 
-Included stores:
+All included stores use the same reporting window:
 
-- Store B
-- Store C
-- Store D
-- Store E
-- Store F
+- `period_start`: `2026-03-01`
+- `period_end`: `2026-03-31`
+- `period_month`: `2026-03`
 
-Source CSV files:
+The source data is not an automated backend export. It is a structured research copy of selected backend fields for a limited decision-support prototype.
 
-- demo2_store_period_metrics.csv
-- demo2_top_search_terms.csv
-- demo2_top_skus_by_sales_volume.csv
-- demo2_top_skus_by_transaction_amount.csv
+## Included Store Records
 
-The raw metrics are treated as Meituan backend metrics. SQL-derived diagnostics should not redefine backend fields.
+Demo 2 currently includes five anonymized store-period records:
 
-Traffic-source entry metrics are backend-reported source-level metrics. They are not assumed to be mutually exclusive and are not required to sum to entry_users.
+| store_id | region_type | store_type | reporting window |
+|---|---|---|---|
+| B | Qingdao | self-operated | 2026-03-01 to 2026-03-31 |
+| C | Qingdao | self-operated | 2026-03-01 to 2026-03-31 |
+| D | Yantai | self-operated | 2026-03-01 to 2026-03-31 |
+| E | Yantai | partner | 2026-03-01 to 2026-03-31 |
+| F | Yantai | partner | 2026-03-01 to 2026-03-31 |
 
-activity_cost_ratio_pct follows this project formula:
+## Source Tables
 
-    activity_cost_ratio_pct = activity_cost / activity_original_transaction_amount * 100
+Demo 2 uses four structured source tables:
 
-It should not be described as traditional ROI.
+- `demo2_store_period_metrics.csv`
+- `demo2_top_search_terms.csv`
+- `demo2_top_skus_by_sales_volume.csv`
+- `demo2_top_skus_by_transaction_amount.csv`
 
-Chinese backend values are retained for traceability. English helper columns are added only for readability:
+## Data Integrity Notes
 
-- search_term: original backend search term
-- search_term_en: conservative English translation
-- sku_name: original backend SKU name
-- sku_name_en: conservative English translation
+Demo 2 keeps backend-reported values as source values. SQL-derived fields are used only for diagnostics.
 
-The repository does not include exhaustive Meituan backend screenshots because they contain sensitive store-level operating information.
+Traffic-source entry metrics are treated as backend-reported channel metrics. They are not assumed to be mutually exclusive, and they should not be summed into total `entry_users`.
 
-The project instead uses anonymized structured data, source notes, validation scripts, SQL outputs, generated memory facts, and evaluation results.
+`region_type` is weak context only. It is not a hard market-area classification, peer-store grouping rule, or mature regional segmentation.
 
-Demo 2 currently excludes:
+`business_district_rank` is supplementary backend evidence. It is not a global market ranking and is not a hard comparability condition.
 
-- total SKU count
-- full SKU category-share analysis
-- SKU-level promotion participation
-- SKU original price or activity price
-- store rating
-- review count
-- delivery conditions
-- stockout history
-- manually counted competitor quantity
+`activity_cost_ratio_pct` follows the project dictionary definition: `activity_cost / activity_original_transaction_amount * 100`.
+
+It should not be described as ROI, profit margin, or operating return.
+
+Top-SKU evidence is used as lightweight product-mix evidence. It is not treated as complete product-category sales share.
+
+## Screenshot Policy
+
+The repository does not include exhaustive Meituan backend screenshots because the backend contains sensitive store-level operating information.
+
+The project instead provides anonymized structured records, metric definitions, SQL diagnostics, generated memory facts, lineage notes, and validation/evaluation outputs.

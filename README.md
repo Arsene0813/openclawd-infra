@@ -86,7 +86,7 @@ Demo 1 analyzes Store A, a self-operated Qingdao store, across February, March, 
 
 Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
-A future comparability gate should build on the Demo 2 B-F structure, but it is not currently implemented as a finished demo.
+A future pairwise comparability gate should build on the Demo 2 B-F structure, but it is not currently implemented as a finished demo.
 
 
 The future gate should avoid market-area classification until more store data and repeated reporting windows are available. The current project treats `region_type` as weak context only.
@@ -146,7 +146,7 @@ User or operator input -> non-fact filtering -> structured fact extraction -> fa
 | Retrieval gating | Similarity alone does not prove reliability | Prevents weakly matched memory from being used as verified knowledge |
 | Traceable sources | Hidden memory use is hard to inspect | Makes answers easier to debug and evaluate |
 | Data-contract validation | Backend metric names can drift across files | Keeps CSV, SQL, memory facts, lineage, and documentation consistent |
-| Comparability gate | Cross-store metrics can be misleading without scope control | Tests whether a comparison is usable before strategy transfer |
+| Future comparability-gate design | Cross-store metrics can be misleading without scope control | Defines the future evidence boundary before strategy transfer |
 
 ## Retail Demo 1: Why It Matters
 
@@ -245,11 +245,11 @@ This project demonstrates abilities relevant to AI, data science, business analy
 5. `retail_ops/data/DATA_DICTIONARY.md` — Meituan backend metric definitions and canonical fields.
 6. `retail_ops/LINEAGE.md` — source-to-SQL-to-memory lineage and interpretation limits.
 7. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — Store A month-over-month retail operations demo.
-8. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` — same-period B-F cross-store comparability diagnostic.
-11. `retail_ops/FIELD_USAGE_REVIEW.md` — field-name review before comparability-gate expansion.
-12. `retail_ops/COMPARABILITY_GATE_V0.md` — first review version of the cross-store comparability gate.
-13. `retail_ops/EXPERIMENT_RESULTS.md` — comparability and limitation-preserving review cases.
-14. `eval/eval_report.md` and `eval/eval_retail_report.md` — scenario-based evaluation reports.
+8. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` — same-period B-F cross-store diagnostic.
+9. `retail_ops/FIELD_USAGE_REVIEW.md` — field-name review before future comparability-gate expansion.
+10. `retail_ops/COMPARABILITY_GATE_V0.md` — future pairwise comparability-gate design note.
+11. `retail_ops/EXPERIMENT_RESULTS.md` — comparability and limitation-preserving review cases.
+12. `eval/eval_report.md` and `eval/eval_retail_report.md` — scenario-based evaluation reports.
 
 ## Running the Project
 

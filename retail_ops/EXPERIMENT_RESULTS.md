@@ -6,7 +6,7 @@ This document records the current implemented retail experiment scope.
 
 The current implemented scope stops at Demo 2.
 
-A pairwise comparability gate is planned as future work, but it is not currently implemented as a finished demo.
+A pairwise future pairwise comparability-gate design is planned as future work, but it is not currently implemented as a finished demo.
 
 ## Current Implemented Results
 
@@ -30,10 +30,10 @@ The purpose is not to rank stores. The purpose is to make the selected store-per
 
 ## Why the Comparability Gate Is Not Yet an Experiment Result
 
-A reliable comparability gate should first decide whether stores can be compared at all.
+A reliable future pairwise comparability-gate design should first decide whether stores can be compared at all.
 
 That decision should depend on transaction order volume, transaction amount, whether the store is under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current sample is still limited. To avoid subjective regional classification, the project does not currently classify store locations into market-area types. The existing region_type field remains weak context only.
 
-For this reason, the comparability gate is recorded as future work rather than an implemented experiment result.
+For this reason, the future pairwise comparability-gate design is recorded as future work rather than an implemented experiment result.

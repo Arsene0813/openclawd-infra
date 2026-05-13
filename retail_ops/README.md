@@ -20,7 +20,7 @@ The current retail path has two implemented demos and one planned future stage:
 
 1. Demo 1: Store A month-over-month diagnosis.
 2. Demo 2: same-period Stores B-F comparability diagnostic.
-3. Future work: comparability gate after broader multi-store data is available.
+3. Future work: pairwise comparability-gate design after broader multi-store data is available.
 
 ## Suggested Retail Review Path
 
@@ -30,7 +30,7 @@ For a quick review of the retail extension, read these files in order:
 2. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 3. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
-This path shows the movement from metric definitions, to single-store diagnosis, to same-period cross-store diagnostic structure, and toward a future pairwise comparability gate.
+This path shows the movement from metric definitions, to single-store diagnosis, to same-period cross-store diagnostic structure, and toward a future pairwise comparability-gate design.
 
 ## Current Demos
 
@@ -170,7 +170,7 @@ Saved validation output:
 
 `retail_data_contract_validation_result.txt` validates the original Store A / Demo 1 retail data contract. Demo 2 uses additional dedicated validators and evaluation files for same-period cross-store diagnostic behavior.
 
-## Comparability-Gate Documentation
+## Future Comparability-Gate Design Notes
 
 This folder includes three review documents for disciplined cross-store comparison:
 

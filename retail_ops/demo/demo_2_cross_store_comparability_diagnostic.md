@@ -2,6 +2,8 @@
 
 ## Purpose
 
+In this demo, comparability means same-period diagnostic readiness at the row level. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
+
 This demo tests whether five anonymized Meituan instant-retail stores can be compared under the same reporting window before making any operating interpretation.
 
 The purpose is to structure backend metrics into a comparable diagnostic format and record the limits that should constrain interpretation.
