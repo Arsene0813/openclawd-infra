@@ -45,7 +45,7 @@ The repository should be read as a staged prototype with explicit evidence bound
 | Automated Meituan backend ingestion | Not implemented yet | future work |
 | Full 48-store decision-support system | Not implemented yet | future work |
 
-The retail extension currently has three implemented stages:
+The retail extension currently has two implemented retail stages and one planned next stage:
 
 1. Demo 1: Store A month-over-month diagnostic.
 2. Demo 2: same-period Stores B-F cross-store comparability diagnostic.
@@ -77,7 +77,7 @@ Current endpoints:
 
 The retail extension applies the same lifecycle-aware memory principle to Meituan-style instant retail operations data.
 
-The retail extension currently has three implemented demos:
+The retail extension currently has two implemented demos and one planned next stage:
 
 - Demo 1: `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 - Demo 2: `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
@@ -213,7 +213,7 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 | Livestream memory evaluation | fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | current implemented cases pass |
 | Retail retrieval evaluation | Store A retail-memory retrieval, attribution-warning behavior, unsupported-scope refusal | 8/8 passed |
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
-| Retail Demo 2 comparability-gate consistency evaluation | consistency checks for the limited B-F cross-store comparability gate | 5/5 passed |
+| Retail Demo 2 comparison-boundary consistency evaluation | checks that Demo 2 remains a row-level same-period diagnostic and does not pretend to be a pairwise gate | 5/5 passed |
 | Retail Demo 2 answer-behavior boundary evaluation | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
 | Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
 | Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |

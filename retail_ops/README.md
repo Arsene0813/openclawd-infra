@@ -16,7 +16,7 @@ This folder contains the retail evidence layer:
 | `scripts/` | Local validation, generation, and loading scripts |
 | `demo/` | Readable diagnostic write-ups |
 
-The current retail path has three fixed demos:
+The current retail path has two implemented demos and one planned future stage:
 
 1. Demo 1: Store A month-over-month diagnosis.
 2. Demo 2: same-period Stores B-F comparability diagnostic.
@@ -30,7 +30,7 @@ For a quick review of the retail extension, read these files in order:
 2. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 3. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
-This path shows the movement from metric definitions, to single-store diagnosis, to cross-store comparison, to pairwise comparability gating.
+This path shows the movement from metric definitions, to single-store diagnosis, to same-period cross-store diagnostic structure, and toward a future pairwise comparability gate.
 
 ## Current Demos
 
@@ -216,8 +216,6 @@ Demo 2 offline facts evaluation checks whether generated B-F facts cover visibil
 
 Demo 2 answer-behavior boundary evaluation checks whether comparison answers preserve metric definitions and limits. In particular, it checks that `activity_cost_ratio_pct` is not treated as ROI, top-SKU concentration is not treated as full product-category sales share, search-entry comparison stays tied to the correct fields, and promotion strategy transfer remains qualified.
 
-
-
 ## Current Boundary and Next Step
 
 The current retail path should be read as a staged decision-support prototype, not as a complete multi-store operating system.
@@ -234,8 +232,6 @@ The intended query shape is small:
 
 The answer should return:
 
-- `pairwise_comparison_decision`
-- `pairwise_limit_notes`
 - supporting gap fields;
 - refusal or qualification when evidence is not enough.
 
@@ -252,7 +248,6 @@ Any later expansion beyond the current B-F sample should keep the same disciplin
 - dominant top-SKU evidence;
 - data completeness;
 - explicit limitation notes.
-
 
 ## Future Work: Comparability Gate
 

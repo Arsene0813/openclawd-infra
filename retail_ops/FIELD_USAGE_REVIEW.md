@@ -12,7 +12,7 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 |---|---|---|---|
 | store_id | Canonical store identifier used in source CSV files, SQL diagnostics, and metric outputs. | Source CSVs, SQL outputs, demo outputs. | No. |
 | entity_id | Retrieval-layer identifier generated from store_id using entity_id = "store_" + store_id. | Generated retail memory facts. | No. |
-| region_type | Weak region or market-context metadata from available store evidence. It is not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo source data, Demo 2 comparability output, Demo 3 pairwise context note. | No. Keep unchanged. |
+| region_type | Weak region or market-context metadata from available store evidence. It is not a store-stage label, not a mature market-area classification, and not a sufficient comparability condition by itself. | Demo source data, Demo 2 comparability output, and future comparability-gate review notes. | No. Keep unchanged. |
 | store_type | Store metadata field used to separate operating formats. | Source CSVs and SQL output. | No. |
 | business_district_rank | Backend-provided ranking-related field when available in the Demo 2 source. | Demo 2 source/output evidence. | No. |
 | transaction_amount | Transaction amount for same-day paid and same-day not-cancelled orders, following the backend transaction metric page. | Source CSVs, SQL output, transaction/conversion profile. | No. |
@@ -51,20 +51,19 @@ The purpose of this review is to protect the Meituan backend metric contract. Ex
 | single_metric_attribution_guard | Retrieval-facing memory slot that prevents unsupported interpretation from one metric alone. | Generated retail memory facts. | No. |
 | top3_sku_product_mix_note | Retrieval-facing memory slot for limited top-SKU evidence. | Generated retail memory facts. | No. |
 
-## Demo 3 New Field Review Table
 
-These fields are new SQL-derived pairwise comparability-gate outputs. They do not rename existing fields.
+## Future Comparability-Gate Field Review
 
-| Existing / SQL-derived field | Dictionary definition / boundary | Use location | Rename? |
-|---|---|---|---|
+Pairwise comparability-gate fields are not currently implemented.
 
-## Patch Rule
+The current implemented retail scope stops at Demo 2. Future pairwise comparability-gate fields should only be added after broader multi-store evidence and repeated reporting windows are available.
 
-This patch does not rename existing fields, does not introduce new source CSV fields, and does not introduce new canonical retail memory slots.
+No current source CSV field, SQL output field, generated memory slot, or evaluation field is renamed in this patch.
 
-This patch does introduce documented Demo 3 SQL-derived pairwise output fields. Those fields are listed in DATA_DICTIONARY.md and in the Demo 3 New Field Review Table above before being used in SQL output, validation, or evaluation.
+A reliable future gate should consider transaction order volume, transaction amount, activity or promotion status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
-Conceptual terms such as comparable, partially comparable, or not comparable for strategy transfer are now implemented only as Demo 3 pairwise gate outputs. They must not be treated as store-stage labels or final operating recommendations.
+At the current sample size, `region_type` remains weak context only. It must not be used as a hard market-area classification, store-stage label, or peer-store grouping rule.
+
 
 ## Field Rename Gate for Future Changes
 

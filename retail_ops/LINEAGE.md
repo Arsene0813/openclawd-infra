@@ -22,8 +22,6 @@ Existing Meituan backend metrics are kept under a single canonical English field
 | Output | SQL-derived CSV, markdown diagnostic, generated retail memory facts |
 | Limitation | Single-store demo; not a causal experiment; not cross-store comparison |
 
-
-
 Demo 1 interprets April 2026 as the latest observed month in the current Store A sample. SQL boolean diagnostics are evaluated against the latest `period_start` per `store_id`, not against a hard-coded calendar month.
 
 Month-window convention for Store A Demo 1: `2026-02` = `2026-02-01` to `2026-02-28`; `2026-03` = `2026-03-01` to `2026-03-31`; `2026-04` = `2026-04-01` to `2026-04-30`.
@@ -426,9 +424,9 @@ Interpretation boundary:
 
 ---
 
-## Demo 3 Pairwise Comparability Gate Lineage
+## Future Pairwise Comparability Gate Pairwise Comparability Gate Lineage
 
-Demo 3 extends Demo 2 from same-period cross-store diagnostics into pairwise comparability checks.
+A future pairwise comparability gate would extend Demo 2 from same-period cross-store diagnostics into pairwise comparability checks.
 
 The input is:
 
@@ -436,8 +434,7 @@ The input is:
 
 The output is:
 
-
-Demo 3 does not compare all stores globally. It checks whether two store-period rows can be compared for one narrow question at a time.
+A future pairwise comparability gate should not compare all stores globally. It should check whether two store-period rows can be compared for one narrow question at a time.
 
 ### Supported question types
 
@@ -561,9 +558,6 @@ Claim: a pair can be compared, partially compared, or refused for the selected q
 
 Supporting fields:
 
-- `pairwise_comparison_decision`
-- `pairwise_limit_notes`
-
 Interpretation limit:
 
 - This is a comparability gate.
@@ -571,9 +565,7 @@ Interpretation limit:
 
 ### Directionality boundary
 
-Demo 3 pair rows should be read as pairwise comparability checks, not directional strategy-transfer decisions.
-
-
+Future pairwise comparability rows should be read as comparability checks, not directional strategy-transfer decisions.
 
 A later answer layer should avoid claims such as:
 
@@ -588,15 +580,12 @@ Supported wording is narrower:
 - which gap fields support or limit the comparison;
 - which missing or unresolved context prevents stronger advice.
 
-### Demo 3 answer boundary
-
+### Future Pairwise Comparability Gate answer boundary
 
 - `reference_store_id`
 - `candidate_store_id`
 - `comparison_question_type`
-- `pairwise_comparison_decision`
 - relevant gap fields
-- `pairwise_limit_notes`
 
 If a user asks for a full 48-store ranking, market-area classification, causal promotion effect, or direct strategy recommendation, the answer should qualify or refuse the request unless future evidence has been added and documented.
 

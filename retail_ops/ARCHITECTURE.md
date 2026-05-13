@@ -35,7 +35,8 @@ Current implemented SQL files:
 
 Current implemented output files:
 
-- retail_ops/outputs/store_a_month_over_month_diagnostic.csv
+- retail_ops/outputs/store_a_demo1_sql_output.csv
+- retail_ops/outputs/store_a_demo1_interpretation_summary.csv
 - retail_ops/outputs/demo2_cross_store_comparability_output.csv
 
 Current implemented evaluation files:

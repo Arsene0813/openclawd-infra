@@ -1,4 +1,6 @@
 # Retail Operations Experiment Results
+These are review and evaluation cases, not causal experiments. They test whether the prototype preserves evidence boundaries and avoids unsupported operating conclusions.
+
 
 This document records the current implemented retail experiment scope.
 
