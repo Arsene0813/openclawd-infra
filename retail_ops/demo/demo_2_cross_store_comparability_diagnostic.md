@@ -1,8 +1,8 @@
 # Demo 2: Same-Period Cross-Store Comparability Diagnostic
 
-## Purpose
+In this demo, comparability means row-level same-period diagnostic readiness. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
 
-In this demo, comparability means same-period diagnostic readiness at the row level. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
+## Purpose
 
 This demo tests whether five anonymized Meituan instant-retail stores can be compared under the same reporting window before making any operating interpretation.
 

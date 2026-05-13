@@ -8,11 +8,11 @@ Repository: `livestream-agent-memory-layer`
 
 ## One-minute summary
 
-This project grew out of a real operating problem in my Meituan instant-retail stores.
+This project comes from a concrete operating problem in my Meituan instant-retail stores. As the operation expanded across many stores, the backend data became less useful for cross-store decisions: it showed detailed single-store metrics, but it did not tell me whether two stores were comparable before I copied a pricing, subsidy, SKU, or ranking action from one store to another.
 
-The Meituan merchant backend gives detailed store-level data, but it is mainly designed for reviewing one store at a time. Once the operation expands across many stores, the harder problem is not collecting more backend metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgement the evidence can actually support.
+I built a staged local prototype. First, a metric dictionary preserves the original Meituan backend definitions. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, and limitations into later retrieval and answer-boundary checks.
 
-I built a staged prototype that uses a metric dictionary, SQL diagnostics, generated memory facts, and retrieval/evaluation checks to keep retail decision support inside an evidence boundary. The current retail demos do not try to rank stores or produce automatic recommendations. They test a more basic question first: whether selected same-period store-period rows can be discussed inside a defined evidence boundary.
+The current repository implements two limited demos: Store A month-over-month diagnosis and a B-F same-period diagnostic review. The next stage is a pairwise comparability gate, but that should only be implemented after more store periods and stronger market-context evidence are available.
 
 ## Business problem
 

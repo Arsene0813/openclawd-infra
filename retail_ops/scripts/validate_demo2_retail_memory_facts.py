@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 FACTS_PATH = Path("retail_ops/outputs/generated_demo2_retail_memory_facts.json")
 
 EXPECTED_ENTITIES = {"store_B", "store_C", "store_D", "store_E", "store_F"}
@@ -31,6 +30,7 @@ REQUIRED_KEYS = [
     "source_fields",
     "confidence",
     "source_path",
+    "supporting_source_paths",
     "lineage_path",
     "limitations",
     "is_active",
@@ -50,7 +50,6 @@ REQUIRED_TRANSACTION_FIELDS = {
     "payment_amount",
     "payment_conversion_rate_pct",
 }
-
 
 data = json.loads(FACTS_PATH.read_text(encoding="utf-8"))
 
@@ -75,6 +74,7 @@ for fact in data:
         raise SystemExit(f"Missing keys in fact: {missing_keys}")
 
     pair = (fact["entity_id"], fact["slot"])
+
     if pair in seen_pairs:
         raise SystemExit(f"Duplicate entity-slot pair: {pair}")
     seen_pairs.add(pair)
@@ -109,8 +109,25 @@ for fact in data:
     if not isinstance(fact["source_fields"], list) or not fact["source_fields"]:
         raise SystemExit(f"{pair}: source_fields must be a non-empty list")
 
+    if not isinstance(fact["supporting_source_paths"], list) or not fact["supporting_source_paths"]:
+        raise SystemExit(f"{pair}: supporting_source_paths must be a non-empty list")
+
+    if fact["source_path"] not in fact["supporting_source_paths"]:
+        raise SystemExit(f"{pair}: source_path must be included in supporting_source_paths")
+
+    if any(not isinstance(item, str) or not item for item in fact["supporting_source_paths"]):
+        raise SystemExit(f"{pair}: supporting_source_paths must contain non-empty strings")
+
     if not isinstance(fact["limitations"], list) or not fact["limitations"]:
         raise SystemExit(f"{pair}: limitations must be a non-empty list")
+
+    if fact["slot"] == "visibility_entry_profile":
+        if "retail_ops/data/demo2_top_search_terms.csv" not in fact["supporting_source_paths"]:
+            raise SystemExit(f"{pair}: visibility fact must include top-search source path")
+
+    if fact["slot"] == "top3_sku_product_mix_note":
+        if "retail_ops/data/demo2_top_skus_by_transaction_amount.csv" not in fact["supporting_source_paths"]:
+            raise SystemExit(f"{pair}: top-SKU fact must include top-SKU transaction amount source path")
 
     if fact["slot"] == "transaction_conversion_profile":
         observed_fields = set(fact["observed_values"])
@@ -125,4 +142,7 @@ print("Demo 2 retail memory facts validation PASSED.")
 print(f"Checked facts: {expected_fact_count}")
 print("Checked entities: store_B, store_C, store_D, store_E, store_F")
 print("Checked slots:", ", ".join(sorted(EXPECTED_SLOTS)))
-print("Checked schema, period, source fields, limitations, transaction/conversion fields, and active status.")
+print(
+    "Checked schema, period, source fields, supporting source paths, "
+    "limitations, transaction/conversion fields, and active status."
+)

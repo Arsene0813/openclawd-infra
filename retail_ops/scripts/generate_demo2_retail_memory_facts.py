@@ -5,19 +5,22 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 OUTPUT_DIR = Path("retail_ops/outputs")
 DATA_DIR = Path("retail_ops/data")
 
 COMPARABILITY_OUTPUT = OUTPUT_DIR / "demo2_cross_store_comparability_output.csv"
 TOP_SEARCH_TERMS = DATA_DIR / "demo2_top_search_terms.csv"
 TOP_SKUS_BY_AMOUNT = DATA_DIR / "demo2_top_skus_by_transaction_amount.csv"
+
 OUTPUT_PATH = OUTPUT_DIR / "generated_demo2_retail_memory_facts.json"
 
 PERIOD_LABEL = "2026-03"
 PERIOD_START = "2026-03-01"
 PERIOD_END = "2026-03-31"
+
 SOURCE_PATH = "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+TOP_SEARCH_TERMS_SOURCE_PATH = "retail_ops/data/demo2_top_search_terms.csv"
+TOP_SKUS_BY_AMOUNT_SOURCE_PATH = "retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
 LINEAGE_PATH = "retail_ops/LINEAGE.md"
 
 
@@ -58,6 +61,7 @@ def make_fact(
     confidence: str,
     limitations: list[str],
     source_path: str = SOURCE_PATH,
+    supporting_source_paths: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
         "kind": "retail_memory_fact",
@@ -73,6 +77,7 @@ def make_fact(
         "source_fields": source_fields,
         "confidence": confidence,
         "source_path": source_path,
+        "supporting_source_paths": supporting_source_paths or [source_path],
         "lineage_path": LINEAGE_PATH,
         "limitations": limitations,
         "is_active": True,
@@ -169,6 +174,7 @@ for row in comparability_rows:
             ],
             confidence="high",
             limitations=common_limitations,
+            supporting_source_paths=[SOURCE_PATH, TOP_SEARCH_TERMS_SOURCE_PATH],
         )
     )
 
@@ -342,6 +348,7 @@ for row in comparability_rows:
             ],
             confidence="medium",
             source_path=SOURCE_PATH,
+            supporting_source_paths=[SOURCE_PATH, TOP_SKUS_BY_AMOUNT_SOURCE_PATH],
             limitations=[
                 "top-3 SKU evidence only",
                 "not full SKU category-share analysis",

@@ -230,6 +230,8 @@ They are retrieval-facing summaries grounded in canonical source fields, SQL out
 - `period_granularity` records the time grain of the memory fact. In the current demos, the value is `month`. It is retrieval / interpretation metadata, not a direct Meituan backend metric.
 - `observed_values` may include baseline periods when the fact is comparative.
 - `source_fields` lists the canonical fields or SQL-derived diagnostics supporting the fact.
+- `source_path` records the primary generated output file supporting the memory fact.
+- `supporting_source_paths` is an optional list of additional source files when a memory fact includes evidence that does not appear directly in `source_path`, such as top search-term or top-SKU source tables.
 - `confidence` means evidence-trace confidence: whether the fact is directly supported by available source fields and SQL output.
 - `confidence` does not mean causal confidence, profit confidence, or cross-store transferability.
 - `limitations` must state unsupported interpretations, such as cross-store transfer, causal attribution, unaudited profit, incomplete SKU classification, or unknown promotion cycles.

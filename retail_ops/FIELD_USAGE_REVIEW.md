@@ -71,6 +71,7 @@ The fields below already appear in current Demo 2 outputs or generated memory fa
 | `confidence` | Evidence confidence for the generated memory fact; not causal confidence. | Generated retail memory facts. | No. |
 | `limitations` | Retrieval-facing limitation list that constrains later answers. | Generated retail memory facts. | No. |
 | `source_path` | Retrieval-facing path to the supporting output file. | Generated retail memory facts. | No. |
+| `supporting_source_paths` | Optional retrieval-facing metadata listing additional source files when observed values include evidence from multiple source tables. It supplements `source_path`; it does not replace it. | Generated retail memory facts, especially when top search-term or top-SKU evidence is included. | New field, not a rename. |
 | `lineage_path` | Retrieval-facing path to lineage documentation. | Generated retail memory facts. | No. |
 
 ## Current Path-Level Naming Decision
