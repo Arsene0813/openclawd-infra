@@ -40,7 +40,7 @@ Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment
 
 Short-term ROI is not always the primary target. A new store may use activity subsidy to gain exposure and first orders. A store under external price pressure may use price or activity tools to defend visibility and market share. A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
 
-Therefore, SQL should prepare comparison-ready diagnostic signals. It should not turn one metric threshold into a fixed store-stage label.
+Therefore, SQL should prepare structured diagnostic signals. It should not turn one metric threshold into a fixed store-stage label.
 
 ## Claim-to-Data Lineage
 

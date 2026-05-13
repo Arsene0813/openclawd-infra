@@ -139,7 +139,7 @@ Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment
 
 Short-term activity-cost efficiency is not always the primary target. A new store may need subsidy to gain exposure and first orders. A store under external price pressure may need pricing or activity tools to defend visibility and market share. A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
 
-The SQL layer therefore prepares comparison-ready diagnostic signals:
+The SQL layer therefore prepares evidence-bounded diagnostic signals:
 
 - visibility and entry profile;
 - transaction and conversion profile;
@@ -182,7 +182,7 @@ Their role is to keep field usage, comparison rules, and limitation-preserving a
 
 `FIELD_USAGE_REVIEW.md` records that this patch does not rename existing fields.
 
-`COMPARABILITY_GATE_V0.md` defines the first review version of the comparability gate.
+`COMPARABILITY_GATE_V0.md` records candidate future gate factors and the current non-implementation boundary.
 
 `EXPERIMENT_RESULTS.md` records review cases for limitation-preserving answers.
 

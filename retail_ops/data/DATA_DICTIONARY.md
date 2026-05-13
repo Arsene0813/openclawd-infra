@@ -6,13 +6,23 @@ The purpose is to prevent Meituan backend numbers from being treated as generic 
 
 ## Naming Convention
 
-The canonical English field names in this project are the implemented CSV / SQL field names used in:
+The canonical English field names in this project are the implemented CSV / SQL field names used in the current retail demos.
 
+Demo 1:
 - `retail_ops/data/store_a_monthly_metrics.csv`
 - `retail_ops/data/store_a_top_skus.csv`
 - `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
 - `retail_ops/outputs/store_a_demo1_sql_output.csv`
 - `retail_ops/outputs/generated_retail_memory_facts.json`
+
+Demo 2:
+- `retail_ops/data/demo2_store_period_metrics.csv`
+- `retail_ops/data/demo2_top_search_terms.csv`
+- `retail_ops/data/demo2_top_skus_by_sales_volume.csv`
+- `retail_ops/data/demo2_top_skus_by_transaction_amount.csv`
+- `retail_ops/sql/02_demo2_cross_store_comparability.sql`
+- `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
+- `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
 
 Chinese Meituan backend labels are mapped to these implemented English field names.
 
