@@ -51,7 +51,7 @@ The existing `region_type` field remains weak context only. It must not be used 
 
 The current project should not classify stores into city-center, county, community, mature-market, or immature-market groups based on intuition.
 
-## Future Gate Output Shape
+## Future Gate Output Shape The names below describe a proposed future gate output shape. They are not current implemented data-contract fields. Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in `retail_ops/data/DATA_DICTIONARY.md` and linked through `retail_ops/LINEAGE.md`.
 
 A future comparability gate should take a narrow query shape:
 

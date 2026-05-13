@@ -1,6 +1,6 @@
 # Retail Operations Extension
 
-This folder extends the lifecycle-aware memory layer from livestream commerce facts to Meituan-style instant retail operations data.
+This folder extends the lifecycle-aware memory layer from livestream commerce facts to Meituan merchant-backend metrics used for instant-retail store operations.
 
 The purpose is to turn detailed single-store backend metrics into a limited, traceable, and verifiable decision-support path for cross-store comparison, because the Meituan merchant backend is rich but mainly designed for reviewing one store at a time rather than deciding which stores can be compared across a multi-store operation.
 
@@ -75,7 +75,7 @@ It uses five anonymized stores, B-F, all from the same reporting window:
 
 - 2026-03-01 to 2026-03-31
 
-Demo 2 structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
+Demo 2 structures selected backend metrics under the same reporting window and field contract, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
 Core supporting files:
 
@@ -214,7 +214,7 @@ Demo 2 offline answer-boundary check checks whether comparison answers preserve 
 
 ## Current Boundary and Next Step
 
-The current retail path should be read as a staged decision-support prototype, not as a complete multi-store operating system.
+The current retail path is a staged decision-support prototype.
 
 Promotion cycle dates are unknown in the current retail demos. Activity metrics are treated as operating-lever evidence, not as a clean intervention. Demo 1 and Demo 2 can support cautious interpretation, but they cannot support broad causal claims, full 48-store generalization, or store-stage diagnosis.
 
@@ -255,6 +255,6 @@ The current implemented retail scope stops at Demo 2.
 
 A comparability gate is planned as future work. It should eventually help judge which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
-This is not currently implemented as a finished demo because the sample is still limited. Store comparability should depend on transaction order volume, transaction amount, whether the store is under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+This is not currently implemented as a finished demo because the sample is still limited. Store comparability should depend on transaction order volume, transaction amount, activity or promotion status, activity involvement and intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 To avoid subjective regional classification, the current project treats `region_type` as weak context only. It is not a hard market-area classification or peer-store grouping rule.

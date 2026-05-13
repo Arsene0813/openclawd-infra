@@ -8,7 +8,7 @@ Repository: `livestream-agent-memory-layer`
 
 ## One-minute summary
 
-This project comes from a concrete operating problem in my Meituan instant-retail stores. As the operation expanded across many stores, the backend data became less useful for cross-store decisions: it showed detailed single-store metrics, but it did not tell me whether two stores were comparable before I copied a pricing, subsidy, SKU, or ranking action from one store to another.
+This project comes from a concrete operating problem in my Meituan instant-retail stores. It uses metrics manually structured from the Meituan merchant-backend / Waimai merchant-backend UI. As the operation expanded across many stores, the backend data became less useful for cross-store decisions: it showed detailed single-store metrics, but it did not tell me whether two stores were comparable before I copied a pricing, subsidy, SKU, or ranking action from one store to another.
 
 I built a staged local prototype. First, a metric dictionary preserves the original Meituan backend definitions. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, and limitations into later retrieval and answer-boundary checks.
 
@@ -68,7 +68,7 @@ Main file:
 
 Demo 2 extends the analysis to selected Stores B-F under the same March 2026 reporting window.
 
-The point is not to rank the stores. The point is to structure comparable fields before any operating interpretation is made. Store type, activity involvement, refund pressure, invalid-order pressure, search-entry structure, top-SKU evidence, and weak region context can all limit what a cross-store comparison means.
+The point is not to rank the stores. The point is to place selected store-period fields under the same reporting window and field contract before any operating interpretation is made. Store type, activity involvement, refund pressure, invalid-order pressure, search-entry structure, top-SKU evidence, and weak region context can all limit what a cross-store comparison means.
 
 Main file:
 
@@ -78,7 +78,7 @@ Main file:
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The future gate needs more store-pair evidence, repeated reporting windows, and stronger market-context fields before it should be treated as an implemented decision rule. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, whether the store is currently under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The future gate needs more store-pair evidence, repeated reporting windows, and stronger market-context fields before it should be treated as an implemented decision rule. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, activity or promotion status, activity involvement and intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current demo sample is still small. To avoid subjective regional classification, I do not currently classify store locations into market-area types. The existing `region_type` field is treated as weak context only, not as a hard market-area label or peer-store grouping rule.
 
@@ -137,7 +137,7 @@ Current scope:
 - causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
 - full SKU category classification across the catalogue is not implemented.
 
-The boundary is intentional. The current goal is to show how messy but real backend data can be turned into a cautious, traceable, and testable decision-support prototype.
+At this stage, the value is in showing how messy but real backend data can be turned into a cautious, traceable, and testable decision-support prototype.
 
 ## Recommended reading path
 

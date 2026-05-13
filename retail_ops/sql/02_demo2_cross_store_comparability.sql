@@ -4,7 +4,9 @@
 --   demo2_top_skus_by_transaction_amount
 --
 -- This SQL does not rank stores as better or worse.
--- It derives comparable diagnostics and flags limits for cautious interpretation.
+-- It derives same-period diagnostic fields and flags limits for cautious interpretation.
+-- Output ordering by region_type and store_type is for readability only.
+-- It is not a peer-grouping rule and does not make region_type a hard comparability gate.
 
 WITH top3_sku_amount AS (
     SELECT

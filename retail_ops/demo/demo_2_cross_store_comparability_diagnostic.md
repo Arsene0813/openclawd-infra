@@ -4,9 +4,9 @@ In this demo, comparability means row-level same-period diagnostic readiness. It
 
 ## Purpose
 
-This demo tests whether five anonymized Meituan instant-retail stores can be compared under the same reporting window before making any operating interpretation.
+This demo tests whether five anonymized instant-retail store records can be placed under the same reporting window and field contract before making any operating interpretation.
 
-The purpose is to structure backend metrics into a comparable diagnostic format and record the limits that should constrain interpretation.
+The purpose is to structure selected backend metrics into a same-period diagnostic format and record the limits that should constrain interpretation.
 
 ## Business Problem
 
@@ -27,7 +27,7 @@ Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions
 | Stores | B, C, D, E, F |
 | Reporting window | 2026-03-01 to 2026-03-31 |
 | Period label | 2026-03 |
-| Source | Manually structured Meituan merchant-backend metrics |
+| Source | Manually structured Meituan merchant-backend / Waimai merchant-backend metrics for instant-retail store operations |
 | Processing method | Offline SQL diagnostic |
 | SQL file | `retail_ops/sql/02_demo2_cross_store_comparability.sql` |
 | SQL output | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
@@ -112,16 +112,16 @@ The memory facts are currently file-backed for Demo 2.
 
 This is enough to test the data contract, SQL diagnostic output, fact generation, and limitation-preserving answer behavior, but it is not yet a full 48-store decision-support system.
 
-## What the Current Demo 2 Output Shows
+## What the Current Demo 2 Output Shows The current output should be read as row-level diagnostic evidence, not as a pairwise store-comparability decision.
 
-The current output should be read as row-level diagnostic evidence, not as a pairwise store-comparability decision.
+The raw `comparison_limit_notes` column below uses the contract strings produced by the SQL output and documented in `DATA_DICTIONARY.md`. The readable summary is only a human-facing explanation.
 
-| Store | Main scope / limit notes from current output |
-|---|---|
-| B | high search-entry dependence; high activity involvement; moderate refund pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits |
-| C | moderate activity involvement; top-3 SKU amount concentration; compare with region, store type, activity, refund, order-quality, and product-mix limits |
-| D | high search-entry dependence; high activity involvement; compare with region, store type, activity, refund, order-quality, and product-mix limits |
-| E | high search-entry dependence; moderate activity involvement; high refund pressure; high invalid-order pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits |
-| F | high search-entry dependence; high activity involvement; moderate refund pressure; moderate invalid-order pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits |
+| Store | Raw `comparison_limit_notes` from current output | Readable summary |
+|---|---|---|
+| B | `high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; refund pressure is moderate; comparison should stay limited by region, store type, activity, and refund context. |
+| C | `moderate_activity_involvement; top3_sku_amount_concentration; compare_with_region_store_type_activity_refund_limits` | Activity involvement is moderate; top-3 SKU transaction amount is concentrated; comparison should stay limited by region, store type, activity, and refund context. |
+| D | `high_search_entry_dependence; high_activity_involvement; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; comparison should stay limited by region, store type, activity, and refund context. |
+| E | `high_search_entry_dependence; moderate_activity_involvement; high_refund_pressure; high_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is moderate; refund pressure and invalid-order pressure are high; comparison should stay limited by region, store type, activity, and refund context. |
+| F | `high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; refund pressure and invalid-order pressure are moderate; comparison should stay limited by region, store type, activity, and refund context. |
 
 This table does not rank stores. It only makes the SQL-derived interpretation limits easier to read before future pairwise gate work is added.

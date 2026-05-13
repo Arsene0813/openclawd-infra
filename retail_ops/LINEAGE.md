@@ -224,7 +224,7 @@ All Demo 2 records use the same reporting window:
 - period_end: 2026-03-31
 - period_month: 2026-03
 
-Demo 2 does not rank stores as simply better or worse. Its purpose is to structure comparable backend metrics, derive cautious diagnostic signals, and preserve interpretation limits before any operating recommendation is made.
+Demo 2 does not rank stores as simply better or worse. Its purpose is to structure selected backend metrics under the same reporting window and field contract, derive cautious diagnostic signals, and preserve interpretation limits before any operating recommendation is made.
 
 ### Source data
 
@@ -236,7 +236,7 @@ Demo 2 source data is stored in:
 - retail_ops/data/demo2_top_skus_by_transaction_amount.csv
 - retail_ops/data/demo2_source_notes.md
 
-The source metrics are manually transcribed from the Meituan Waimai merchant backend and anonymized at the store level.
+The source metrics are manually transcribed from the Meituan Waimai merchant-backend UI used for instant-retail store operations and anonymized at the store level.
 
 Original Chinese backend search terms and SKU names are retained for traceability. English helper columns are included only for readability.
 

@@ -2,7 +2,7 @@
 
 Repository: `livestream-agent-memory-layer`
 
-This is a local working prototype built from a real Meituan instant-retail operating problem.
+This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from the Meituan merchant-backend / Waimai merchant-backend UI used for these instant-retail store operations.
 
 The merchant backend provides detailed single-store metrics, but it does not naturally answer cross-store decision questions. Once the operation expands across many stores, the harder problem is not collecting more metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgment the evidence can support.
 
@@ -139,6 +139,8 @@ The future pairwise comparability gate should build on this structure, but it is
 
 ## Evaluation Snapshot
 
+Saved outputs under `eval/results/` and `retail_ops/outputs/` should be treated as the source of truth if this summary table is later updated.
+
 The evaluations are scenario-based behavior checks. Their value is not proving that the model is generally correct. Their value is checking whether answers preserve metric definitions, source boundaries, and comparison limits.
 
 | Check | Scope | Result |
@@ -250,6 +252,6 @@ Future work:
 
 - build a pairwise comparability gate;
 - decide whether two stores are comparable, comparable with limits, not comparable, or insufficiently supported;
-- include order volume, transaction amount, activity status, activity intensity, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
+- include order volume, transaction amount, activity or promotion status, activity involvement and intensity based on existing activity fields, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
 - avoid subjective regional classification until broader store data and stronger market-context evidence are available;
 - preserve the same field contract and evaluation checks when expanding beyond the current sample.
