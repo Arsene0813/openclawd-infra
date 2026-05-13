@@ -436,7 +436,6 @@ The input is:
 
 The output is:
 
-- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
 
 Demo 3 does not compare all stores globally. It checks whether two store-period rows can be compared for one narrow question at a time.
 
@@ -444,16 +443,11 @@ Demo 3 does not compare all stores globally. It checks whether two store-period 
 
 Current supported `comparison_question_type` values are:
 
-- `search_entry_structure`
-- `activity_transfer`
 - `order_quality_pressure`
 
 These values must stay consistent across:
 
 - `retail_ops/data/DATA_DICTIONARY.md`
-- `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql`
-- `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`
-- `eval/eval_retail_demo3_pairwise_gate.py`
 
 ### Claim-to-field checks
 
@@ -579,9 +573,7 @@ Interpretation limit:
 
 Demo 3 pair rows should be read as pairwise comparability checks, not directional strategy-transfer decisions.
 
-For example, a row with `reference_store_id = B`, `candidate_store_id = E`, and `comparison_question_type = activity_transfer` does not mean that Store B's activity strategy should be copied to Store E.
 
-It only means the current gate has tested whether the B/E pair can be discussed for the narrow `activity_transfer` question under the implemented evidence contract.
 
 A later answer layer should avoid claims such as:
 
@@ -598,7 +590,6 @@ Supported wording is narrower:
 
 ### Demo 3 answer boundary
 
-A future Demo 3 answer path should return:
 
 - `reference_store_id`
 - `candidate_store_id`
@@ -608,3 +599,20 @@ A future Demo 3 answer path should return:
 - `pairwise_limit_notes`
 
 If a user asks for a full 48-store ranking, market-area classification, causal promotion effect, or direct strategy recommendation, the answer should qualify or refuse the request unless future evidence has been added and documented.
+
+## Future Comparability-Gate Lineage
+
+The comparability gate is not currently implemented as a finished demo.
+
+Current implemented retail lineage stops at Demo 2:
+
+- selected Meituan backend fields;
+- DATA_DICTIONARY.md definitions;
+- canonical CSV files;
+- Demo 1 and Demo 2 SQL diagnostics;
+- Demo 1 and Demo 2 output CSV files;
+- validation and evaluation for the implemented scope.
+
+Future pairwise comparability lineage should only be added after broader multi-store evidence is available. It should document how transaction order volume, transaction amount, activity or promotion status, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows are used.
+
+At the current sample size, region_type remains weak context only and must not be used as a hard market-area classification or peer-store grouping rule.

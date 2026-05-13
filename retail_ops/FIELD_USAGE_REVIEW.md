@@ -57,23 +57,6 @@ These fields are new SQL-derived pairwise comparability-gate outputs. They do no
 
 | Existing / SQL-derived field | Dictionary definition / boundary | Use location | Rename? |
 |---|---|---|---|
-| reference_store_id | First store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| candidate_store_id | Second store in a pairwise comparison; uses existing store_id value. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| comparison_question_type | Narrow comparison question being tested: search_entry_structure, activity_transfer, or order_quality_pressure. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
-| reference_region_type | Existing region_type value for the reference store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| candidate_region_type | Existing region_type value for the candidate store in a pairwise output; weak context only, not market-area classification. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| region_type_comparison_note | Compares existing region_type values while explicitly preserving that region_type is not a market-area classification. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
-| reference_store_type | Existing store_type value for the reference store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| candidate_store_type | Existing store_type value for the candidate store in a pairwise output; operating-format context, not a performance label. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| store_type_comparison_note | Compares existing store_type values as operating-format context, not as a performance label. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
-| search_entry_share_gap_pct | Absolute gap between two stores' search_entry_share_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| activity_order_share_gap_pct | Absolute gap between two stores' activity_order_share_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| activity_cost_ratio_gap_pct | Absolute gap between two stores' activity_cost_ratio_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| refund_pressure_gap_pct | Absolute gap between two stores' refund_pressure_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| invalid_order_pressure_gap_pct | Absolute gap between two stores' invalid_order_pressure_pct values. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| top3_sku_concentration_gap_pct | Absolute gap between two stores' top3_sku_transaction_amount_share_pct values; still not full product-category share. | Demo 3 pairwise SQL output. | No. Keep unchanged. |
-| pairwise_comparison_decision | SQL-derived gate outcome for the selected comparison question. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
-| pairwise_limit_notes | Interpretation notes for why the pair is comparable, partially comparable, or not comparable for strategy transfer. | Demo 3 pairwise SQL output and eval. | No. Keep unchanged. |
 
 ## Patch Rule
 
@@ -160,9 +143,7 @@ Existing field or concept | Dictionary definition / boundary | Current use locat
 `refund_order_pressure_pct` | SQL-derived order-count refund-pressure indicator based on `refund_orders_all_or_partial / transaction_orders * 100`. | Demo 1 output and dictionary. Demo 2/3 currently use `refund_pressure_pct` and `invalid_order_pressure_pct` as active order-quality comparison fields. | No. Keep unchanged.
 `refund_pressure_pct` | SQL-derived refund-pressure signal based on refund amount and transaction amount. | SQL output, order-quality facts, Demo 2/3 comparability output. | No. Keep unchanged.
 `invalid_order_pressure_pct` | SQL-derived invalid-order-pressure signal based on invalid and valid order counts. | SQL output, order-quality facts, Demo 2/3 comparability output. | No. Keep unchanged.
-`order_quality_pressure` | Demo 3 `comparison_question_type`; it is a narrow pairwise question type. | Demo 3 pairwise SQL output, Demo 3 answer path, Demo 3 eval. | No. Keep unchanged.
 `order_quality_pressure_profile` | Retrieval-facing memory slot for refund pressure, refund-order pressure, invalid-order pressure, and related order-quality signals. | Generated retail memory facts and retail evals. | No. Keep unchanged.
-`top3_sku_concentration_gap_pct` | Demo 3 pairwise gap based on `top3_sku_transaction_amount_share_pct`; still lightweight top-SKU evidence, not full product-category share. | Demo 3 pairwise SQL output and dictionary. | No. Keep unchanged.
 
 Decision: the narrative may explain these boundaries, but it must not rename the fields or convert them into new store-stage labels.
 
@@ -177,3 +158,11 @@ This review patch does not rename any field.
 | `period_granularity` | Describes the reporting granularity of the row, for example a monthly store-period row. | Data dictionary, Demo 2 comparability-gate consistency evaluation, documentation boundary checks. | No. Keep unchanged. |
 
 `period_granularity` should be used only to clarify the time/reporting level of a row. It should not be used to merge mismatched periods or to imply that two stores are comparable when activity intensity, refunds, ranking, or competition may differ.
+
+## Future Comparability-Gate Field Review
+
+Pairwise comparability-gate fields are not currently implemented.
+
+Future fields should only be added after broader multi-store evidence is available. A reliable gate should consider transaction order volume, transaction amount, activity or promotion status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+
+At the current sample size, region_type remains weak context only. It must not be used as a hard market-area classification, store-stage label, or peer-store grouping rule.

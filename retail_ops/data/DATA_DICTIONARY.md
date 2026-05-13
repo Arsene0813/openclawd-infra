@@ -94,32 +94,17 @@ Memory-facing slots are generated from multiple source fields and SQL-derived co
 Any new SQL-derived field must be explicitly documented before it is used in generated outputs or memory facts.
 
 
-### Demo 3 Pairwise Comparability-Gate Fields
+### Future Pairwise Comparability-Gate Fields
 
-The following fields are SQL-derived Demo 3 pairwise comparability-gate outputs. They are not Meituan backend metrics and they do not rename existing Demo 1 or Demo 2 fields.
+Pairwise comparability-gate fields are not currently implemented.
 
-| Field | Definition / boundary |
-|---|---|
-| `reference_store_id` | The first store in a pairwise comparison. It uses the existing `store_id` value and does not replace `store_id`. |
-| `candidate_store_id` | The second store in a pairwise comparison. It uses the existing `store_id` value and does not replace `store_id`. |
-| `comparison_question_type` | The narrow question being tested by the pairwise gate. Current implemented values are `search_entry_structure`, `activity_transfer`, and `order_quality_pressure`. |
-| `reference_region_type` | The existing `region_type` value for the reference store in a pairwise output. It is weak context only, not a market-area classification. |
-| `candidate_region_type` | The existing `region_type` value for the candidate store in a pairwise output. It is weak context only, not a market-area classification. |
-| `region_type_comparison_note` | A note comparing the two existing `region_type` values. It must not be read as a market-area classification. |
-| `reference_store_type` | The existing `store_type` value for the reference store in a pairwise output. It is operating-format context, not a performance label. |
-| `candidate_store_type` | The existing `store_type` value for the candidate store in a pairwise output. It is operating-format context, not a performance label. |
-| `store_type_comparison_note` | A note comparing the two existing `store_type` values. It is operating-format context, not a performance label. |
-| `search_entry_share_gap_pct` | Absolute gap between the two stores' `search_entry_share_pct` values. |
-| `activity_order_share_gap_pct` | Absolute gap between the two stores' `activity_order_share_pct` values. |
-| `activity_cost_ratio_gap_pct` | Absolute gap between the two stores' `activity_cost_ratio_pct` values. |
-| `refund_pressure_gap_pct` | Absolute gap between the two stores' `refund_pressure_pct` values. |
-| `invalid_order_pressure_gap_pct` | Absolute gap between the two stores' `invalid_order_pressure_pct` values. |
-| `top3_sku_concentration_gap_pct` | Absolute gap between the two stores' `top3_sku_transaction_amount_share_pct` values. This remains lightweight top-SKU evidence, not full product-category share. |
-| `pairwise_comparison_decision` | SQL-derived gate outcome for the narrow question. Current values are `comparable_with_limits`, `partially_comparable`, and `not_comparable_for_strategy_transfer`. |
-| `pairwise_limit_notes` | SQL-derived interpretation notes explaining why the pair can or cannot be compared for the selected question. Missing context should create limits rather than be treated as zero or normal. |
+The current implemented retail scope stops at Demo 2. A future comparability gate should only be added after broader multi-store evidence is available.
 
-These fields are pairwise diagnostic outputs. They do not create a final store ranking, a full 48-store classification, or an automated operating recommendation.
+Reliable store comparability should depend on transaction order volume, transaction amount, activity or promotion status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
+At the current sample size, `region_type` remains weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
+
+Future market-context fields should only be added after they are documented before use and supported by broader multi-store evidence.
 
 ### Demo 1 SQL-Derived Diagnostic Details
 
@@ -928,3 +913,11 @@ sku_name_en and search_term_en are conservative English helper translations for 
 Demo 2 does not perform full manual SKU category classification.
 
 For Demo 2 source tables, sku_category_note = not_classified means the SKU name is retained as source evidence but not converted into a full product-category taxonomy.
+
+### Current Boundary Wording for Validators
+
+These exact boundary phrases are intentionally preserved for consistency checks:
+
+- `region_type remains weak context only`
+- `activity_cost_ratio_pct` is not traditional ROI.
+- `top3_sku_transaction_amount_share_pct` is not full product-category share.

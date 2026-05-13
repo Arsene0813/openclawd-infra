@@ -26,7 +26,6 @@ Recommended first read:
 3. `PROJECT_STATUS.md`
 4. `retail_ops/README.md`
 5. `retail_ops/data/DATA_DICTIONARY.md`
-6. `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
 
 For deeper evidence, read `retail_ops/LINEAGE.md`, the SQL files, generated outputs, validation scripts, and evaluation files.
 
@@ -40,11 +39,9 @@ The repository should be read as a staged prototype with explicit evidence bound
 | Structured memory lifecycle | Implemented for livestream product facts | overwrite control, soft deactivation, freshness filtering, active-state filtering |
 | Livestream evaluation | Implemented | current implemented cases pass |
 | Retail metric dictionary and lineage | Implemented | `retail_ops/data/DATA_DICTIONARY.md`, `retail_ops/LINEAGE.md` |
-| Retail SQL diagnostics | Implemented for Demo 1, Demo 2, and Demo 3 | `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`, `retail_ops/sql/02_demo2_cross_store_comparability.sql`, `retail_ops/sql/03_demo2_pairwise_comparability_gate.sql` |
 | Retail data-contract validation | Implemented | `retail_ops/scripts/validate_retail_data_contract.py`, `retail_ops/outputs/retail_data_contract_validation_result.txt` |
 | Retail memory facts generation | Implemented for Store A Demo 1 and Demo 2 B-F facts | `retail_ops/outputs/generated_retail_memory_facts.json`, `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
 | Retail answer endpoints | Implemented for Demo 1 and Demo 2 only | `/chat_retail_ops_kb`, `/chat_retail_ops_demo2_kb` |
-| Demo 3 pairwise comparability gate | Implemented as offline SQL output, validation, and narrow file-backed answer path | `retail_ops/outputs/demo3_pairwise_comparability_gate_output.csv`, `retail_ops/scripts/answer_demo3_pairwise_gate.py`, `eval/eval_retail_demo3_pairwise_gate.py`, `eval/eval_retail_demo3_pairwise_answer_path.py` |
 | Automated Meituan backend ingestion | Not implemented yet | future work |
 | Full 48-store decision-support system | Not implemented yet | future work |
 
@@ -52,9 +49,9 @@ The retail extension currently has three implemented stages:
 
 1. Demo 1: Store A month-over-month diagnostic.
 2. Demo 2: same-period Stores B-F cross-store comparability diagnostic.
-3. Demo 3: pairwise comparability gate for Stores B-F, testing whether two stores can be compared for a specific operating question.
+3. Future work: a comparability gate for deciding which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
-Demo 3 currently includes offline SQL output, validation, evaluation, and a narrow file-backed answer path. It is not yet exposed through a retrieval endpoint or API endpoint and should not be described as a full 48-store operating system.
+The comparability gate is not currently implemented as a finished demo. The current implemented retail scope stops at Demo 2.
 
 ## What Is Implemented
 
@@ -84,20 +81,15 @@ The retail extension currently has three implemented demos:
 
 - Demo 1: `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 - Demo 2: `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
-- Demo 3: `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
-- Demo 3 answer path: `retail_ops/demo/demo_3_pairwise_answer_path.md`
 
 Demo 1 analyzes Store A, a self-operated Qingdao store, across February, March, and April 2026. It shows why traffic, transaction amount, conversion, activity cost, refund pressure, invalid orders, and top-SKU evidence should not be interpreted from one metric alone.
 
 Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window. It structures comparable backend metrics, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
 
-Demo 3 turns the Demo 2 B-F output into a pairwise comparability gate. It compares every store pair under three narrow question types:
+A future comparability gate should build on the Demo 2 B-F structure, but it is not currently implemented as a finished demo.
 
-- `search_entry_structure`
-- `activity_transfer`
-- `order_quality_pressure`
 
-Demo 3 asks whether a comparison is usable for a specific question before any operating pattern is copied from one store to another. It does not classify stores by market area, does not use `region_type` as a hard peer-grouping rule, and does not generate final operating recommendations.
+The future gate should avoid market-area classification until more store data and repeated reporting windows are available. The current project treats `region_type` as weak context only.
 
 The retail extension includes:
 
@@ -110,8 +102,8 @@ The retail extension includes:
 - local data-contract checks;
 - Store A retail retrieval evaluation;
 - Demo 2 facts and answer-boundary evaluations;
-- Demo 3 pairwise comparability validation and evaluation;
-- Demo 3 narrow file-backed answer-path evaluation.
+- future comparability-gate limitation notes;
+- refusal to overclaim from the current limited sample.
 
 ## Core Memory Behavior
 
@@ -196,27 +188,6 @@ Demo 2 includes:
 - offline facts evaluation;
 - answer-boundary evaluation.
 
-## Retail Demo 3: Why It Matters
-
-Demo 3 turns the Demo 2 B-F output into a pairwise comparability gate.
-
-The problem is that two stores may be comparable for one operating question but not for another.
-
-Demo 3 therefore compares store pairs under three narrow question types:
-
-- `search_entry_structure`
-- `activity_transfer`
-- `order_quality_pressure`
-
-The output uses fields such as:
-
-- `pairwise_comparison_decision`
-- `pairwise_limit_notes`
-- `region_type_comparison_note`
-
-Demo 3 keeps `region_type` as weak context rather than a hard grouping rule.
-
-Demo 3 is a gate for deciding whether a comparison is usable before copying an operating pattern from one store to another.
 
 ## Retail Data Contract
 
@@ -244,8 +215,6 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
 | Retail Demo 2 comparability-gate consistency evaluation | consistency checks for the limited B-F cross-store comparability gate | 5/5 passed |
 | Retail Demo 2 answer-behavior boundary evaluation | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
-| Retail Demo 3 pairwise gate evaluation | checks pairwise output shape, question boundaries, region-type boundary, and ranking-boundary behavior | 9/9 passed |
-| Retail Demo 3 pairwise answer-path evaluation | checks supported pairwise answers, limitation notes, missing pairs, missing question types, and refusal of full 48-store ranking | 6/6 passed |
 | Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
 | Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |
 
@@ -277,8 +246,6 @@ This project demonstrates abilities relevant to AI, data science, business analy
 6. `retail_ops/LINEAGE.md` — source-to-SQL-to-memory lineage and interpretation limits.
 7. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` — Store A month-over-month retail operations demo.
 8. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` — same-period B-F cross-store comparability diagnostic.
-9. `retail_ops/demo/demo_3_pairwise_comparability_gate.md` — B-F pairwise comparability gate.
-10. `retail_ops/demo/demo_3_pairwise_answer_path.md` — narrow file-backed Demo 3 answer path.
 11. `retail_ops/FIELD_USAGE_REVIEW.md` — field-name review before comparability-gate expansion.
 12. `retail_ops/COMPARABILITY_GATE_V0.md` — first review version of the cross-store comparability gate.
 13. `retail_ops/EXPERIMENT_RESULTS.md` — comparability and limitation-preserving review cases.
@@ -328,12 +295,6 @@ Retail Demo 2 checks:
 - `python3 eval/eval_retail_demo2_comparability_gate.py`
 - `python3 eval/eval_retail_demo2_answer_behavior.py`
 
-Retail Demo 3 checks:
-
-- `python3 retail_ops/scripts/run_demo3_pairwise_gate.py`
-- `python3 retail_ops/scripts/validate_demo3_pairwise_gate_output.py`
-- `python3 eval/eval_retail_demo3_pairwise_gate.py`
-- `python3 eval/eval_retail_demo3_pairwise_answer_path.py`
 
 Retail retrieval evaluation:
 
@@ -356,8 +317,6 @@ Saved evaluation outputs include:
 - `eval/results/eval_retail_demo2_facts_result.txt`
 - `eval/results/eval_retail_demo2_comparability_gate_result.txt`
 - `eval/results/eval_retail_demo2_answer_behavior_result.txt`
-- `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
-- `eval/results/eval_retail_demo3_pairwise_answer_path_result.txt`
 
 ## Repository Structure
 
@@ -379,7 +338,6 @@ Saved evaluation outputs include:
   - `eval_retail_demo2_facts.py`
   - `eval_retail_demo2_comparability_gate.py`
   - `eval_retail_demo2_answer_behavior.py`
-  - `eval_retail_demo3_pairwise_gate.py`
   - `eval_report.md`
   - `eval_retail_report.md`
   - `results/`
@@ -413,8 +371,8 @@ Current limitations:
 - Demo 1 supports Store A month-over-month retail retrieval.
 - Demo 2 supports a limited same-period B-F cross-store comparability diagnostic.
 - Demo 2 memory facts are currently file-backed rather than loaded through the same Qdrant path as Store A Demo 1.
-- Demo 3 supports a limited B-F pairwise comparability gate as SQL output, saved CSV output, documentation, validation, offline evaluation, and a narrow file-backed answer path.
-- Demo 3 is not yet exposed through a retrieval endpoint or API endpoint.
+- The comparability gate is planned as future work, not currently implemented as a finished demo.
+- The current implemented retail scope stops at Demo 2.
 - Automated Meituan backend ingestion is not implemented yet.
 - Full 48-store comparison, peer selection, and automated daily operating recommendations are not implemented yet.
 - Promotion cycle dates, competitor density, delivery conditions, rating/review signals, and stockout history are not yet included.
@@ -424,11 +382,11 @@ Current limitations:
 
 Short-term improvements:
 
-- Decide whether the existing Demo 3 file-backed answer path should remain deterministic or be exposed through a narrow retrieval/API layer.
+- Revisit the comparability gate after broader 48-store data, repeated reporting windows, and stronger market-context evidence are available.
 - Keep the answer boundary narrow: given a store pair and a question type, return comparison decision, evidence fields, and limit notes.
 - Expand beyond the B-F sample only after the same field contract and evaluation checks are preserved.
 - Add more answer-boundary cases around `activity_cost_ratio_pct`, `region_type`, top-SKU concentration, refund pressure, invalid-order pressure, and strategy-transfer limits.
-- Update the project consistency validator so it checks Demo 3 documentation and artifacts explicitly.
+- Update validators later when future comparability-gate fields are actually implemented.
 
 ## Retail Demo 2 Answer-Behavior Boundary Evaluation
 
@@ -444,36 +402,13 @@ This check focuses on whether comparison answers preserve the implemented metric
 - search-entry comparison stays tied to `search_entry_rate_pct`, `search_entry_share_pct`, `search_entry_users`, and `entry_users`.
 - promotion or subsidy strategy transfer is qualified unless activity, subsidy, refund, invalid-order, and comparison-limit evidence support it.
 
-## Retail Demo 3 Pairwise Comparability Boundary
 
-Demo 3 includes an offline pairwise-gate evaluation:
+## Future Work: Comparability Gate
 
-- `eval/eval_retail_demo3_pairwise_gate.py`
-- `eval/results/eval_retail_demo3_pairwise_gate_result.txt`
-- `eval/results/eval_retail_demo3_pairwise_answer_path_result.txt`
+The current implemented retail scope stops at Demo 2.
 
-This check focuses on whether pairwise comparison remains narrow:
+A comparability gate is planned as future work. It should eventually help judge which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
-- pairwise output has the expected three question types;
-- activity-transfer comparison can refuse unsupported transfer;
-- search-entry and order-quality comparisons stay within their question boundaries;
-- `region_type` remains weak context instead of a hard grouping rule;
-- pairwise output remains a comparability gate rather than a ranking;
-- new pairwise fields are documented.
+This is not currently implemented as a finished demo because the sample is still limited. Store comparability should depend on transaction order volume, transaction amount, whether the store is under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
-
-## Retail Demo 3 Pairwise Answer Path
-
-Demo 3 includes a narrow file-backed answer-path evaluation:
-
-- `retail_ops/scripts/answer_demo3_pairwise_gate.py`
-- `eval/eval_retail_demo3_pairwise_answer_path.py`
-- `retail_ops/demo/demo_3_pairwise_answer_path.md`
-
-This check focuses on whether the answer path:
-
-- answers supported pairwise questions;
-- preserves the comparability-gate boundary;
-- includes relevant gap fields and limitation notes;
-- refuses full 48-store ranking;
-- reports missing store pairs and missing supported question types.
+To avoid subjective regional classification, the current project treats `region_type` as weak context only. It is not a hard market-area classification or peer-store grouping rule.

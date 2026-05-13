@@ -42,7 +42,7 @@ The retail prototype has four layers.
 | Layer | What it does |
 |---|---|
 | Metric dictionary | Preserves the original meaning of Meituan backend metrics and maps Chinese backend labels to canonical project field names. |
-| SQL diagnostics | Turns selected backend exports into store-period and pairwise comparison outputs. |
+| SQL diagnostics | Turns selected backend exports into store-period diagnostic outputs. |
 | Memory facts | Store evidence, period, source fields, observed values, and limitations in a retrieval-facing structure. |
 | Evaluation and answer boundary checks | Test whether later answers preserve definitions, limits, and refusal behavior instead of producing unsupported advice. |
 
@@ -74,23 +74,15 @@ Main file:
 
 - `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
-### Demo 3: Pairwise comparability gate
+### Future work: Comparability gate
 
-Demo 3 turns the Demo 2 output into a pairwise comparability gate.
+A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-It compares store pairs under three narrow question types:
+The reason is methodological rather than technical. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, whether the store is currently under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
-- `search_entry_structure`
-- `activity_transfer`
-- `order_quality_pressure`
+The current demo sample is still small. To avoid subjective regional classification, I do not currently classify store locations into market-area types. The existing region field is treated as weak context only, not as a hard market-area label or peer-store grouping rule.
 
-The same two stores may be usable for one question and unsafe for another. For example, two stores can have similar search-entry structure but still be unsafe for activity-strategy transfer if activity-order share, activity-cost ratio, refund pressure, invalid-order pressure, or store type differ too much.
-
-Main files:
-
-- `retail_ops/demo/demo_3_pairwise_comparability_gate.md`
-- `retail_ops/demo/demo_3_pairwise_answer_path.md`
-- `retail_ops/demo/demo_3_pairwise_experiment_notes.md`
+A future 48-store version can revisit this gate after more stores and reporting windows are added.
 
 ## How the original memory layer connects
 
@@ -138,8 +130,8 @@ This is an ongoing prototype, not a finished 48-store operating platform.
 Current scope:
 
 - selected Meituan backend data has been manually structured into canonical CSV files;
-- Demo 1, Demo 2, and Demo 3 are implemented as local staged diagnostics;
-- Demo 3 currently exists as SQL output, saved CSV output, validation, evaluation, and a narrow file-backed answer path;
+- Demo 1 and Demo 2 are implemented as local staged diagnostics;
+- the comparability gate is intentionally left as future work because the current sample is not sufficient for reliable store-pair comparability judgments;
 - automated Meituan backend ingestion is not implemented;
 - full 48-store automated decision support is not implemented;
 - causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
@@ -156,9 +148,6 @@ The boundary is intentional. The current goal is to show how messy but real back
 | 3 | `retail_ops/data/DATA_DICTIONARY.md` | Canonical metric definitions and field names. |
 | 4 | `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` | Single-store monthly diagnostic. |
 | 5 | `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` | Same-period cross-store diagnostic. |
-| 6 | `retail_ops/demo/demo_3_pairwise_comparability_gate.md` | Pairwise comparability gate. |
-| 7 | `retail_ops/demo/demo_3_pairwise_experiment_notes.md` | Concrete examples showing why Demo 3 matters. |
-| 8 | `retail_ops/demo/demo_3_pairwise_answer_path.md` | Narrow file-backed answer path for Demo 3. |
 | 9 | `eval/` and `retail_ops/scripts/` | Validation and scenario-based evaluation checks. |
 
 ## Supporting validation references
