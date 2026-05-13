@@ -19,7 +19,7 @@ This folder contains the retail evidence layer:
 The current retail path has two implemented demos and one planned future stage:
 
 1. Demo 1: Store A month-over-month diagnosis.
-2. Demo 2: same-period Stores B-F comparability diagnostic.
+2. Demo 2: same-period Stores B-F cross-store diagnostic with scope/limit checks.
 3. Future work: pairwise comparability-gate design after broader multi-store data is available.
 
 ## Suggested Retail Review Path
@@ -96,8 +96,8 @@ Validation and evaluation files:
 - `retail_ops/scripts/validate_demo2_retail_memory_facts.py`
 - `eval/eval_retail_demo2_facts.py`
 - `eval/results/eval_retail_demo2_facts_result.txt`
-- `eval/eval_retail_demo2_comparability_gate.py`
-- `eval/results/eval_retail_demo2_comparability_gate_result.txt`
+- `eval/eval_retail_demo2_scope_boundary.py`
+- `eval/results/eval_retail_demo2_scope_boundary_result.txt`
 - `eval/eval_retail_demo2_answer_behavior.py`
 - `eval/results/eval_retail_demo2_answer_behavior_result.txt`
 
@@ -214,7 +214,7 @@ The Store A retail retrieval evaluation checks whether the system can:
 
 Demo 2 offline facts evaluation checks whether generated B-F facts cover visibility, activity, transaction/conversion, order-quality pressure, top-SKU evidence, and attribution-guard slots.
 
-Demo 2 answer-behavior boundary evaluation checks whether comparison answers preserve metric definitions and limits. In particular, it checks that `activity_cost_ratio_pct` is not treated as ROI, top-SKU concentration is not treated as full product-category sales share, search-entry comparison stays tied to the correct fields, and promotion strategy transfer remains qualified.
+Demo 2 offline answer-boundary check checks whether comparison answers preserve metric definitions and limits. In particular, it checks that `activity_cost_ratio_pct` is not treated as ROI, top-SKU concentration is not treated as full product-category sales share, search-entry comparison stays tied to the correct fields, and promotion strategy transfer remains qualified.
 
 ## Current Boundary and Next Step
 

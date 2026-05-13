@@ -19,7 +19,7 @@ REQUIRED_FILES = [
     "retail_ops/sql/01_store_a_month_over_month_diagnostic.sql",
     "retail_ops/sql/02_demo2_cross_store_comparability.sql",
     "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "eval/eval_retail_demo2_comparability_gate.py",
+    "eval/eval_retail_demo2_scope_boundary.py",
 ]
 
 CURRENT_SCOPE_REQUIRED_TERMS = {

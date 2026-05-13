@@ -59,4 +59,4 @@ Run the current implemented checks with:
 
 python3 scripts/validate_project_consistency.py
 python3 retail_ops/scripts/validate_retail_data_contract.py
-python3 eval/eval_retail_demo2_comparability_gate.py
+python3 eval/eval_retail_demo2_scope_boundary.py

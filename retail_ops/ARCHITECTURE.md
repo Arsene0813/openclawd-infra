@@ -41,7 +41,7 @@ Current implemented output files:
 
 Current implemented evaluation files:
 
-- eval/eval_retail_demo2_comparability_gate.py
+- eval/eval_retail_demo2_scope_boundary.py
 
 ## Why the Comparability Gate Is Future Work
 

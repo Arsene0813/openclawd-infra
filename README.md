@@ -17,7 +17,7 @@ This repository has two connected layers.
 | Layer | Where to look | What it shows |
 |---|---|---|
 | Memory-layer prototype | `api/`, `eval/`, `scripts/` | typed memory, overwrite control, retrieval, fallback, and evaluation |
-| Retail operations extension | `retail_ops/` | Meituan-style metric definitions, SQL diagnostics, generated memory facts, comparability checks, and evaluation |
+| Retail operations extension | `retail_ops/` | Meituan-style metric definitions, SQL diagnostics, generated memory facts, same-period diagnostics, scope/limit checks, and evaluation |
 
 Recommended first read:
 
@@ -48,7 +48,7 @@ The repository should be read as a staged prototype with explicit evidence bound
 The retail extension currently has two implemented retail stages and one planned next stage:
 
 1. Demo 1: Store A month-over-month diagnostic.
-2. Demo 2: same-period Stores B-F cross-store comparability diagnostic.
+2. Demo 2: same-period Stores B-F cross-store diagnostic with scope/limit checks.
 3. Future work: a comparability gate for deciding which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
 The comparability gate is not currently implemented as a finished demo. The current implemented retail scope stops at Demo 2.
@@ -182,7 +182,7 @@ Demo 2 includes:
 - same-period source CSVs for Stores B-F;
 - top search term evidence with English helper translations;
 - top SKU evidence with original Chinese SKU names and English helper translations;
-- SQL-derived comparability diagnostics;
+- SQL-derived scope/limit diagnostics;
 - generated Demo 2 retail memory facts;
 - a file-backed Demo 2 retail endpoint at `/chat_retail_ops_demo2_kb`;
 - offline facts evaluation;
@@ -214,7 +214,7 @@ The evaluations are scenario-based behavior checks, not broad language-model ben
 | Retail retrieval evaluation | Store A retail-memory retrieval, attribution-warning behavior, unsupported-scope refusal | 8/8 passed |
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage for visibility, activity, transaction/conversion, order-quality, SKU, and attribution-guard slots | 6/6 passed |
 | Retail Demo 2 comparison-boundary consistency evaluation | checks that Demo 2 remains a row-level same-period diagnostic and does not pretend to be a pairwise gate | 5/5 passed |
-| Retail Demo 2 answer-behavior boundary evaluation | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
+| Retail Demo 2 offline answer-boundary check | checks that comparison answers preserve metric definitions and limits | 4/4 passed |
 | Retail data-contract validation | field naming, required metrics, source fields, forbidden aliases, JSON fact structure | passed |
 | Project consistency validation | required files, documented endpoints, Demo 2 endpoint, Demo 2 artifacts, stale aliases | passed |
 
@@ -292,7 +292,7 @@ Retail Demo 2 checks:
 - `python3 retail_ops/scripts/validate_demo2_comparability_output.py`
 - `python3 retail_ops/scripts/validate_demo2_retail_memory_facts.py`
 - `python3 eval/eval_retail_demo2_facts.py`
-- `python3 eval/eval_retail_demo2_comparability_gate.py`
+- `python3 eval/eval_retail_demo2_scope_boundary.py`
 - `python3 eval/eval_retail_demo2_answer_behavior.py`
 
 
@@ -315,7 +315,7 @@ Saved evaluation outputs include:
 - `eval/results/eval_result_11_pass.txt`
 - `eval/results/eval_retail_result.txt`
 - `eval/results/eval_retail_demo2_facts_result.txt`
-- `eval/results/eval_retail_demo2_comparability_gate_result.txt`
+- `eval/results/eval_retail_demo2_scope_boundary_result.txt`
 - `eval/results/eval_retail_demo2_answer_behavior_result.txt`
 
 ## Repository Structure
@@ -336,7 +336,7 @@ Saved evaluation outputs include:
   - `eval_retail.py`
   - `eval_retail_cases.json`
   - `eval_retail_demo2_facts.py`
-  - `eval_retail_demo2_comparability_gate.py`
+  - `eval_retail_demo2_scope_boundary.py`
   - `eval_retail_demo2_answer_behavior.py`
   - `eval_report.md`
   - `eval_retail_report.md`

@@ -54,3 +54,7 @@ Top-SKU evidence is used as lightweight product-mix evidence. It is not treated 
 The repository does not include exhaustive Meituan backend screenshots because the backend contains sensitive store-level operating information.
 
 The project instead provides anonymized structured records, metric definitions, SQL diagnostics, generated memory facts, lineage notes, and validation/evaluation outputs.
+
+## Region Context Note
+
+In the current Demo 2 data, `region_type` values such as `Qingdao` and `Yantai` should be read as coarse available region labels, not as market-area classifications. The field name is retained for data-contract stability. It must not be used alone as a hard peer-store grouping rule or as a pairwise comparability decision.

@@ -27,7 +27,7 @@ In Meituan instant retail, store competition is not only about whether a store h
 
 Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. They are not isolated goals.
 
-This is why I do not treat activity cost as a simple ROI problem. A new store may need stronger activity support to gain first exposure and first orders. A store under local price pressure may need pricing or subsidy tools to defend visibility and market share. A store with high search exposure may still have weak results if entry, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
+In this framework, activity cost is not treated as a simple ROI problem. A new store may need stronger activity support to gain first exposure and first orders. A store under local price pressure may need pricing or subsidy tools to defend visibility and market share. A store with high search exposure may still have weak results if entry, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
 
 The decision-support problem is therefore not: "Which store is best?"
 
@@ -78,7 +78,7 @@ Main file:
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The reason is methodological rather than technical. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, whether the store is currently under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The future gate needs more store-pair evidence, repeated reporting windows, and stronger market-context fields before it should be treated as an implemented decision rule. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, whether the store is currently under activity or promotion, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current demo sample is still small. To avoid subjective regional classification, I do not currently classify store locations into market-area types. The existing region field is treated as weak context only, not as a hard market-area label or peer-store grouping rule.
 
@@ -148,7 +148,7 @@ The boundary is intentional. The current goal is to show how messy but real back
 | 3 | `retail_ops/data/DATA_DICTIONARY.md` | Canonical metric definitions and field names. |
 | 4 | `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` | Single-store monthly diagnostic. |
 | 5 | `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` | Same-period cross-store diagnostic. |
-| 9 | `eval/` and `retail_ops/scripts/` | Validation and scenario-based evaluation checks. |
+| 6 | `eval/` and `retail_ops/scripts/` | Validation and scenario-based evaluation checks. |
 
 ## Supporting validation references
 

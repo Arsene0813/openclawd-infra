@@ -8,6 +8,10 @@ The field names in this file follow the implemented retail data contract used ac
 - `retail_ops/outputs/store_a_demo1_sql_output.csv`
 - `retail_ops/data/DATA_DICTIONARY.md`
 
+For the full naming contract, `retail_ops/data/DATA_DICTIONARY.md` remains the source of truth.
+
+Demo 1 and Demo 2 both follow this lineage contract. Demo 1 covers Store A month-over-month diagnostics. Demo 2 covers same-period Stores B-F cross-store diagnostics using source CSV files, SQL output, and generated retail memory facts. The current Demo 2 lineage remains diagnostic and evidence-bounded; it does not implement the future pairwise comparability gate.
+
 Existing Meituan backend metrics are kept under a single canonical English field name. This avoids mixing multiple English names for the same Chinese backend metric.
 
 ## Demo 1 Scope
@@ -437,7 +441,7 @@ The current implemented retail lineage stops at Demo 2:
 - generated Demo 1 and Demo 2 retail memory facts;
 - validation and evaluation for the implemented scope.
 
-A future comparability gate should extend Demo 2 from same-period cross-store diagnostics into controlled comparability checks.
+A future pairwise comparability gate should extend Demo 2 from same-period cross-store diagnostics into controlled pairwise comparison decisions after stronger evidence is available.
 
 The gate should not compare all stores globally. It should first ask whether selected store-period rows can be compared for a specific operating question, and under what limits.
 

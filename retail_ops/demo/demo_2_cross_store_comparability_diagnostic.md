@@ -109,3 +109,17 @@ For this reason, Demo 2 converts SQL diagnostics into generated retail memory fa
 The memory facts are currently file-backed for Demo 2.
 
 This is enough to test the data contract, SQL diagnostic output, fact generation, and limitation-preserving answer behavior, but it is not yet a full 48-store decision-support system.
+
+## What the Current Demo 2 Output Shows
+
+The current output should be read as row-level diagnostic evidence, not as a pairwise store-comparability decision.
+
+| Store | Main scope / limit notes from current output |
+|---|---|
+| B | high search-entry dependence; high activity involvement; moderate refund pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits |
+| C | moderate activity involvement; top-3 SKU amount concentration; compare with region, store type, activity, refund, order-quality, and product-mix limits |
+| D | high search-entry dependence; high activity involvement; compare with region, store type, activity, refund, order-quality, and product-mix limits |
+| E | high search-entry dependence; moderate activity involvement; high refund pressure; high invalid-order pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits |
+| F | high search-entry dependence; high activity involvement; moderate refund pressure; moderate invalid-order pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits |
+
+This table does not rank stores. It only makes the SQL-derived interpretation limits easier to read before future pairwise gate work is added.

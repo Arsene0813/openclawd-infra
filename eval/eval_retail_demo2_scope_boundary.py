@@ -1,10 +1,16 @@
+"""Demo 2 scope-boundary evaluation.
+
+This eval asserts that Demo 2 remains a row-level same-period diagnostic.
+It also asserts the absence of the future pairwise comparability-gate schema.
+"""
+
 from __future__ import annotations
 
 import csv
 from pathlib import Path
 
 OUTPUT_PATH = Path("retail_ops/outputs/demo2_cross_store_comparability_output.csv")
-RESULTS_PATH = Path("eval/results/eval_retail_demo2_comparability_gate_result.txt")
+RESULTS_PATH = Path("eval/results/eval_retail_demo2_scope_boundary_result.txt")
 
 REQUIRED_FIELDS = [
     "store_id",
@@ -70,11 +76,11 @@ def main() -> int:
 
     checks.append(
         (
-            "comparability_gate_is_not_demo2_output",
+            "future_pairwise_gate_schema_is_absent_from_demo2_output",
             "comparison_question_type" not in fieldnames
             and "pairwise_comparison_decision" not in fieldnames
             and "pairwise_limit_notes" not in fieldnames,
-            "Demo2 should remain a row-level cross-store diagnostic output, not a pairwise gate output.",
+            "Demo2 should remain a row-level same-period diagnostic output, not a pairwise gate output.",
         )
     )
 
@@ -91,7 +97,7 @@ def main() -> int:
             lines.append(f"FAIL {name}: {detail}")
 
     summary = [
-        f"Retail Demo2 comparability-gate boundary eval result: {passed}/{len(checks)} passed",
+        f"Retail Demo2 scope-boundary eval result: {passed}/{len(checks)} passed",
         f"Passed: {passed}",
         f"Failed: {failed}",
         "",
