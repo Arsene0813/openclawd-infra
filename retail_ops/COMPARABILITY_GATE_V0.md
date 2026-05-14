@@ -54,19 +54,23 @@ The future gate should not create a store label from one threshold. It should co
 | Data completeness | `comparison_scope_flag`, `comparison_limit_notes` | current notes are diagnostic guardrails, not a finished gate | explicit pairwise decision output after broader data |
 ## Current `region_type` Boundary
 
-The current demo sample is still small. Because of that, the project deliberately avoids subjective regional classification.
+The current demo sample is still small, so the project deliberately avoids classifying store locations by subjective experience, intuition, address impression, or habitual labels.
 
-The existing `region_type` field remains weak context only. It must not be used as:
+Taking `region_type` as an example, the current project does not use it to decide that a store belongs to a fixed market-area type. It is kept only as currently available region-context evidence. It should not be used as:
 
-- a hard market-area classification;
-- a store-stage label;
-- a peer-store grouping rule;
-- a substitute for local consumption-level evidence;
-- a substitute for competition-context evidence.
+  * a hard market-area classification;
+  * a store-stage label;
+  * a peer-store grouping rule;
+  * a substitute for local consumption-level evidence;
+  * a substitute for competition-context evidence.
+
+A more reliable market-area classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, activity conditions, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current project should not classify stores into city-center, county, community, mature-market, or immature-market groups based on intuition.
 
-## Future Gate Output Shape The names below describe a proposed future gate output shape. They are not current implemented data-contract fields. Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in `retail_ops/data/DATA_DICTIONARY.md` and linked through `retail_ops/LINEAGE.md`.
+## Future Gate Output Shape
+
+The names below describe a proposed future gate output shape. They are not current implemented data-contract fields. Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in `retail_ops/data/DATA_DICTIONARY.md` and linked through `retail_ops/LINEAGE.md`.
 
 A future comparability gate should take a narrow query shape:
 

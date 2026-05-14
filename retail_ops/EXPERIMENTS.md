@@ -47,3 +47,10 @@ These experiments are not production experiments and not causal A/B tests. They 
 | Output | Retail evaluation result files under `eval/` and validation outputs under `retail_ops/outputs/`. |
 | Pass condition | The system qualifies or refuses unsupported claims about causal attribution, audited profit, full 48-store generalization, final store ranking, promotion decisions, pairwise store comparability, or full product-category share. |
 | Failure mode | Producing fluent but unsupported advice from isolated metrics, treating current Demo 2 as a completed comparability gate, or ignoring `comparison_limit_notes`. |
+
+## Why These Are Called Experiments
+
+In this repository, "experiment" means a staged analytical check on whether the data path preserves metric definitions and answer boundaries. It does not mean a randomized business experiment.
+
+This wording is used because the current project tests analytical behavior: whether SQL outputs, generated memory facts, and retrieval answers stay inside the evidence that the current data can support.
+

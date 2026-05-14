@@ -369,19 +369,21 @@ Claim: top SKU evidence provides lightweight product-mix evidence.
 
 Supporting fields:
 
-- sku_name
-- sku_name_en
-- sku_transaction_amount
-- sales_volume
-- sku_category_note
-- top3_sku_transaction_amount
-- top3_sku_transaction_amount_share_pct
+  * sku_name
+  * sku_name_en
+  * sku_transaction_amount
+  * sales_volume
+  * sku_category_note
+  * top3_sku_transaction_amount
+  * top3_sku_transaction_amount_share_pct
 
 Interpretation limit:
 
-- Top-3 SKU evidence is not full SKU category-share analysis.
-- Demo 2 does not perform full manual SKU category classification.
-- English SKU names are helper translations, not backend source values.
+  * `top3_sku_transaction_amount_share_pct` is derived from `sku_transaction_amount`, not from `sales_volume`.
+  * Sales-volume evidence is retained as separate lightweight SKU evidence.
+  * Top-3 SKU evidence is not full SKU category-share analysis.
+  * Demo 2 does not perform full manual SKU category classification.
+  * English SKU names are helper translations, not backend source values.
 
 ### Memory fact output
 
@@ -458,7 +460,7 @@ Reliable store comparability should depend on factors such as:
 - invalid-order pressure;
 - repeated reporting windows.
 
-At the current sample size, `region_type` remains weak context only. It must not be used as a hard market-area classification, store-stage label, or peer-store grouping rule.
+At the current sample size, `region_type` must not be used to classify stores by subjective experience, intuition, or habitual labels. A reliable market-area classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, activity conditions, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 Future pairwise fields, pairwise gap metrics, or market-area classifications should only be added after they are documented in DATA_DICTIONARY.md, LINEAGE.md, SQL output documentation, generated memory facts, and evaluation cases.
 
