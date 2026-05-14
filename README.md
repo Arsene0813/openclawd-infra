@@ -42,6 +42,11 @@ For implementation details, see `retail_ops/README.md`, `PROJECT_STATUS.md`, SQL
 
 ## Current Implemented Scope
 
+<!-- stable-retail-scope-note -->
+The current retail implementation stops at Demo 2: a same-period B-F cross-store diagnostic. It does not yet implement a finished pairwise comparability gate, store ranking system, or automatic strategy-transfer engine.
+
+The next technical step is to judge whether two store-period records can be compared for a specific operating question, using evidence such as order volume, transaction amount, activity involvement, store type, market context, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+
 | Area | Implemented now | Current boundary |
 |---|---|---|
 | Livestream memory layer | Typed product facts, overwrite control, soft deactivation, active-state retrieval, fallback/refusal, scenario evaluation | General-purpose production agent memory platform |
