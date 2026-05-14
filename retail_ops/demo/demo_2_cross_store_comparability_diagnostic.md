@@ -1,8 +1,10 @@
 # Demo 2: Same-Period Cross-Store Comparability Diagnostic
 
-In this demo, comparability means row-level same-period diagnostic readiness.
+Demo 2 organizes five same-period store-period records into a shared diagnostic structure.
 
-It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
+The purpose is to make selected Meituan backend metrics easier to compare under the same data contract, while preserving the limits that a later pairwise comparability gate would need to respect.
+
+At this stage, comparability means row-level same-period diagnostic readiness. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
 
 ## Purpose
 
@@ -10,19 +12,15 @@ This demo tests whether five anonymized instant-retail store records can be plac
 
 The purpose is to structure selected backend metrics into a same-period diagnostic format and record the limits that should constrain interpretation.
 
-## Business problem
+## Business Problem
 
-Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time.
-
-With many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which signals are strong enough to support cautious operating judgment.
+Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time. With many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which signals are strong enough to support cautious operating judgment.
 
 In this project, instant-retail competition is understood through the operating chain:
 
-```text
-being seen -> being entered -> being ordered -> being selected again or maintaining share
-```
+    being seen -> being entered -> being ordered -> being selected again or maintaining share
 
-Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions are operating levers inside this chain. They should not be interpreted as isolated goals.
+Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions are operating levers inside this chain. They should be interpreted through the store's current operating state and comparison limits, not as isolated goals.
 
 ## Scope
 
@@ -37,11 +35,11 @@ Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions
 | SQL output | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` |
 | Memory facts | `retail_ops/outputs/generated_demo2_retail_memory_facts.json` |
 
-Some source traffic-channel fields are retained in the structured source file but not carried into the current Demo 2 diagnostic output.
+Some source traffic-channel fields are retained in the structured source file but not carried into the current Demo 2 diagnostic output. Demo 2 focuses on selected same-period diagnostic signals rather than exhaustive traffic-source decomposition.
 
-Demo 2 focuses on selected same-period diagnostic signals rather than exhaustive traffic-source decomposition.
+`region_type` is kept as weak regional context only. In the current sample, it should not be read as a mature market-area classification or as a hard comparability condition. A future market-area field would require broader store coverage and external or data-supported evidence such as local consumption level, competitive density, price pressure, and SKU demand structure.
 
-## What the SQL checks
+## What the SQL Checks
 
 The SQL prepares a same-period diagnostic output with:
 
@@ -54,7 +52,7 @@ The SQL prepares a same-period diagnostic output with:
 - top-3 SKU transaction-amount concentration;
 - comparison-scope and comparison-limit notes.
 
-## Key diagnostic fields
+## Key Diagnostic Fields
 
 ### `comparison_scope_flag`
 
@@ -62,9 +60,7 @@ This field records whether the row is inside the current Demo 2 comparison scope
 
 In the current Demo 2 output, all B-F stores use the same March 2026 reporting window and are marked:
 
-```text
-same_period_diagnostic_ready
-```
+    same_period_diagnostic_ready
 
 This means the rows are ready for the current same-period diagnostic. It does not mean the stores are fully comparable in every business sense.
 
@@ -83,13 +79,13 @@ Examples include:
 
 These notes are interpretation guardrails.
 
-## What this demo supports
+## What This Demo Supports
 
 This demo supports cautious same-period diagnostic comparison.
 
 It can help identify whether a store's metrics should be read with extra caution because of activity involvement, search-entry dependence, refund pressure, invalid-order pressure, or SKU concentration.
 
-## What this demo does not support
+## What This Demo Does Not Support
 
 This demo does not support:
 
@@ -101,13 +97,11 @@ This demo does not support:
 - complete SKU category-share analysis;
 - automated Meituan backend ingestion.
 
-## Why this matters for the memory layer
+## Why This Matters for the Memory Layer
 
 The memory layer should not answer cross-store questions by retrieving isolated metrics.
 
-It should preserve each store's period, evidence, comparison scope, and interpretation limits.
-
-For this reason, Demo 2 converts SQL diagnostics into generated retail memory facts using the existing retail slots:
+It should preserve each store's period, evidence, comparison scope, and interpretation limits. For this reason, Demo 2 converts SQL diagnostics into generated retail memory facts using the existing retail slots:
 
 - `visibility_entry_profile`
 - `activity_lever_profile`
@@ -116,22 +110,20 @@ For this reason, Demo 2 converts SQL diagnostics into generated retail memory fa
 - `top3_sku_product_mix_note`
 - `single_metric_attribution_guard`
 
-The memory facts are currently file-backed for Demo 2.
+The memory facts are currently file-backed for Demo 2. This is enough to test the data contract, SQL diagnostic output, fact generation, and limitation-preserving answer behavior, but it is not yet a full 48-store decision-support system.
 
-This is enough to test the data contract, SQL diagnostic output, fact generation, and limitation-preserving answer behavior, but it is not yet a full 48-store decision-support system.
-
-## What the current Demo 2 output shows
+## What the Current Demo 2 Output Shows
 
 The current output should be read as row-level diagnostic evidence, not as a pairwise store-comparability decision.
 
-| Store | Main scope / limit notes from current output |
-|---|---|
-| B | high search-entry dependence; high activity involvement; moderate refund pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits. |
-| C | moderate activity involvement; top-3 SKU amount concentration; compare with region, store type, activity, refund, order-quality, and product-mix limits. |
-| D | high search-entry dependence; high activity involvement; compare with region, store type, activity, refund, order-quality, and product-mix limits. |
-| E | high search-entry dependence; moderate activity involvement; high refund pressure; high invalid-order pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits. |
-| F | high search-entry dependence; high activity involvement; moderate refund pressure; moderate invalid-order pressure; compare with region, store type, activity, refund, order-quality, and product-mix limits. |
+The raw `comparison_limit_notes` column below uses the contract strings produced by the SQL output and documented in `DATA_DICTIONARY.md`. The readable summary is only a human-facing explanation.
 
-This table does not rank stores.
+| Store | Raw `comparison_limit_notes` from current output | Readable summary |
+|---|---|---|
+| B | `high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; refund pressure is moderate; comparison should stay limited by region, store type, activity, refund, order-quality, and product-mix context. |
+| C | `moderate_activity_involvement; top3_sku_amount_concentration; compare_with_region_store_type_activity_refund_limits` | Activity involvement is moderate; top-3 SKU transaction amount is concentrated; comparison should stay limited by region, store type, activity, refund, order-quality, and product-mix context. |
+| D | `high_search_entry_dependence; high_activity_involvement; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; comparison should stay limited by region, store type, activity, refund, order-quality, and product-mix context. |
+| E | `high_search_entry_dependence; moderate_activity_involvement; high_refund_pressure; high_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is moderate; refund pressure and invalid-order pressure are high; comparison should stay limited by region, store type, activity, refund, order-quality, and product-mix context. |
+| F | `high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; refund pressure and invalid-order pressure are moderate; comparison should stay limited by region, store type, activity, refund, order-quality, and product-mix context. |
 
-It only makes the SQL-derived interpretation limits easier to read before future pairwise gate work is added.
+This table does not rank stores. It only makes the SQL-derived interpretation limits easier to read before future pairwise gate work is added.

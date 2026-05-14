@@ -9,23 +9,43 @@ The current implemented retail scope stops at Demo 2:
 
 The next stage is a pairwise comparability gate. It is documented here as future work, not as a finished demo.
 
-## Why this gate matters
+## Why This Gate Matters
 
 The Meituan merchant backend provides rich store-level data, but the workflow is mainly designed for reviewing one store at a time.
 
 For a 48-store operation, the harder problem is deciding which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
-This is not a ranking problem.
-
 The gate should not answer:
 
-> Which store is best?
+    Which store is best?
 
 It should answer a narrower question:
 
-> Can these two store-period records be compared for this specific operating question, and what limitations should constrain the answer?
+    Can these two store-period records be compared for this specific operating question, and what limitations should constrain the answer?
 
-## What store comparability should depend on
+## Current Demo 2 Output vs Future Pairwise Gate
+
+### Current Demo 2 Output
+
+Current Demo 2 provides:
+
+- row-level same-period diagnostic readiness;
+- current implemented fields including `comparison_scope_flag` and `comparison_limit_notes`;
+- evidence about whether each store-period row is inside the current Demo 2 scope;
+- interpretation limits that should be preserved in later retrieval or analysis.
+
+### Future Pairwise Comparability Gate
+
+A future pairwise comparability gate should provide:
+
+- pair-level decision for a specific comparison question;
+- input that identifies a reference store-period, a candidate store-period, and the operating question being asked;
+- output that explains whether the selected records can be compared;
+- supporting evidence and limiting factors.
+
+The current `comparison_scope_flag` should not be treated as a finished pairwise comparability decision.
+
+## What Store Comparability Should Depend On
 
 A reliable gate should consider at least:
 
@@ -41,11 +61,9 @@ A reliable gate should consider at least:
 - invalid-order pressure;
 - repeated reporting windows.
 
-These factors affect whether two stores are actually comparable as operating cases.
+These factors affect whether two stores are actually comparable as operating cases. The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
 
-The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
-
-## Candidate gate factors
+## Candidate Gate Factors
 
 | Future factor | Current evidence available | Current limitation | Future evidence needed |
 |---|---|---|---|
@@ -62,13 +80,11 @@ The future gate should not create a store label from one threshold. It should co
 | Invalid-order pressure | `valid_orders`, `invalid_orders`, `invalid_order_pressure_pct` | Cancellation reasons are not included. | Invalid-order reason categories. |
 | Data completeness | `comparison_scope_flag`, `comparison_limit_notes` | Current notes are diagnostic guardrails, not a finished gate. | Explicit pairwise decision output after broader data. |
 
-## Current `region_type` boundary
+## Current `region_type` Boundary
 
 The current demo sample is still small. Because of that, the project deliberately avoids subjective regional classification.
 
-The existing `region_type` field remains weak context only.
-
-It must not be used as:
+The existing `region_type` field remains weak context only. It must not be used as:
 
 - a hard market-area classification;
 - a store-stage label;
@@ -80,7 +96,7 @@ A more reliable market-area classification should wait until more store data is 
 
 The current project should not classify stores into city-center, county, community, mature-market, or immature-market groups based on intuition.
 
-## Future gate input shape
+## Future Gate Input Shape
 
 A future comparability gate should take a narrow query shape:
 
@@ -90,9 +106,11 @@ A future comparability gate should take a narrow query shape:
 - `period_end`
 - `comparison_question_type`
 
-These names describe a proposed future gate input shape. They are not current implemented data-contract fields. Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in `retail_ops/data/DATA_DICTIONARY.md` and linked through `retail_ops/LINEAGE.md`.
+These names describe a proposed future gate input shape. They are not current implemented data-contract fields.
 
-## Future gate output shape
+Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in `retail_ops/data/DATA_DICTIONARY.md` and linked through `retail_ops/LINEAGE.md`.
+
+## Future Gate Output Shape
 
 A future comparability gate should return:
 
@@ -104,7 +122,7 @@ A future comparability gate should return:
 
 The gate should not globally rank all stores. It should decide whether a selected pair can be compared for a selected operating question.
 
-## Future market-context fields
+## Future Market-Context Fields
 
 A future 48-store version can revisit stronger market-context fields after broader store data and more reporting windows are added.
 

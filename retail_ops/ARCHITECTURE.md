@@ -2,31 +2,35 @@
 
 This document maps the current retail decision-support prototype.
 
-The purpose is not to present enterprise infrastructure. The purpose is to show how selected Meituan backend metrics move through a controlled data path before any answer is allowed to make a comparison.
+The purpose is not to present enterprise infrastructure. The purpose is to show how selected Meituan backend evidence moves through a controlled data path before any cross-store interpretation is made.
 
-The implemented retail scope stops at Demo 2. A pairwise comparability gate is planned as future work, but it is not currently implemented as a finished demo.
+The implemented retail scope currently stops at Demo 2. A pairwise comparability gate is planned as future work, not implemented as a finished demo.
 
-## Current implemented flow
+## Current Implemented Flow
 
-```text
-Meituan backend metrics
--> DATA_DICTIONARY.md
--> canonical CSV files
--> SQL diagnostics
--> output CSV files
--> generated memory facts
--> validation and evaluation
-```
+    Meituan backend metric definitions
+            ↓
+    DATA_DICTIONARY.md
+            ↓
+    canonical CSV files
+            ↓
+    SQL diagnostics
+            ↓
+    output CSV files
+            ↓
+    generated memory facts
+            ↓
+    validation and evaluation checks
 
-## Implemented demos
+## Implemented Demos
 
 | Demo | Status | Purpose |
 |---|---|---|
 | Demo 1 | Implemented | Store A month-over-month diagnostic. |
-| Demo 2 | Implemented | Stores B-F same-period cross-store diagnostic structure. |
-| Comparability gate | Future work | Not currently implemented as a finished demo. |
+| Demo 2 | Implemented | Stores B-F same-period diagnostic structure. |
+| Comparability gate | Future work | Planned pairwise gate for deciding whether selected store-period records can be compared for a specific operating question. |
 
-## Artifact contract
+## Artifact Contract
 
 | Layer | Input | Output | Boundary |
 |---|---|---|---|
@@ -36,26 +40,37 @@ Meituan backend metrics
 | Generated memory facts | SQL outputs and source paths | Evidence records with observed values, source fields, confidence, and limitations | Facts preserve boundaries for later retrieval. |
 | Evaluation | Generated facts and scenario checks | Pass/fail checks for evidence-boundary behavior | These are scenario checks, not broad model benchmarks. |
 
-## Current implemented files
+## Current Implemented Files
 
-Current implemented SQL files:
+### SQL Files
 
 - `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
 - `retail_ops/sql/02_demo2_cross_store_comparability.sql`
 
-Current implemented output files:
+### Output Files
 
 - `retail_ops/outputs/store_a_demo1_sql_output.csv`
 - `retail_ops/outputs/store_a_demo1_interpretation_summary.csv`
 - `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
+- `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
 
-Current implemented evaluation file:
+### Validation and Evaluation Checks
 
+- `retail_ops/scripts/validate_retail_data_contract.py`
+- `retail_ops/scripts/validate_demo2_staging_data.py`
+- `retail_ops/scripts/validate_demo2_comparability_output.py`
+- `retail_ops/scripts/validate_demo2_retail_memory_facts.py`
 - `eval/eval_retail_demo2_scope_boundary.py`
+- `eval/eval_retail_demo2_facts.py`
+- `eval/eval_retail_demo2_answer_behavior.py`
+- `scripts/validate_demo2_retail_endpoint_boundary.py`
+- `scripts/validate_project_consistency.py`
 
-## Why the comparability gate is future work
+These checks are not model benchmarks. They verify that the staged prototype preserves metric definitions, keeps Demo 2 inside its stated scope, and avoids unsupported interpretations such as treating activity cost ratio as ROI, treating top-3 SKU share as full category share, or treating same-period diagnostic readiness as a completed pairwise comparability gate.
 
-The Meituan backend provides rich store-level data. The limitation is not that the backend has no data. The limitation is that the backend workflow is mainly designed for reviewing one store at a time.
+## Why the Comparability Gate Is Future Work
+
+The Meituan backend provides rich store-level data. The limitation is not lack of raw metrics. The limitation is that the backend workflow is mainly designed for reviewing one store at a time.
 
 For a 48-store operation, a later decision-support layer should help decide which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
@@ -65,10 +80,6 @@ The current demo sample is still small. To avoid subjective regional classificat
 
 ## Boundary
 
-The current architecture does not rank stores.
-
-The current architecture does not classify market areas.
-
-The current architecture does not claim to decide which operating action should be copied between stores.
-
 The current architecture demonstrates how selected Meituan backend metrics can be converted into store-period diagnostic outputs with explicit field definitions and interpretation limits.
+
+The current architecture supports same-period diagnostic readiness. It does not yet rank stores, classify market areas, or decide which operating action should be copied between stores.
