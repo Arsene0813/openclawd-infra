@@ -58,3 +58,19 @@ In this repository, "experiment" means a staged analytical check on whether the 
 
 This wording is used because the current project tests analytical behavior: whether SQL outputs, generated memory facts, and retrieval answers stay inside the evidence that the current data can support.
 
+## Method Notes: What Demo 2 Guardrails Are Trying to Prevent
+
+The Demo 2 thresholds are lightweight interpretation guardrails, not optimized business cutoffs. Their role is to make possible over-interpretation visible before SQL outputs are converted into memory facts or used in answer-boundary checks.
+
+| Guardrail signal | Current trigger in SQL | Misreading it is meant to prevent |
+|---|---|---|
+| `comparison_scope_flag` | period mismatch, missing required fields, or same-period diagnostic readiness | Treating a row as usable when the reporting window or required evidence is incomplete. |
+| `search_entry_share_pct` | `>= 85` -> `high_search_entry_dependence` | Treating strong search-entry dependence as overall store strength without checking entry quality, conversion, activity, refund, invalid-order, store type, and region context. |
+| `activity_order_share_pct` | `>= 80` -> `high_activity_involvement`; `>= 65` -> `moderate_activity_involvement` | Treating promotion-supported order structure as normal baseline demand. |
+| `refund_pressure_pct` | `>= 15` -> `high_refund_pressure`; `>= 10` -> `moderate_refund_pressure` | Reading transaction amount as clean demand when refund pressure may weaken the interpretation. |
+| `invalid_order_pressure_pct` | `>= 12` -> `high_invalid_order_pressure`; `>= 8` -> `moderate_invalid_order_pressure` | Interpreting order volume without checking whether invalid-order pressure changes the operating picture. |
+| `top3_sku_transaction_amount_share_pct` | `>= 25` -> `top3_sku_amount_concentration` | Treating a few high-value SKUs as if they described the full product-category structure. |
+| `comparison_limit_notes` | concatenated guardrail notes | Letting a later answer ignore the limits already visible in the diagnostic row. |
+
+These literal thresholds are deliberately simple at the current stage. A future comparability gate should test their stability and sensitivity across more store-period records before treating them as peer-group or strategy-transfer rules.
+

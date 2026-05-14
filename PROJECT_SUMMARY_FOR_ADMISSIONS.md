@@ -8,23 +8,26 @@ Repository: `livestream-agent-memory-layer`
 
 ## One-Minute Summary
 
-This project comes from a concrete operating problem in my Meituan instant-retail stores. The Meituan merchant backend gives detailed metrics for each store, but it is mainly designed for single-store review. Once the operation expands across many stores, the harder question is not simply collecting more numbers.
+This project grew out of a practical problem in Meituan instant-retail operations. The merchant backend gives many useful single-store metrics, but a multi-store operation needs another layer: deciding which store-period records can be inspected together, which metric definitions must stay fixed, and where a comparison should stop before it becomes unsupported advice.
 
-The harder question is whether different store-period records can be compared at all, and what kind of operating decision that comparison can support.
+I built a staged local prototype around that problem. The metric dictionary keeps the original Meituan backend meanings for fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio. SQL then turns selected store-period records into diagnostic outputs, and generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into retrieval-facing checks.
 
-I built a staged local prototype around that problem. First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
+The current repository implements two limited retail demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. The pairwise comparability gate remains future work, not a finished demo. That next stage should judge whether two store-period records can be compared for a specific operating question before suggesting whether a pricing, subsidy, SKU, ranking, or fulfillment action can transfer.
 
-This retail path extends the earlier livestream memory-layer work. The same core mechanisms—typed facts, overwrite control, source-bounded retrieval, and scenario-based evaluation—are reused here, but the retail version adds a stricter metric dictionary, SQL-derived diagnostic fields, and `comparison_limit_notes`. That change matters because Meituan backend metrics have platform-specific meanings, so the system has to preserve definitions before it can support comparison or recommendation.
+This retail path extends the earlier livestream memory-layer work in a limited, practical way:
 
-The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. It does not yet implement a pairwise store-period comparability gate.
+| Reused mechanism | Retail-specific addition | Still not implemented |
+|---|---|---|
+| Typed memory facts with source fields | Meituan metric dictionary and SQL-derived diagnostic fields | Full 48-store automation |
+| Source-bounded retrieval | Store-period evidence with `comparison_limit_notes` | Pairwise comparability gate |
+| Scenario-based evaluation | Answer-boundary checks for metric misuse and strategy-transfer overreach | Automatic operating recommendations |
 
-That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.
 
 ## Business Problem
 
-In Meituan instant retail, store competition is not only about whether a store has products online. It is about whether the store can move through an operating chain:
+In Meituan instant retail, store competition plays out through a local operating chain:
 
-    being seen -> being entered -> being ordered -> being selected again or maintaining share
+being seen -> being entered -> being ordered -> being selected again or maintaining share
 
 | Operating step | Practical meaning |
 |---|---|
@@ -33,13 +36,9 @@ In Meituan instant retail, store competition is not only about whether a store h
 | Being ordered | Visits turn into submitted and paid orders. |
 | Being selected again or maintaining share | The store can sustain demand, trust, and local visibility over time. |
 
-Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. They are not isolated goals.
+Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. Their meaning depends on the store state. A new store may need activity support to gain first exposure and first orders. A store under local price pressure may use pricing or subsidy tools to defend visibility and market share. A store with high search exposure can still underperform if entry quality, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
 
-In this framework, activity cost is not treated as a simple ROI problem. A new store may need stronger activity support to gain first exposure and first orders. A store under local price pressure may need pricing or subsidy tools to defend visibility and market share. A store with high search exposure may still have weak results if entry, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
-
-The decision-support problem is therefore not: which store is best?
-
-The better question is: which stores are comparable, for which question, under which metric definitions and limitations?
+The decision-support question is: which store-period records can be compared, for which operating question, under which metric definitions and limitations?
 
 ## Technical Approach
 
