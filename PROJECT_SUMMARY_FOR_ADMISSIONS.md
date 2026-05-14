@@ -8,14 +8,29 @@ Repository: `livestream-agent-memory-layer`
 
 ## One-minute summary
 
-This project comes from a concrete operating problem in my Meituan instant-retail stores. The Meituan merchant backend gives detailed metrics for each store, but it is mainly designed for single-store review. Once the operation expands across many stores, the harder question is not simply collecting more numbers. The harder question is whether different store-period records can be compared at all, and what kind of operating decision that comparison can support.
+This project comes from a concrete operating problem in my Meituan instant-retail stores.
 
-I built a staged local prototype around that problem. First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
+The Meituan merchant backend gives detailed metrics for each store, but it is mainly designed for single-store review. Once the operation expands across many stores, the harder question is not simply collecting more numbers. The harder question is whether different store-period records can be compared at all, and what kind of operating decision that comparison can support.
 
-The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. It does not yet implement a finished pairwise comparability gate. That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.
+I built a staged local prototype around that problem.
+
+First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together.
+
+Then SQL turns selected store-period records into diagnostic outputs.
+
+Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
+
+The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review.
+
+It does not yet implement a finished pairwise comparability gate. That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.
+
 ## Business problem
 
 In Meituan instant retail, store competition is not only about whether a store has products online. It is about whether the store can move through an operating chain:
+
+```text
+being seen -> being entered -> being ordered -> being selected again or maintaining share
+```
 
 | Operating step | Practical meaning |
 |---|---|
@@ -28,7 +43,9 @@ Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and ful
 
 In this framework, activity cost is not treated as a simple ROI problem. A new store may need stronger activity support to gain first exposure and first orders. A store under local price pressure may need pricing or subsidy tools to defend visibility and market share. A store with high search exposure may still have weak results if entry, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
 
-The decision-support problem is therefore not: "Which store is best?"
+The decision-support problem is therefore not:
+
+> Which store is best?
 
 The better question is:
 
@@ -43,11 +60,11 @@ The retail prototype has four layers.
 | Metric dictionary | Preserves the original meaning of Meituan backend metrics and maps Chinese backend labels to canonical project field names. |
 | SQL diagnostics | Turns selected backend exports into store-period diagnostic outputs. |
 | Memory facts | Store evidence, period, source fields, observed values, and limitations in a retrieval-facing structure. |
-| Evaluation and answer boundary checks | Test whether later answers preserve definitions, limits, and refusal behavior instead of producing unsupported advice. |
+| Evaluation and answer-boundary checks | Test whether later answers preserve definitions, limits, and refusal behavior instead of producing unsupported advice. |
 
 The SQL layer is not used to paste labels onto stores. It is used to organize backend metrics into a structure that makes cautious comparison possible.
 
-The memory layer is not used to make final decisions for me. It is used to remember what was observed, what the evidence depends on, and where a comparison should stop.
+The memory layer is not used to make final decisions. It is used to remember what was observed, what the evidence depends on, and where a comparison should stop.
 
 ## Current implemented retail path
 
@@ -67,7 +84,9 @@ Main file:
 
 Demo 2 extends the analysis to selected Stores B-F under the same March 2026 reporting window.
 
-The point is not to rank the stores. The point is to place selected store-period fields under the same reporting window and field contract before any operating interpretation is made. Store type, activity involvement, refund pressure, invalid-order pressure, search-entry structure, top-SKU evidence, and weak region context can all limit what a cross-store comparison means.
+The point is not to rank the stores. The point is to place selected store-period fields under the same reporting window and field contract before any operating interpretation is made.
+
+Store type, activity involvement, refund pressure, invalid-order pressure, search-entry structure, top-SKU evidence, and weak region context can all limit what a cross-store comparison means.
 
 Main file:
 
@@ -77,32 +96,15 @@ Main file:
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, activity or promotion status, activity intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, activity involvement, activity intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
-The current demo sample is still small. For that reason, I do not think store locations should be classified by subjective experience, intuition, or habitual labels. Taking `region_type` as an example, the current project does not use it to decide that one store belongs to a fixed market-area type. A more reliable classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, and other operating conditions.
+The current demo sample is still small. For that reason, store locations should not be classified by subjective experience, intuition, or habitual labels.
 
-A future 48-store version can revisit this gate after more stores, more reporting windows, and stronger market-context evidence are added.
-## How the original memory layer connects
-
-The original livestream memory layer is the technical base of this project.
-
-It was first built for a livestream commerce setting where product facts such as price, promotion, stock, shipping policy, and product features can change over time. The system stores facts with type, entity, slot, active state, overwrite behavior, freshness handling, and traceable retrieval.
-
-That same reliability problem appears in retail operations data. A store-period metric is also not useful unless the system remembers its time window, source field, definition, and limitation.
-
-The retail extension therefore applies the same idea to Meituan backend metrics:
-
-- preserve metric definitions;
-- keep store-period evidence separate;
-- avoid stale or unsupported retrieval;
-- avoid using one metric as a full explanation;
-- carry limitation notes into later answers.
+Taking `region_type` as an example, the current project does not use it to decide that one store belongs to a fixed market-area type. A more reliable classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, and other operating conditions.
 
 ## Field contract examples
 
 The project keeps field names consistent with `retail_ops/data/DATA_DICTIONARY.md`.
-
-Important examples:
 
 | Field | Boundary |
 |---|---|
@@ -113,14 +115,6 @@ Important examples:
 | `region_type` | Weak region or market-context evidence; not a mature market-area classification and not a hard peer-grouping rule. |
 | `top3_sku_transaction_amount_share_pct` | Lightweight top-SKU concentration evidence, not full product-category sales share. |
 
-## Relevance to target programmes
-
-This project is relevant to Business Decision Analytics because it starts from a real operating decision problem: how to compare stores before copying, rejecting, or adjusting an operating action.
-
-It is relevant to Data Science because the work depends on metric definitions, SQL-derived diagnostics, field lineage, validation, and scenario-based evaluation rather than informal interpretation.
-
-It is relevant to Language and Technology because the memory/retrieval layer is designed to answer with evidence and limitation awareness, instead of producing fluent but unsupported business advice.
-
 ## Current scope
 
 This is an ongoing prototype, not a finished 48-store operating platform.
@@ -129,35 +123,10 @@ Current scope:
 
 - selected Meituan backend data has been manually structured into canonical CSV files;
 - Demo 1 and Demo 2 are implemented as local staged diagnostics;
-- the comparability gate is intentionally left as future work because the current sample is not sufficient for reliable store-pair comparability judgments;
+- the comparability gate is intentionally left as future work;
 - automated Meituan backend ingestion is not implemented;
 - full 48-store automated decision support is not implemented;
 - causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
 - full SKU category classification across the catalogue is not implemented.
 
 At this stage, the value is in showing how messy but real backend data can be turned into a cautious, traceable, and testable decision-support prototype.
-
-## Recommended reading path
-
-| Order | File | Why read it |
-|---:|---|---|
-| 1 | `README.md` | Overall project structure and implementation boundary. |
-| 2 | `retail_ops/README.md` | Retail operations extension overview. |
-| 3 | `retail_ops/data/DATA_DICTIONARY.md` | Canonical metric definitions and field names. |
-| 4 | `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md` | Single-store monthly diagnostic. |
-| 5 | `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md` | Same-period cross-store diagnostic. |
-| 6 | `eval/` and `retail_ops/scripts/` | Validation and scenario-based evaluation checks. |
-
-## Supporting validation references
-
-The following files are part of the project evidence and consistency contract:
-
-- `retail_ops/LINEAGE.md`
-- `retail_ops/scripts/validate_retail_data_contract.py`
-- `retail_ops/outputs/retail_data_contract_validation_result.txt`
-
-## One-sentence summary
-
-This project shows how Meituan backend metrics can be normalized, checked, compared cautiously, and connected to a memory layer so that retail decision support preserves evidence, definitions, and limitations before making any operational judgement.
-
-The current repository implements two limited demos and documents their evidence boundaries; it does not present the work as a finished 48-store operating platform.
