@@ -244,14 +244,24 @@ Current limitations:
 - Promotion cycle dates, competitor density, delivery conditions, rating/review signals, and stockout history are not yet included.
 - Estimated income is treated as a platform-displayed proxy, not audited profit.
 - Top-SKU evidence is used as lightweight product-mix evidence, not full product-category sales share.
-- `region_type` is weak context only, not a hard market-area classification.
+- `region_type` is weak region or market-context evidence only. It is not a mature market-area classification, store-stage label, or hard peer-grouping rule.
 
 ## Future Work: Comparability Gate
 
-Future work:
+The next planned stage is a pairwise comparability gate.
 
-- build a pairwise comparability gate;
-- decide whether two stores are comparable, comparable with limits, not comparable, or insufficiently supported;
-- include order volume, transaction amount, current activity involvement and intensity, explicit activity status or campaign-calendar evidence if available, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
-- avoid subjective regional classification until broader store data and stronger market-context evidence are available;
+The gate should answer a narrow question:
+
+Can these two store-period records be compared for this specific operating question?
+
+Future work should:
+
+- build a pairwise gate around a reference store, a candidate store, and a specific comparison question;
+- decide whether the selected records are comparable, comparable with limits, not comparable, or insufficiently supported;
+- consider transaction order volume, transaction amount, activity involvement, activity intensity, explicit activity status or campaign-calendar evidence if available, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
+- avoid subjective regional classification based on intuition, address impression, or habitual labels;
+- keep `region_type` as weak context unless broader store data and stronger market-context evidence support new documented fields;
+- add any future market-area classification as new documented fields, such as `market_area_type`, rather than changing the meaning of `region_type`;
 - preserve the same field contract and evaluation checks when expanding beyond the current sample.
+
+The gate should not produce a global store ranking or a universal comparability score. A store pair may be comparable for search-entry structure but not comparable for promotion transfer, pricing pressure, SKU strategy, or fulfillment interpretation.

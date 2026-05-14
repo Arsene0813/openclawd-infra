@@ -4,7 +4,7 @@
 
 This demo uses one real Meituan-style retail store as a narrow diagnostic example.
 
-The goal is not to prove that one factor caused growth or decline. The goal is to show how messy merchant-backend metrics can be organized into a consistent, traceable decision-support prototype.
+The goal is not to prove that one factor caused growth or decline. The goal is to show how detailed merchant-backend metrics, originally designed for single-store review, can be structured into a consistent, traceable decision-support prototype.
 
 The current demo covers Store A from February 2026 to April 2026.
 
