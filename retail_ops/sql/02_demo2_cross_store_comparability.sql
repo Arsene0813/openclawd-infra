@@ -1,9 +1,9 @@
--- Demo 2: cross-store comparability diagnostics
+-- Demo 2: same-period cross-store diagnostic
 -- Source tables expected:
 --   demo2_store_period_metrics
 --   demo2_top_skus_by_transaction_amount
 --
--- This SQL does not rank stores as better or worse.
+-- This SQL does not decide pairwise store comparability and does not rank stores as better or worse.
 -- It derives same-period diagnostic fields and flags limits for cautious interpretation.
 -- The March 2026 date check is part of the Demo 2 fixture contract, not a reusable production SQL parameterization.
 

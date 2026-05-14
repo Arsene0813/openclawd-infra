@@ -1,8 +1,8 @@
-# Demo 2: Same-Period Cross-Store Comparability Diagnostic
+# Demo 2: Same-Period Cross-Store Diagnostic
 
 Demo 2 organizes five same-period store-period records into a shared diagnostic structure.
 
-The purpose is to make selected Meituan backend metrics easier to compare under the same data contract, while preserving the limits that a later pairwise comparability gate would need to respect.
+The purpose is to place selected Meituan backend metrics under the same reporting window and data contract, while preserving the limits that a later pairwise comparability gate would need to respect.
 
 At this stage, comparability means row-level same-period diagnostic readiness. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
 
@@ -14,9 +14,11 @@ The purpose is to structure selected backend metrics into a same-period diagnost
 
 ## Business Problem
 
-Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time. With many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which signals are strong enough to support cautious operating judgment.
+Meituan's merchant backend provides detailed store-level metrics, but the backend is mainly designed for reviewing one store at a time.
 
-In this project, instant-retail competition is understood through the operating chain:
+With many stores, the harder problem is deciding which stores can be compared, under what conditions they can be compared, and which signals are strong enough to support cautious operating judgment.
+
+In this project, instant-retail competition is understood through this operating chain:
 
     being seen -> being entered -> being ordered -> being selected again or maintaining share
 
@@ -37,7 +39,9 @@ Promotion, subsidy, price, SKU mix, ranking position, and fulfillment conditions
 
 Some source traffic-channel fields are retained in the structured source file but not carried into the current Demo 2 diagnostic output. Demo 2 focuses on selected same-period diagnostic signals rather than exhaustive traffic-source decomposition.
 
-`region_type` is kept as weak regional context only. In the current sample, it should not be read as a mature market-area classification or as a hard comparability condition. A future market-area field would require broader store coverage and external or data-supported evidence such as local consumption level, competitive density, price pressure, and SKU demand structure.
+`region_type` is kept as weak regional context only. In the current sample, it should not be read as a mature market-area classification or as a hard comparability condition.
+
+A future market-area field would require broader store coverage and external or data-supported evidence such as local consumption level, competitive density, price pressure, and SKU demand structure.
 
 ## What the SQL Checks
 
@@ -101,7 +105,9 @@ This demo does not support:
 
 The memory layer should not answer cross-store questions by retrieving isolated metrics.
 
-It should preserve each store's period, evidence, comparison scope, and interpretation limits. For this reason, Demo 2 converts SQL diagnostics into generated retail memory facts using the existing retail slots:
+It should preserve each store's period, evidence, comparison scope, and interpretation limits.
+
+For this reason, Demo 2 converts SQL diagnostics into generated retail memory facts using the existing retail slots:
 
 - `visibility_entry_profile`
 - `activity_lever_profile`
@@ -116,7 +122,9 @@ The memory facts are currently file-backed for Demo 2. This is enough to test th
 
 The current output should be read as row-level diagnostic evidence, not as a pairwise store-comparability decision.
 
-The raw `comparison_limit_notes` column below uses the contract strings produced by the SQL output and documented in `DATA_DICTIONARY.md`. The readable summary is only a human-facing explanation.
+The raw `comparison_limit_notes` column below uses the contract strings produced by the SQL output and documented in `DATA_DICTIONARY.md`.
+
+The readable summary is only a human-facing explanation.
 
 | Store | Raw `comparison_limit_notes` from current output | Readable summary |
 |---|---|---|

@@ -2,7 +2,7 @@
 
 ## Source
 
-Demo 2 uses manually transcribed Meituan Waimai merchant-backend metrics for anonymized instant-retail stores B-F.
+Demo 2 uses manually transcribed Meituan merchant-backend metrics for anonymized instant-retail stores B-F.
 
 All included stores use the same reporting window:
 

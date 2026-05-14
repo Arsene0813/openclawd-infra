@@ -2,7 +2,7 @@
 
 Repository: `livestream-agent-memory-layer`
 
-This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from the Meituan merchant-backend / Waimai merchant-backend UI used for these instant-retail store operations.
+This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from the Meituan merchant-backend UI used for these instant-retail store operations.
 
 The merchant backend provides detailed single-store metrics, but it does not naturally answer cross-store decision questions. Once the operation expands across many stores, the harder problem is not collecting more metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgment the evidence can support.
 
