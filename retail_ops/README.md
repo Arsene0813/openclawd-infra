@@ -132,17 +132,22 @@ Outputs:
 | `retail_ops/scripts/validate_demo2_retail_memory_facts.py` | Validates generated Demo 2 retail memory fact structure. |
 | `retail_ops/scripts/validate_retail_data_contract.py` | Checks retail field-contract consistency across dictionary, source, output, and facts. |
 
-## Implemented Retail Path
+## Implemented Retail Pipeline
 
-The implemented path is:
+The current implementation follows a staged evidence-preserving pipeline:
 
 ```text
 selected Meituan backend metrics
--> canonical field dictionary
--> SQL diagnostic output
--> generated memory facts
--> scenario-based evaluation
--> boundary-preserving retrieval answer
+    ↓
+canonical field dictionary
+    ↓
+SQL diagnostic output
+    ↓
+generated memory facts
+    ↓
+scenario-based evaluation
+    ↓
+boundary-preserving retrieval answer
 ```
 
 The project deliberately keeps source fields, observed values, calculation notes, source paths, supporting source paths, confidence labels, and limitations with the facts.
