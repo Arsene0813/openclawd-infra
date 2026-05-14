@@ -23,20 +23,35 @@ This is not a ranking problem. The gate should not answer "which store is best."
 
 A reliable gate should consider at least:
 
-- transaction order volume;
-- transaction amount;
-- activity status;
-- activity intensity;
-- store type;
-- region and market context;
-- competition environment;
-- SKU structure;
-- refund pressure;
-- invalid-order pressure;
-- repeated reporting windows.
+  * transaction order volume;
+  * transaction amount;
+  * activity status;
+  * activity intensity;
+  * store type;
+  * region and market context;
+  * competition environment;
+  * SKU structure;
+  * refund pressure;
+  * invalid-order pressure;
+  * repeated reporting windows.
 
 These factors affect whether two stores are actually comparable as operating cases.
 
+The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
+
+| Future factor | Current evidence available | Current limitation | Future evidence needed |
+|---|---|---|---|
+| Reporting-window alignment | `period_start`, `period_end`, `period_month` | Demo 2 uses one March 2026 window only | repeated windows across more stores |
+| Order volume | `transaction_orders`, `valid_orders`, `invalid_orders` | one-period volume may be unstable | repeated order-volume bands |
+| Transaction scale | `transaction_amount`, `average_order_value`, `estimated_income_proxy` | estimated income is only a platform-displayed proxy | clearer income / cost breakdown if available |
+| Activity involvement | `activity_orders`, `activity_order_share_pct`, `activity_cost`, `activity_cost_ratio_pct`, `merchant_subsidy_amount`, `platform_subsidy_amount` | promotion cycle dates and mechanism details are not included | activity calendar and promotion type evidence |
+| Store type | `store_type` | store type alone does not prove comparability | broader sample by store type |
+| Region / market context | `region_type` | current demo sample is too small for reliable regional classification | more store data, local consumption-level evidence, and competition-context evidence |
+| Competition context | not currently structured | local competitor density and price pressure are not included | competitor / local market evidence |
+| SKU structure | top-SKU transaction-amount and sales-volume evidence | top-SKU evidence is not full category-share analysis | broader SKU classification or category mapping |
+| Refund pressure | `refund_amount`, `refund_pressure_pct`, `full_refund_orders`, `refund_orders_all_or_partial` | refund amount is counted by refund-success date | cohort-level refund or reason evidence if available |
+| Invalid-order pressure | `valid_orders`, `invalid_orders`, `invalid_order_pressure_pct` | cancellation reasons are not included | invalid-order reason categories |
+| Data completeness | `comparison_scope_flag`, `comparison_limit_notes` | current notes are diagnostic guardrails, not a finished gate | explicit pairwise decision output after broader data |
 ## Current `region_type` Boundary
 
 The current demo sample is still small. Because of that, the project deliberately avoids subjective regional classification.

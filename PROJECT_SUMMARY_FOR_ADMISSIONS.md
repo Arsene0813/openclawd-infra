@@ -8,12 +8,11 @@ Repository: `livestream-agent-memory-layer`
 
 ## One-minute summary
 
-This project comes from a concrete operating problem in my Meituan instant-retail stores. It uses metrics manually structured from the Meituan merchant-backend / Waimai merchant-backend UI. As the operation expanded across many stores, the backend data became less useful for cross-store decisions: it showed detailed single-store metrics, but it did not tell me whether two stores were comparable before I copied a pricing, subsidy, SKU, or ranking action from one store to another.
+This project comes from a concrete operating problem in my Meituan instant-retail stores. The Meituan merchant backend gives detailed metrics for each store, but it is mainly designed for single-store review. Once the operation expands across many stores, the harder question is not simply collecting more numbers. The harder question is whether different store-period records can be compared at all, and what kind of operating decision that comparison can support.
 
-I built a staged local prototype. First, a metric dictionary preserves the original Meituan backend definitions. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, and limitations into later retrieval and answer-boundary checks.
+I built a staged local prototype around that problem. First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
 
-The current repository implements two limited demos: Store A month-over-month diagnosis and a B-F same-period diagnostic review. The next stage is a pairwise comparability gate, but that should only be implemented after more store periods and stronger market-context evidence are available.
-
+The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. It does not yet implement a finished pairwise comparability gate. That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.
 ## Business problem
 
 In Meituan instant retail, store competition is not only about whether a store has products online. It is about whether the store can move through an operating chain:
@@ -78,12 +77,11 @@ Main file:
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The future gate needs more store-pair evidence, repeated reporting windows, and stronger market-context fields before it should be treated as an implemented decision rule. A reliable gate should judge whether stores can be compared using transaction order volume, transaction amount, activity or promotion status, activity involvement and intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, activity or promotion status, activity intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
-The current demo sample is still small. To avoid subjective regional classification, I do not currently classify store locations into market-area types. The existing `region_type` field is treated as weak context only, not as a hard market-area label or peer-store grouping rule.
+The current demo sample is still small. For that reason, I do not think store locations should be classified by subjective experience, intuition, or habitual labels. Taking `region_type` as an example, the current project does not use it to decide that one store belongs to a fixed market-area type. A more reliable classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, and other operating conditions.
 
-A future 48-store version can revisit this gate after more stores and reporting windows are added.
-
+A future 48-store version can revisit this gate after more stores, more reporting windows, and stronger market-context evidence are added.
 ## How the original memory layer connects
 
 The original livestream memory layer is the technical base of this project.

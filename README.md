@@ -40,9 +40,9 @@ For implementation details, see `retail_ops/README.md`, `PROJECT_STATUS.md`, SQL
 
 ---
 
-## Current Scope
+## Current Implemented Scope
 
-| Area | Implemented now | Not claimed |
+| Area | Implemented now | Current boundary |
 |---|---|---|
 | Livestream memory layer | Typed product facts, overwrite control, soft deactivation, active-state retrieval, fallback/refusal, scenario evaluation | General-purpose production agent memory platform |
 | Retail metric dictionary | Meituan-style backend metric definitions and naming boundaries | Automatic ingestion from Meituan backend |
