@@ -250,6 +250,9 @@ The generated SQL output is stored in:
 
 - `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
 
+The SQL uses the March 2026 reporting window as a Demo 2 fixture contract. This keeps the current sample reproducible, but it should not be read as a reusable production SQL design for arbitrary 48-store reporting windows.
+
+
 The Demo 2 output intentionally separates carried-through canonical fields from SQL-derived diagnostic fields.
 
 Carried-through canonical or backend-formula fields include:

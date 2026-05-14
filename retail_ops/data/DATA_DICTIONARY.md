@@ -188,6 +188,8 @@ Current values:
 Correct use:
 This field is a data-readiness and comparison-scope guardrail. It helps the memory layer decide whether a same-period cross-store diagnostic can be discussed.
 
+Design reason: In Demo 2, `same_period_diagnostic_ready` requires both aligned reporting windows and the required diagnostic evidence for the current comparison scope. Top-3 SKU transaction-amount evidence is included because Demo 2 uses lightweight product-mix evidence to qualify cross-store interpretation. If that evidence is missing, the row should be treated as `insufficient_data` rather than as comparable with zero SKU concentration.
+
 Not supported:
 This field must not be used as a store-stage label, performance ranking, causal explanation, or operating recommendation.
 

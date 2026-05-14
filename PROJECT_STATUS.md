@@ -42,11 +42,9 @@ A reliable comparability gate should depend on factors such as:
 - invalid-order pressure;
 - repeated reporting windows.
 
-The current demo sample is still small.
+The current demo sample is still small. To avoid subjective regional classification, the project does not currently classify store locations into market-area types.
 
-To avoid subjective regional classification, the project does not currently classify store locations into market-area types. The existing `region_type` field remains weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
-
-A future 48-store version can revisit the comparability gate after more store data, more reporting windows, and stronger market-context fields are available.
+The existing `region_type` field remains weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule. A future 48-store version can revisit the comparability gate after more store data, more reporting windows, and stronger market-context fields are available.
 
 ## Current Validation Focus
 
@@ -55,6 +53,7 @@ Current validation focuses on:
 - data dictionary consistency;
 - Demo 1 output consistency;
 - Demo 2 output consistency;
+- Demo 2 scope-boundary consistency;
 - field-definition boundaries;
 - generated memory fact structure;
 - offline answer-boundary checks;
@@ -64,6 +63,9 @@ Current validation focuses on:
 
 Run the current implemented checks with:
 
-    python3 retail_ops/scripts/validate_retail_data_contract.py
-    python3 scripts/validate_demo2_retail_endpoint_boundary.py
-    python3 scripts/validate_project_consistency.py
+```bash
+python3 retail_ops/scripts/validate_retail_data_contract.py
+python3 eval/eval_retail_demo2_scope_boundary.py
+python3 scripts/validate_demo2_retail_endpoint_boundary.py
+python3 scripts/validate_project_consistency.py
+```

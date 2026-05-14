@@ -5,6 +5,8 @@
 --
 -- This SQL does not rank stores as better or worse.
 -- It derives same-period diagnostic fields and flags limits for cautious interpretation.
+-- The March 2026 date check is part of the Demo 2 fixture contract, not a reusable production SQL parameterization.
+
 -- Output ordering by region_type and store_type is for readability only.
 -- It is not a peer-grouping rule and does not make region_type a hard comparability gate.
 

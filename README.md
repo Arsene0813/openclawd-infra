@@ -148,6 +148,7 @@ The evaluations are scenario-based behavior checks. Their value is not proving t
 | Livestream memory evaluation | fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | current implemented cases pass |
 | Retail retrieval evaluation | Store A retail-memory retrieval and unsupported-scope refusal | 8/8 passed |
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage across diagnostic slots | 6/6 passed |
+| Retail Demo 2 scope-boundary evaluation | Demo 2 remains a row-level same-period diagnostic and does not expose future pairwise-gate schema | 5/5 passed |
 | Retail Demo 2 answer-boundary evaluation | activity-cost ratio, top-SKU share, search-entry comparison, promotion-transfer limits | 4/4 passed |
 | Retail data-contract validation | dictionary phrases, source/output headers, forbidden aliases, generated fact structure | passed |
 | Project consistency validation | current-scope files, Demo 2 boundary wording, stale future-work artifacts, endpoint claims | passed |
