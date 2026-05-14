@@ -4,6 +4,10 @@ This file records the current analytical experiments in the retail operations ex
 
 These experiments are not production experiments and not causal A/B tests. They are staged checks for whether selected Meituan backend metrics can be structured, traced, and discussed without losing metric definitions or evidence limits.
 
+## Planned Threshold Review
+
+The current Demo 2 thresholds used to create `comparison_limit_notes` are guardrail literals for this fixture-stage prototype. They are not estimated optimal cutoffs. When broader store coverage and repeated reporting windows are added, they should be reviewed with stability checks and simple sensitivity analysis before being used in a stronger pairwise comparability gate.
+
 ## Experiment 1: Store A Month-over-Month Diagnostic
 
 | Item | Content |

@@ -37,7 +37,7 @@ This demo does not use SQL to assign a fixed operating label to Store A.
 In this project, Meituan instant-retail stores are understood through a chain of operating conditions:
 
 ```text
-being seen -> being entered -> being ordered -> being selected again or maintaining market share
+being seen -> being entered -> being ordered -> being selected again or maintaining share
 ```
 
 Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are treated as operating levers inside this chain.

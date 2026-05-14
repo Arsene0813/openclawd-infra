@@ -67,7 +67,7 @@ Validation and evaluation files:
 - `eval/eval_retail_cases.json`
 - `eval/eval_retail_report.md`
 
-### Demo 2: Same-Period Cross-Store Comparability Diagnostic
+### Demo 2: Same-Period Cross-Store Diagnostic (B-F)
 
 Demo 2 extends the retail path from a single-store month-over-month diagnostic to a same-period cross-store diagnostic.
 
@@ -133,7 +133,7 @@ Memory facts preserve store-period evidence, observed values, confidence, and li
 
 Meituan instant-retail stores compete through a chain of operating conditions:
 
-    being seen -> being entered -> being ordered -> being selected again or maintaining market share
+    being seen -> being entered -> being ordered -> being selected again or maintaining share
 
 Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are treated as operating levers inside this chain.
 
@@ -187,7 +187,7 @@ The next technical step is not to force a premature pairwise gate. The next step
 
 ## Future Work: Comparability Gate
 
-The current implemented retail scope stops at Demo 2.
+Retail Demo 2 is the current implemented retail endpoint.
 
 A comparability gate is planned as future work. It should eventually help judge which stores can be compared, under what conditions, and what kind of operating action a comparison may support. This is not currently implemented as a finished demo because the sample is still limited.
 

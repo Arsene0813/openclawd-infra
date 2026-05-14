@@ -56,7 +56,7 @@ The next technical step is to judge whether two store-period records can be comp
 | Retail memory facts | Generated facts with observed values, source fields, source paths, supporting source paths, confidence, and limitations | Full 48-store automated decision system |
 | Evaluation | Scenario-based checks for supported answers, unsupported-scope refusal, and metric-boundary preservation | Broad LLM benchmark |
 
-The current implemented retail scope stops at Demo 2. A pairwise comparability gate is future work.
+Retail Demo 2 is the current implemented retail endpoint. A pairwise comparability gate remains the next planned stage.
 
 ---
 
@@ -229,7 +229,7 @@ This project demonstrates:
 
 - turning a real retail operating problem into a structured data problem;
 - preserving exact backend metric definitions instead of treating them as generic business metrics;
-- using SQL to make selected store-period records comparable at the diagnostic level;
+- using SQL to place selected store-period records under a shared diagnostic structure before stronger comparability claims are made;
 - converting diagnostic outputs into retrieval-facing memory facts;
 - preserving source fields, observed values, source paths, supporting source paths, confidence, and limitations;
 - testing whether answers qualify or refuse unsupported operating claims;

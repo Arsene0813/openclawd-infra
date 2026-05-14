@@ -14,6 +14,8 @@ The harder question is whether different store-period records can be compared at
 
 I built a staged local prototype around that problem. First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
 
+This retail path extends the earlier livestream memory-layer work. The same core mechanisms—typed facts, overwrite control, source-bounded retrieval, and scenario-based evaluation—are reused here, but the retail version adds a stricter metric dictionary, SQL-derived diagnostic fields, and `comparison_limit_notes`. That change matters because Meituan backend metrics have platform-specific meanings, so the system has to preserve definitions before it can support comparison or recommendation.
+
 The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. It does not yet implement a pairwise store-period comparability gate.
 
 That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.

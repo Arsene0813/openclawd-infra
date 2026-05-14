@@ -27,7 +27,7 @@ The project is designed around this operating chain:
 
 Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are treated as operating levers inside this chain. They are not treated as isolated goals.
 
-## Why the Comparability Gate Is Future Work
+## Scope Note
 
 A reliable comparability gate should depend on factors such as:
 

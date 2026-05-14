@@ -6,6 +6,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Maintainer note:
+# Required terms below are contract anchors, not writing templates.
+# They protect scope, file presence, and metric-boundary facts without forcing
+# repeated explanatory disclaimers across every Markdown file.
+
 
 REQUIRED_FILES = [
     "README.md",
@@ -14,6 +19,7 @@ REQUIRED_FILES = [
     "retail_ops/README.md",
     "retail_ops/ARCHITECTURE.md",
     "retail_ops/EXPERIMENT_RESULTS.md",
+    "retail_ops/EXPERIMENTS.md",
     "retail_ops/COMPARABILITY_GATE_V0.md",
     "retail_ops/FIELD_USAGE_REVIEW.md",
     "retail_ops/LINEAGE.md",
@@ -30,9 +36,9 @@ REQUIRED_FILES = [
 
 CURRENT_SCOPE_REQUIRED_TERMS = {
     "README.md": [
-        "The current implemented retail scope stops at Demo 2",
-        "Future Work: Comparability Gate",
-    ],
+    "Retail Demo 2",
+    "pairwise comparability gate",
+],
     "PROJECT_STATUS.md": [
         "Demo 1",
         "Demo 2",
@@ -211,6 +217,7 @@ def check_doc_overclaims(failures: list[str]) -> None:
         "retail_ops/README.md",
         "retail_ops/ARCHITECTURE.md",
         "retail_ops/EXPERIMENT_RESULTS.md",
+    "retail_ops/EXPERIMENTS.md",
         "retail_ops/COMPARABILITY_GATE_V0.md",
         "retail_ops/FIELD_USAGE_REVIEW.md",
     ]
