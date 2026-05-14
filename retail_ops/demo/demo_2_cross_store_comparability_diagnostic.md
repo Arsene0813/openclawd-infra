@@ -1,5 +1,14 @@
 # Demo 2: Same-Period Cross-Store Diagnostic
 
+<!-- stable-demo2-scope-boundary -->
+## Scope Boundary
+
+Demo 2 is a same-period cross-store diagnostic, not a pairwise comparability gate.
+
+`comparison_scope_flag` only means that a store-period row is ready for the current diagnostic structure. It does not mean that two stores are fully comparable for pricing, promotion, SKU, ranking, or strategy-transfer decisions.
+
+`comparison_limit_notes` records interpretation limits such as activity involvement, search-entry dependence, refund pressure, invalid-order pressure, and SKU concentration.
+
 Demo 2 organizes five same-period store-period records into a shared diagnostic structure.
 
 The purpose is to place selected Meituan backend metrics under the same reporting window and data contract, while preserving the limits that a later pairwise comparability gate would need to respect.
