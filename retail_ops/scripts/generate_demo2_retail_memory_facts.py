@@ -120,7 +120,7 @@ for row in comparability_rows:
         "same-period March 2026 comparison only",
         "traffic-source users may overlap",
         "not causal attribution",
-        "compare with region, store type, activity, refund, and order-quality limits",
+        "compare with region, store type, activity, refund, order-quality, and product-mix limits",
     ]
 
     facts.append(

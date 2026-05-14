@@ -1,33 +1,151 @@
 # Retail Operations Experiment Results
 
-These are review and evaluation cases, not causal experiments.
+These are implementation checks for a staged decision-support prototype. They are not causal business experiments and not broad LLM benchmarks.
 
-They test whether the prototype preserves evidence boundaries and avoids unsupported operating conclusions.
+Each record below follows the same structure: question, evidence path, expected behavior, and current result.
 
-## Current Implemented Results
+## Experiment 1: Store A Month-over-Month Diagnostic
 
-| Area | Status | Result type |
-|---|---|---|
-| Demo 1 | Implemented | Store A month-over-month diagnostic output. |
-| Demo 2 | Implemented | Stores B-F same-period cross-store diagnostic output. |
-| Comparability gate | Future work | Planned pairwise gate, not an implemented experiment result. |
+Question: Can selected Meituan backend metrics for one store be organized into a month-over-month diagnostic without changing the backend metric meanings?
 
-## What Demo 1 Shows
+Evidence path:
 
-Demo 1 shows that selected Meituan backend metrics can be organized into a month-over-month diagnostic for one store.
+- Source data: `retail_ops/data/store_a_monthly_metrics.csv`
+- SQL: `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
+- Output: `retail_ops/outputs/store_a_demo1_sql_output.csv`
+- Generated facts: `retail_ops/outputs/generated_retail_memory_facts.json`
 
-The purpose is not to attribute performance to a single metric. The purpose is to preserve field definitions, time windows, and interpretation limits.
+Expected behavior:
 
-## What Demo 2 Shows
+The output may describe observed month-over-month movement, but it should not attribute performance change to one metric alone.
 
-Demo 2 shows that selected same-period store rows can be structured for cross-store diagnostic review.
+Current result:
 
-The purpose is not to rank stores. The purpose is to make selected store-period rows easier to inspect under consistent metric definitions.
+Implemented. Included in:
 
-## Why the Comparability Gate Is Not Yet an Experiment Result
+    python3 retail_ops/scripts/validate_retail_data_contract.py
 
-A reliable future pairwise comparability gate should first decide whether stores can be compared at all.
+## Experiment 2: Demo 2 Same-Period Store Diagnostic
 
-That decision should depend on transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+Question: Can selected B-F store-period rows be placed under one March 2026 reporting window and one field contract before any stronger comparison is attempted?
 
-The current sample is still limited. To avoid subjective regional classification, the project does not currently classify store locations into market-area types. The existing `region_type` field remains weak context only.
+Evidence path:
+
+- Source data: `retail_ops/data/demo2_store_period_metrics.csv`
+- SQL: `retail_ops/sql/02_demo2_cross_store_comparability.sql`
+- Output: `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
+
+Expected behavior:
+
+The SQL output should include `comparison_scope_flag` and `comparison_limit_notes`, while staying at row-level same-period diagnostic scope.
+
+Current result:
+
+Implemented. Checked by:
+
+    python3 eval/eval_retail_demo2_scope_boundary.py
+
+Result path:
+
+    eval/results/eval_retail_demo2_scope_boundary_result.txt
+
+## Experiment 3: Demo 2 Memory-Fact Generation
+
+Question: Can the Demo 2 diagnostic output be converted into retrieval-facing memory facts without losing source fields, observed values, or limitation notes?
+
+Evidence path:
+
+- Generator: `retail_ops/scripts/generate_demo2_retail_memory_facts.py`
+- Generated facts: `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
+- Eval: `eval/eval_retail_demo2_facts.py`
+
+Expected behavior:
+
+Generated facts should preserve canonical field names and expose the main evidence slots:
+
+- `visibility_entry_profile`
+- `activity_lever_profile`
+- `transaction_conversion_profile`
+- `order_quality_pressure_profile`
+- `top3_sku_product_mix_note`
+- `single_metric_attribution_guard`
+
+Current result:
+
+Implemented. Checked by:
+
+    python3 eval/eval_retail_demo2_facts.py
+
+Result path:
+
+    eval/results/eval_retail_demo2_facts_result.txt
+
+## Experiment 4: Answer-Boundary Behavior
+
+Question: Can expected answer patterns preserve metric boundaries when Demo 2 evidence is used?
+
+Evidence path:
+
+- Eval: `eval/eval_retail_demo2_answer_behavior.py`
+- SQL output: `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
+- Generated facts: `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
+
+Expected behavior:
+
+The answer checks should preserve these boundaries:
+
+- `activity_cost_ratio_pct` is not traditional ROI or profit margin.
+- `top3_sku_transaction_amount_share_pct` is not full product-category sales share.
+- Search-entry evidence does not prove causal performance.
+- Activity evidence describes operating-tool usage, not automatic promotion-transfer logic.
+- `same_period_diagnostic_ready` is not a finished pairwise comparability decision.
+- `region_type` is weak context only.
+
+Current result:
+
+Implemented as offline scenario checks. Checked by:
+
+    python3 eval/eval_retail_demo2_answer_behavior.py
+
+Result path:
+
+    eval/results/eval_retail_demo2_answer_behavior_result.txt
+
+## Experiment 5: Future Comparability-Gate Contract
+
+Question: Can the project document a future pairwise comparability gate without accidentally exposing it as a finished current feature?
+
+Evidence path:
+
+- Design note: `retail_ops/COMPARABILITY_GATE_V0.md`
+- Eval: `eval/eval_future_comparability_gate_contract.py`
+
+Expected behavior:
+
+The future gate may define planned factors such as transaction order volume, transaction amount, activity status, activity intensity, store type, region and market context, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows. It should not appear as a current implemented gate in Demo 2 outputs.
+
+Current result:
+
+Contract documented as future work. Checked by:
+
+    python3 eval/eval_future_comparability_gate_contract.py
+
+## Experiment 6: Whole-Project Consistency Check
+
+Question: Do the current reviewer-facing documents, retail docs, scripts, and outputs remain consistent with the Demo 1 / Demo 2 scope?
+
+Evidence path:
+
+- Validator: `scripts/validate_project_consistency.py`
+- Data-contract validator: `retail_ops/scripts/validate_retail_data_contract.py`
+
+Expected behavior:
+
+The project should keep Demo 2 as the current implemented retail scope, keep the pairwise comparability gate as future work, and avoid stale or overclaimed wording.
+
+Current result:
+
+Checked by:
+
+    python3 retail_ops/scripts/validate_retail_data_contract.py
+    python3 scripts/validate_project_consistency.py

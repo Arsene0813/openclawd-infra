@@ -80,6 +80,18 @@ These factors affect whether two stores are actually comparable as operating cas
 
 The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
 
+## Activity Factor Boundary
+
+The future gate should not collapse activity evidence into a single yes/no label.
+
+| Activity factor | Current evidence | Current boundary |
+|---|---|---|
+| Activity status | Not directly implemented as a source field. | A future gate should not infer full campaign status only from `activity_orders > 0`. |
+| Activity involvement | `activity_orders`, `activity_order_share_pct` | Shows how much of the transaction-order structure involved activity orders; it does not prove activity caused demand. |
+| Activity intensity | `activity_cost`, `activity_cost_ratio_pct`, `merchant_subsidy_amount`, `platform_subsidy_amount` | Shows subsidy and cost structure, but not full campaign mechanism, competitor response, or activity calendar. |
+
+A future `activity_status` field should be added only if campaign-calendar or explicit backend activity-status evidence is available and documented in `retail_ops/data/DATA_DICTIONARY.md` and `retail_ops/LINEAGE.md`.
+
 ## Candidate Gate Factors
 
 | Future factor | Current evidence available | Current limitation | Future evidence needed |
