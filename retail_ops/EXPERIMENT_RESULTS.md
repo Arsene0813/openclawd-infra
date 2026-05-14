@@ -28,6 +28,6 @@ The purpose is not to rank stores. The purpose is to make selected store-period 
 
 A reliable future pairwise comparability gate should first decide whether stores can be compared at all.
 
-That decision should depend on transaction order volume, transaction amount, activity status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+That decision should depend on transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current sample is still limited. To avoid subjective regional classification, the project does not currently classify store locations into market-area types. The existing `region_type` field remains weak context only.

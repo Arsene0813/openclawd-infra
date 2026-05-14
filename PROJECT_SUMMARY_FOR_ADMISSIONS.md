@@ -10,7 +10,7 @@ Repository: `livestream-agent-memory-layer`
 
 This project grew out of a practical problem in Meituan instant-retail operations. The merchant backend gives many useful single-store metrics, but a multi-store operation needs another layer: deciding which store-period records can be inspected together, which metric definitions must stay fixed, and where a comparison should stop before it becomes unsupported advice.
 
-I built a staged local prototype around that problem. The metric dictionary keeps the original Meituan backend meanings for fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio. SQL then turns selected store-period records into diagnostic outputs, and generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into retrieval-facing checks.
+I built a staged local prototype around that problem. The metric dictionary keeps the original Meituan backend meanings for fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio. SQL then turns selected store-period records into diagnostic outputs, and generated memory facts carry the period, source fields, observed values, source paths, evidence-trace confidence, and limitations into retrieval-facing checks.
 
 The current repository implements two limited retail demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. The pairwise comparability gate remains future work, not a finished demo. That next stage should judge whether two store-period records can be compared for a specific operating question before suggesting whether a pricing, subsidy, SKU, ranking, or fulfillment action can transfer.
 
@@ -24,6 +24,8 @@ This retail path extends the earlier livestream memory-layer work in a limited, 
 
 
 ## Business Problem
+
+The current demos do not directly measure repeat purchase, customer cohorts, or long-term market share. Those are operating goals that motivate future data collection; the implemented evidence mainly covers visibility, entry, order, payment, activity, refund, invalid-order, and top-SKU signals.
 
 In Meituan instant retail, store competition plays out through a local operating chain:
 
@@ -83,7 +85,7 @@ Main file:
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, activity involvement, activity intensity based on existing activity fields, activity status, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current demo sample is still small. For that reason, store locations should not be classified by subjective experience, intuition, or habitual labels.
 

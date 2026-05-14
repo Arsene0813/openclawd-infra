@@ -64,6 +64,19 @@ These factors affect whether two stores are actually comparable as operating cas
 
 The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
 
+## Question-Specific Comparability
+
+The future gate should not produce one universal comparability score. Different operating questions need different evidence.
+
+| Operating question | Evidence that should matter |
+|---|---|
+| Pricing-pressure comparison | Transaction amount, transaction orders, average order value, activity involvement, explicit price-pressure or competitor evidence if available, and repeated windows. |
+| Promotion-transfer comparison | Activity orders, activity-order share, activity cost, merchant/platform subsidy split, campaign calendar if available, refund pressure, invalid-order pressure, and store type. |
+| SKU-structure comparison | Top-SKU transaction-amount evidence, sales-volume evidence, broader SKU classification if available, and repeated windows. |
+| Ranking or visibility comparison | Exposure users, exposure times, average rank, search exposure, search entry, entry conversion, and local competition context. |
+
+This is why Demo 2 currently stops at same-period diagnostic readiness. Pairwise comparability should be judged against the operating question, not from one row-level flag.
+
 ## Candidate Gate Factors
 
 | Future factor | Current evidence available | Current limitation | Future evidence needed |

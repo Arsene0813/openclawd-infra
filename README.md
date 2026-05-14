@@ -1,6 +1,8 @@
-# Lifecycle-Aware AI Memory Layer for Retail Decision Support
+# Meituan Instant-Retail Decision Support Prototype
 
 Repository: `livestream-agent-memory-layer`
+
+_Lifecycle-aware AI memory layer for retail decision support._
 
 This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from the Meituan merchant-backend UI used for these instant-retail store operations.
 
@@ -117,6 +119,8 @@ The purpose is not to label the store as simply good or bad. The purpose is to k
 ---
 
 ## Retail Demo 2: Same-Period B-F Diagnostic
+
+Scope line: In this repository, Demo 2 means same-period diagnostic evidence and guardrails; the pairwise comparability gate is future work.
 
 Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window.
 
@@ -261,6 +265,6 @@ Future work:
 
 - build a pairwise comparability gate;
 - decide whether two stores are comparable, comparable with limits, not comparable, or insufficiently supported;
-- include order volume, transaction amount, activity or promotion status, activity involvement and intensity based on existing activity fields, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
+- include order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
 - avoid subjective regional classification until broader store data and stronger market-context evidence are available;
 - preserve the same field contract and evaluation checks when expanding beyond the current sample.

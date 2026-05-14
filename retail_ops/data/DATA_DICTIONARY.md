@@ -26,6 +26,10 @@ Demo 2:
 
 Chinese Meituan backend labels are mapped to these implemented English field names.
 
+### Path / File-Name Terms vs Implemented Meaning
+
+Some current paths contain `cross_store_comparability` for reference stability. In the current implemented scope, `demo2_cross_store_*` paths mean Demo 2 same-period cross-store diagnostic artifacts. In those paths, `comparability` refers to diagnostic readiness and interpretation guardrails, not a pairwise store-matching gate. The planned pairwise gate is documented in `retail_ops/COMPARABILITY_GATE_V0.md` and is not implemented in current Demo 2 outputs. Any future path or field rename must go through the same field/path review table before implementation.
+
 Each Meituan backend metric is mapped to one canonical English field name in this project.
 
 If a field is ever renamed, the change must be documented with a migration note and updated consistently across CSV, SQL, SQL outputs, memory facts, lineage, README, admissions documents, and evaluation cases.
@@ -110,7 +114,7 @@ Pairwise comparability-gate fields are not currently implemented.
 
 The current implemented retail scope stops at Demo 2. A future comparability gate should only be added after broader multi-store evidence is available.
 
-Reliable store comparability should depend on transaction order volume, transaction amount, activity or promotion status, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+Reliable store comparability should depend on transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 At the current sample size, `region_type` remains weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
 

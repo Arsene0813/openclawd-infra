@@ -80,7 +80,7 @@ The current SQL and output file names remain unchanged.
 
 | Existing path | Reason to keep |
 |---|---|
-| `retail_ops/sql/02_demo2_cross_store_comparability.sql` | Already referenced by docs, outputs, and eval files. The file represents Demo 2 same-period diagnostic structure with comparability guardrails, not a finished pairwise gate. |
+| `retail_ops/sql/02_demo2_cross_store_comparability.sql` | Already referenced by docs, outputs, and eval files. The file represents Demo 2 same-period diagnostic structure with comparability guardrails, not a pairwise gate. |
 | `retail_ops/outputs/demo2_cross_store_comparability_output.csv` | Already used by generated Demo 2 memory facts and evaluations. |
 | `retail_ops/outputs/retail_data_contract_validation_result.txt` | Canonical saved validation output. |
 

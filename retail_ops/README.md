@@ -159,38 +159,12 @@ Saved validation output:
 
 - `retail_ops/outputs/retail_data_contract_validation_result.txt`
 
-## Future Comparability-Gate Design Notes
+## Current Boundary and Future Comparability Gate
 
-This folder includes three review documents for disciplined cross-store comparison:
+The current retail path is a staged decision-support prototype. Demo 1 and Demo 2 support cautious interpretation, but they do not support broad causal claims, full 48-store generalization, or store-stage diagnosis.
 
-- `retail_ops/FIELD_USAGE_REVIEW.md`
-- `retail_ops/COMPARABILITY_GATE_V0.md`
-- `retail_ops/EXPERIMENT_RESULTS.md`
+Retail Demo 2 is the current implemented retail endpoint. It is a same-period B-F cross-store diagnostic with generated retail memory facts, scope checks, and limitation notes. A pairwise comparability gate is future work.
 
-Their role is to keep field usage, comparison rules, and limitation-preserving answers explicit before expanding toward broader store coverage.
-
-`FIELD_USAGE_REVIEW.md` records the current decision not to rename existing fields before comparability-gate expansion.
-
-`COMPARABILITY_GATE_V0.md` records candidate future gate factors and the current non-implementation boundary.
-
-`EXPERIMENT_RESULTS.md` records review cases for limitation-preserving answers.
-
-## Current Boundary and Next Step
-
-The current retail path is a staged decision-support prototype.
-
-Promotion cycle dates are unknown in the current retail demos. Activity metrics are treated as operating-lever evidence, not as a clean intervention.
-
-Demo 1 and Demo 2 can support cautious interpretation, but they cannot support broad causal claims, full 48-store generalization, or store-stage diagnosis.
-
-The next technical step is not to force a premature pairwise gate. The next step is to add broader multi-store data and repeated reporting windows before implementing a comparability gate.
-
-## Future Work: Comparability Gate
-
-Retail Demo 2 is the current implemented retail endpoint.
-
-A comparability gate is planned as future work. It should eventually help judge which stores can be compared, under what conditions, and what kind of operating action a comparison may support. This is not currently implemented as a finished demo because the sample is still limited.
-
-Store comparability should depend on transaction order volume, transaction amount, activity status, activity involvement and intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The next technical step is to expand store-period coverage and repeated reporting windows before implementing that gate. A reliable gate should judge whether selected store-period records can be compared for a specific operating question, using transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 To avoid subjective regional classification, the current project treats `region_type` as weak context only. It is not a hard market-area classification or peer-store grouping rule.
