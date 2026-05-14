@@ -2,66 +2,70 @@
 
 Repository: `livestream-agent-memory-layer`
 
-_Lifecycle-aware AI memory layer for retail decision support._
+Lifecycle-aware AI memory layer for retail decision support.
 
-This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from the Meituan merchant-backend UI used for these instant-retail store operations.
+This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from Meituan merchant-backend metrics used in multi-store instant-retail operations.
 
-The merchant backend provides detailed single-store metrics, but it does not naturally answer cross-store decision questions. Once the operation expands across many stores, the harder problem is not collecting more metrics. The harder problem is deciding which stores can be compared, under what conditions they can be compared, and what kind of operating judgment the evidence can support.
+The merchant backend provides detailed single-store metrics, but it does not directly answer cross-store decision questions:
 
-This project turns that problem into a staged decision-support prototype:
+- which store-period records can be compared;
+- under what conditions they can be compared;
+- what kind of operating judgment the evidence can support;
+- where the system should stop before producing unsupported advice.
+
+The current prototype turns that problem into a staged decision-support workflow:
 
 1. preserve backend metric definitions;
 2. use SQL to structure selected store-period data;
 3. convert diagnostic evidence into memory facts with source fields, observed values, source paths, and limitations;
 4. test whether later answers stay inside the evidence boundary.
 
-The goal is not to let an LLM make operating decisions directly. The goal is to reduce unsupported comparisons and preserve the evidence behind each answer.
+The single source of truth for retail field names and metric meanings is:
 
----
+- `retail_ops/data/DATA_DICTIONARY.md`
 
 ## Fast Reading Path
 
 For an admissions or project review, read in this order:
 
-1. `PROJECT_SUMMARY_FOR_ADMISSIONS.md`
-   Short admissions-facing explanation of the project and why it matters.
+1. `PROJECT_SUMMARY_FOR_ADMISSIONS.md`  
+   Admissions-facing explanation of the real business problem and prototype scope.
 
-2. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
-   Current retail Demo 2: same-period B-F cross-store diagnostic.
-
-3. `retail_ops/data/DATA_DICTIONARY.md`
+2. `retail_ops/data/DATA_DICTIONARY.md`  
    Canonical Meituan-style backend metric definitions and field naming rules.
 
-4. `retail_ops/LINEAGE.md`
+3. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`  
+   Current retail Demo 2: same-period B-F diagnostic.
+
+4. `retail_ops/LINEAGE.md`  
    Source-to-SQL-to-memory lineage and interpretation limits.
 
-5. `retail_ops/EXPERIMENTS.md`
+5. `retail_ops/EXPERIMENTS.md`  
    Current analytical experiment map and failure modes.
 
-For implementation details, see `retail_ops/README.md`, `PROJECT_STATUS.md`, SQL files, scripts, generated outputs, and evaluation files.
+For implementation details, see:
 
----
+- `retail_ops/README.md`
+- `PROJECT_STATUS.md`
+- SQL files
+- scripts
+- generated outputs
+- evaluation files
 
 ## Current Implemented Scope
 
-<!-- stable-retail-scope-note -->
-Retail Demo 2 is the current same-period diagnostic endpoint.
-A pairwise comparability gate is future work.
+Retail Demo 2 is the current same-period diagnostic endpoint. A pairwise comparability gate is future work.
 
-The next technical step is to judge whether two store-period records can be compared for a specific operating question, using evidence such as order volume, transaction amount, activity involvement, store type, market context, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The current retail path does not claim that two stores are directly comparable for pricing, subsidy, SKU, ranking, or fulfillment decisions. It first structures selected store-period records under a shared reporting window and field contract.
 
 | Area | Implemented now | Current boundary |
 |---|---|---|
-| Livestream memory layer | Typed product facts, overwrite control, soft deactivation, active-state retrieval, fallback/refusal, scenario evaluation | General-purpose production agent memory platform |
-| Retail metric dictionary | Meituan-style backend metric definitions and naming boundaries | Automatic ingestion from Meituan backend |
-| Retail Demo 1 | Store A month-over-month diagnostic across February, March, and April 2026 | Causal explanation of monthly performance |
-| Retail Demo 2 | Same-period B-F diagnostic with scope and limitation checks | Pairwise store-period comparability gate, store ranking, or automatic strategy recommendation |
-| Retail memory facts | Generated facts with observed values, source fields, source paths, supporting source paths, confidence, and limitations | Full 48-store automated decision system |
-| Evaluation | Scenario-based checks for supported answers, unsupported-scope refusal, and metric-boundary preservation | Broad LLM benchmark |
-
-Retail Demo 2 is the current implemented retail endpoint. A pairwise comparability gate remains the next planned stage.
-
----
+| Livestream memory layer | Typed product facts, overwrite control, soft deactivation, active-state retrieval, fallback/refusal, scenario evaluation | Not a general-purpose production agent memory platform |
+| Retail metric dictionary | Meituan-style backend metric definitions and naming boundaries | Not automatic ingestion from Meituan backend |
+| Retail Demo 1 | Store A month-over-month diagnostic across February, March, and April 2026 | Not causal explanation of monthly performance |
+| Retail Demo 2 | Same-period B-F diagnostic with scope and limitation checks | Not a pairwise store-period comparability gate |
+| Retail memory facts | Generated facts with observed values, source fields, source paths, confidence, and limitations | Not a full 48-store automated decision system |
+| Evaluation | Scenario-based checks for supported answers, unsupported-scope refusal, and metric-boundary preservation | Not a broad LLM benchmark |
 
 ## Architecture
 
@@ -85,11 +89,11 @@ backend metrics / operator input
 
 The important design choice is that memory facts are not just summaries. They carry source fields, observed values, calculation notes, source paths, supporting source paths, confidence labels, and limitations.
 
----
-
 ## Implemented API and Retrieval Scope
 
-The local FastAPI prototype includes general chat, memory, and retrieval endpoints. The key implemented paths are:
+The local FastAPI prototype includes general chat, memory, and retrieval endpoints.
+
+The key implemented paths are:
 
 - `/health`
 - `/chat`
@@ -100,8 +104,6 @@ The local FastAPI prototype includes general chat, memory, and retrieval endpoin
 
 The retail endpoints are local prototype endpoints. Demo 2 currently uses file-backed generated retail memory facts; it is not a production Meituan API integration.
 
----
-
 ## Retail Demo 1: Store A Month-over-Month Diagnostic
 
 Demo 1 analyzes one self-operated Qingdao store across February, March, and April 2026.
@@ -110,21 +112,17 @@ It shows why operational performance should not be interpreted from one metric a
 
 Main file:
 
-```text
-retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md
-```
+- `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 
 The purpose is not to label the store as simply good or bad. The purpose is to keep month-over-month interpretation inside a documented evidence boundary.
 
----
-
 ## Retail Demo 2: Same-Period B-F Diagnostic
-
-Scope line: In this repository, Demo 2 means same-period diagnostic evidence and guardrails; the pairwise comparability gate is future work.
 
 Demo 2 analyzes five anonymized stores, B-F, over the same March 2026 reporting window.
 
-In this demo, comparability means row-level same-period diagnostic readiness. It does not mean pairwise store matching, store ranking, or strategy-transfer approval.
+In this repository, Demo 2 means same-period diagnostic evidence and guardrails. File paths that include `cross_store_comparability` are retained for reference stability and should be read through:
+
+- `retail_ops/data/DATA_DICTIONARY.md`
 
 Demo 2 includes:
 
@@ -139,13 +137,11 @@ Demo 2 includes:
 
 Main file:
 
-```text
-retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md
-```
+- `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
-The future pairwise comparability gate should build on this structure, but it is not currently implemented as a finished demo.
+Future pairwise comparability gate design:
 
----
+- `retail_ops/COMPARABILITY_GATE_V0.md`
 
 ## Evaluation Snapshot
 
@@ -155,15 +151,13 @@ The evaluations are scenario-based behavior checks. Their value is not proving t
 
 | Check | Scope | Result |
 |---|---|---:|
-| Livestream memory evaluation | fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | current implemented cases pass |
+| Livestream memory evaluation | Fact retrieval, overwrite behavior, entity separation, fallback/refusal, non-fact filtering | Current implemented cases pass |
 | Retail retrieval evaluation | Store A retail-memory retrieval and unsupported-scope refusal | 8/8 passed |
 | Retail Demo 2 facts evaluation | Store B-F generated fact coverage across diagnostic slots | 6/6 passed |
 | Retail Demo 2 scope-boundary evaluation | Demo 2 remains a row-level same-period diagnostic and does not expose future pairwise-gate schema | 5/5 passed |
-| Retail Demo 2 answer-boundary evaluation | activity-cost ratio, top-SKU share, search-entry comparison, promotion-transfer limits | 4/4 passed |
-| Retail data-contract validation | dictionary phrases, source/output headers, forbidden aliases, generated fact structure | passed |
-| Project consistency validation | current-scope files, Demo 2 boundary wording, stale future-work artifacts, endpoint claims | passed |
-
----
+| Retail Demo 2 answer-boundary evaluation | Activity-cost ratio, top-SKU share, search-entry comparison, promotion-transfer limits | 4/4 passed |
+| Retail data-contract validation | Dictionary phrases, source/output headers, forbidden aliases, generated fact structure | Passed |
+| Project consistency validation | Current-scope files, Demo 2 boundary wording, stale future-work artifacts, endpoint claims | Passed |
 
 ## Running the Project Locally
 
@@ -179,8 +173,6 @@ Minimum local run path:
 6. Rebuild the API after code changes with `docker compose up -d --build api`.
 
 The local setup uses FastAPI, Ollama, and Qdrant. The retail evidence files, SQL outputs, and evaluation scripts can also be reviewed without running the API.
-
----
 
 ## Reproduce Key Checks
 
@@ -208,13 +200,12 @@ Project consistency validation:
 python3 scripts/validate_project_consistency.py
 ```
 
-For the full local API setup with Docker Compose, Qdrant, Ollama, and FastAPI, see `PROJECT_STATUS.md` and `docker-compose.yml`.
+For the full local API setup with Docker Compose, Qdrant, Ollama, and FastAPI, see:
 
----
+- `PROJECT_STATUS.md`
+- `docker-compose.yml`
 
 ## Key Evidence Files
-
-Some historical paths still use `comparability` in the file name. In the current project scope, Demo 2 should be read according to `DATA_DICTIONARY.md` and the demo document: same-period diagnostic evidence plus guardrails, not a completed pairwise comparability decision.
 
 | File | Why it matters |
 |---|---|
@@ -227,8 +218,6 @@ Some historical paths still use `comparability` in the file name. In the current
 | `retail_ops/sql/` | SQL transformations for Demo 1 and Demo 2 |
 | `retail_ops/outputs/` | Generated diagnostic outputs and generated memory facts |
 | `eval/` | Scenario-based evaluation scripts and reports |
-
----
 
 ## What This Demonstrates
 
@@ -243,8 +232,6 @@ This project demonstrates:
 - defining future comparability requirements before strategy transfer.
 
 The strongest point of the project is not that it is a finished operating platform. The strongest point is that it makes the evidence boundary explicit before comparing stores or suggesting operating actions.
-
----
 
 ## Current Limitations
 
@@ -265,6 +252,6 @@ Future work:
 
 - build a pairwise comparability gate;
 - decide whether two stores are comparable, comparable with limits, not comparable, or insufficiently supported;
-- include order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
+- include order volume, transaction amount, current activity involvement and intensity, explicit activity status or campaign-calendar evidence if available, store type, market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows;
 - avoid subjective regional classification until broader store data and stronger market-context evidence are available;
 - preserve the same field contract and evaluation checks when expanding beyond the current sample.

@@ -1,23 +1,30 @@
-# Future Work: Comparability Gate
+# Future Work: Pairwise Comparability Gate
 
 This note records the next planned stage of the retail operations prototype.
 
-The current implemented retail scope stops at Demo 2:
+The current implemented retail scope stops at:
 
-- Demo 1: Store A month-over-month diagnostic.
-- Demo 2: Stores B-F same-period cross-store diagnostic structure.
+1. Demo 1: Store A month-over-month diagnostic.
+2. Demo 2: Stores B-F same-period diagnostic structure.
 
-The next stage is a pairwise comparability gate. It is documented here as future work, not as a finished demo.
+The next stage is a pairwise comparability gate. It is documented here as future work.
 
 ## Why This Gate Matters
 
 The Meituan merchant backend provides rich store-level data, but the workflow is mainly designed for reviewing one store at a time.
 
-For a 48-store operation, the harder problem is deciding which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
+For a 48-store operation, the harder problem is deciding:
+
+- which stores can be compared;
+- under what conditions they can be compared;
+- what kind of operating question the comparison can support;
+- what limitation should stop the system from giving unsupported advice.
 
 The gate should not answer which store is best.
 
-It should answer a narrower question: can these two store-period records be compared for this specific operating question, and what limitations should constrain the answer?
+It should answer a narrower question:
+
+- Can these two store-period records be compared for this specific operating question?
 
 ## Current Demo 2 Output vs Future Pairwise Gate
 
@@ -30,18 +37,27 @@ Current Demo 2 provides:
 - evidence about whether each store-period row is inside the current Demo 2 scope;
 - interpretation limits that should be preserved in later retrieval or analysis.
 
-The current `comparison_limit_notes` field covers only a limited subset of future gate factors. It does not yet encode transaction-volume bands, transaction-scale bands, competition context, repeated-window stability, or data-supported market-area classification.
+The current `comparison_limit_notes` field covers only a limited subset of future gate factors.
+
+It does not yet encode:
+
+- transaction-volume bands;
+- transaction-scale bands;
+- competition context;
+- repeated-window stability;
+- data-supported market-area classification;
+- pairwise strategy-transfer approval.
 
 ### Future Pairwise Comparability Gate
 
 A future pairwise comparability gate should provide:
 
 - pair-level decision for a specific comparison question;
-- input that identifies a reference store-period, a candidate store-period, and the operating question being asked;
+- input that identifies a reference store, a candidate store, and the operating question being asked;
 - output that explains whether the selected records can be compared;
 - supporting evidence and limiting factors.
 
-The current `comparison_scope_flag` should not be treated as a finished pairwise comparability decision.
+The current `comparison_scope_flag` should not be treated as a pairwise comparability decision.
 
 ## What Store Comparability Should Depend On
 
@@ -50,7 +66,7 @@ A reliable gate should consider at least:
 - transaction order volume;
 - transaction amount;
 - activity status;
-- activity involvement and possible activity status inferred from existing activity fields;
+- activity involvement;
 - activity intensity;
 - store type;
 - region and market context;
@@ -64,19 +80,6 @@ These factors affect whether two stores are actually comparable as operating cas
 
 The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
 
-## Question-Specific Comparability
-
-The future gate should not produce one universal comparability score. Different operating questions need different evidence.
-
-| Operating question | Evidence that should matter |
-|---|---|
-| Pricing-pressure comparison | Transaction amount, transaction orders, average order value, activity involvement, explicit price-pressure or competitor evidence if available, and repeated windows. |
-| Promotion-transfer comparison | Activity orders, activity-order share, activity cost, merchant/platform subsidy split, campaign calendar if available, refund pressure, invalid-order pressure, and store type. |
-| SKU-structure comparison | Top-SKU transaction-amount evidence, sales-volume evidence, broader SKU classification if available, and repeated windows. |
-| Ranking or visibility comparison | Exposure users, exposure times, average rank, search exposure, search entry, entry conversion, and local competition context. |
-
-This is why Demo 2 currently stops at same-period diagnostic readiness. Pairwise comparability should be judged against the operating question, not from one row-level flag.
-
 ## Candidate Gate Factors
 
 | Future factor | Current evidence available | Current limitation | Future evidence needed |
@@ -85,18 +88,28 @@ This is why Demo 2 currently stops at same-period diagnostic readiness. Pairwise
 | Order volume | `transaction_orders`, `valid_orders`, `invalid_orders` | One-period volume may be unstable. | Repeated order-volume bands. |
 | Transaction scale | `transaction_amount`, `average_order_value`, `estimated_income_proxy` | `estimated_income_proxy` is only a platform-displayed proxy. | Clearer income and cost evidence if available. |
 | Activity involvement | `activity_orders`, `activity_order_share_pct`, `activity_cost`, `activity_cost_ratio_pct`, `merchant_subsidy_amount`, `platform_subsidy_amount` | Promotion cycle dates, mechanism details, and exact activity calendar are not included. | Activity calendar, promotion type, and activity mechanism evidence. |
-| Activity intensity | `activity_order_share_pct`, `activity_cost_ratio_pct`, `activity_cost` | Current thresholds are diagnostic guardrails, not a finished transfer rule. | Repeated activity windows and stronger evidence on activity mechanism. |
+| Activity intensity | `activity_order_share_pct`, `activity_cost_ratio_pct`, `activity_cost` | Current thresholds are diagnostic guardrails, not a transfer rule. | Repeated activity windows and stronger evidence on activity mechanism. |
 | Store type | `store_type` | Store type alone does not prove comparability. | Broader sample by store type. |
 | Region and market context | `region_type` | Current demo sample is too small for reliable regional classification. | More store data, local consumption-level evidence, and competition-context evidence. |
 | Competition context | Not currently structured. | Local competitor density and price pressure are not included. | Competitor and local market evidence. |
 | SKU structure | Top-SKU transaction-amount and sales-volume evidence. | Top-SKU evidence is not full category-share analysis. | Broader SKU classification or category mapping. |
 | Refund pressure | `refund_amount`, `refund_pressure_pct`, `full_refund_orders`, `refund_orders_all_or_partial` | Refund amount is counted by refund-success date. | Cohort-level refund or refund-reason evidence if available. |
 | Invalid-order pressure | `valid_orders`, `invalid_orders`, `invalid_order_pressure_pct` | Cancellation reasons are not included. | Invalid-order reason categories. |
-| Data completeness | `comparison_scope_flag`, `comparison_limit_notes` | Current notes are diagnostic guardrails, not a finished gate. | Explicit pairwise decision output after broader data. |
+| Data completeness | `comparison_scope_flag`, `comparison_limit_notes` | Current notes are diagnostic guardrails, not a gate decision. | Explicit pairwise decision output after broader data. |
+
+## Why This Should Not Be a Single Score
+
+The future gate should not produce one global comparability score.
+
+A store pair may be comparable for search-entry structure but not comparable for promotion transfer, pricing pressure, SKU strategy, or fulfillment interpretation.
+
+The gate should return a decision only for the selected operating question.
 
 ## Current `region_type` Boundary
 
-The current demo sample is still small. Because of that, the project deliberately avoids subjective regional classification.
+The current demo sample is still small.
+
+Because of that, the project deliberately avoids subjective regional classification.
 
 The existing `region_type` field remains weak context only. It must not be used as:
 
@@ -106,35 +119,94 @@ The existing `region_type` field remains weak context only. It must not be used 
 - a substitute for local consumption-level evidence;
 - a substitute for competition-context evidence.
 
-A more reliable market-area classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, activity conditions, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+A more reliable market-area classification should wait until more store data is available and can be judged together with:
+
+- data comparability;
+- actual local consumption level;
+- competition environment;
+- activity conditions;
+- SKU structure;
+- refund pressure;
+- invalid-order pressure;
+- repeated reporting windows.
 
 The current project should not classify stores into city-center, county, community, mature-market, or immature-market groups based on intuition.
 
-## Future Gate Input Shape
+## Future Gate Input Triple
 
-A future comparability gate should take a narrow query shape:
+A future comparability gate should start from a narrow input triple:
 
 - `reference_store_id`
 - `candidate_store_id`
-- `period_start`
-- `period_end`
 - `comparison_question_type`
 
-These names describe a proposed future gate input shape. They are not current implemented data-contract fields.
+These names describe a proposed future gate contract. They are not current implemented data-contract fields.
 
-Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in `retail_ops/data/DATA_DICTIONARY.md` and linked through `retail_ops/LINEAGE.md`.
+Before any of them is used in CSV outputs, generated memory facts, or evaluation cases, the field must be documented in:
 
-## Future Gate Output Shape
+- `retail_ops/data/DATA_DICTIONARY.md`
+- `retail_ops/LINEAGE.md`
+
+## Future Gate Output Enum
+
+A future comparability gate should return `comparison_decision` as one of:
+
+- `comparable`
+- `comparable_with_limits`
+- `not_comparable`
+- `insufficient_evidence`
+
+This enum should be tied to the selected operating question, not to a global store ranking.
+
+## Future Gate Output Fields
 
 A future comparability gate should return:
 
-- `comparison_decision`: comparable, comparable with limits, not comparable, or insufficient evidence;
-- `supporting_fields`: canonical source fields and SQL-derived diagnostics used;
-- `blocking_or_limiting_factors`: period mismatch, activity intensity, store type, weak region context, refund pressure, invalid-order pressure, SKU evidence limits, missing competition context, or missing repeated reporting windows;
-- `allowed_interpretation`: what can be discussed;
-- `unsupported_interpretation`: what must not be claimed.
+- `comparison_decision`
+- `supporting_fields`
+- `blocking_or_limiting_factors`
+- `allowed_interpretation`
+- `unsupported_interpretation`
 
-The gate should not globally rank all stores. It should decide whether a selected pair can be compared for a selected operating question.
+The output should explain what can be discussed and what must not be claimed.
+
+## Blocking or Limiting Factors
+
+Expected blocking or limiting factors include:
+
+- period mismatch;
+- missing required fields;
+- low or unstable order volume;
+- transaction-scale mismatch;
+- activity involvement mismatch;
+- missing activity calendar;
+- store-type mismatch;
+- weak region context;
+- missing competition context;
+- SKU evidence limits;
+- refund pressure;
+- invalid-order pressure;
+- missing repeated reporting windows.
+
+## Future Eval Stub
+
+Before the pairwise gate is implemented, the project should keep a small offline eval stub that freezes the intended contract.
+
+The future gate should be tested around this input triple:
+
+- `reference_store_id`
+- `candidate_store_id`
+- `comparison_question_type`
+
+The future gate output should be tested against these result fields:
+
+- `comparison_decision`
+- `supporting_fields`
+- `blocking_or_limiting_factors`
+- `allowed_interpretation`
+- `unsupported_interpretation`
+
+The current eval stub should pass as a contract placeholder while confirming that the gate remains future work.
 
 ## Future Market-Context Fields
 
@@ -146,4 +218,6 @@ Possible future fields could include:
 - `market_area_type_source`
 - `market_area_type_confidence`
 
-These fields are not implemented in the current repository. They should only be added after they are documented in `retail_ops/data/DATA_DICTIONARY.md` and supported by broader evidence.
+These fields are not implemented in the current repository.
+
+They should only be added after they are documented in `retail_ops/data/DATA_DICTIONARY.md` and supported by broader evidence.

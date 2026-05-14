@@ -8,13 +8,29 @@ Repository: `livestream-agent-memory-layer`
 
 ## One-Minute Summary
 
-This project grew out of a practical problem in Meituan instant-retail operations. The merchant backend gives many useful single-store metrics, but a multi-store operation needs another layer: deciding which store-period records can be inspected together, which metric definitions must stay fixed, and where a comparison should stop before it becomes unsupported advice.
+This project grew out of a practical problem I met while working with Meituan instant-retail store data.
 
-I built a staged local prototype around that problem. The metric dictionary keeps the original Meituan backend meanings for fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio. SQL then turns selected store-period records into diagnostic outputs, and generated memory facts carry the period, source fields, observed values, source paths, evidence-trace confidence, and limitations into retrieval-facing checks.
+The merchant backend gives many useful single-store metrics, but a multi-store operation needs another layer: deciding which store-period records can be inspected together, which metric definitions must stay fixed, and where a comparison should stop before it becomes unsupported advice.
 
-The current repository implements two limited retail demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. The pairwise comparability gate remains future work, not a finished demo. That next stage should judge whether two store-period records can be compared for a specific operating question before suggesting whether a pricing, subsidy, SKU, ranking, or fulfillment action can transfer.
+I built a staged local prototype around that problem. I manually structure selected backend metrics, keep their original platform meanings in a metric dictionary, run SQL diagnostics over selected store-period records, and convert the diagnostic evidence into memory facts with source fields, observed values, source paths, confidence, and limitations.
 
-This retail path extends the earlier livestream memory-layer work in a limited, practical way:
+The current retail deliverable is a reviewable prototype with concrete files and checks:
+
+- `retail_ops/data/DATA_DICTIONARY.md` for canonical field names and metric definitions;
+- `retail_ops/sql/` for Demo 1 and Demo 2 diagnostic SQL;
+- `retail_ops/outputs/` for SQL outputs and generated retail memory facts;
+- `eval/` for scenario-based checks on fact coverage and answer boundaries.
+
+The current repository implements two limited retail demos:
+
+1. Store A month-over-month diagnosis.
+2. Stores B-F same-period diagnostic review.
+
+The pairwise comparability gate remains future work, not a finished demo. The next stage should judge whether two store-period records can be compared for a specific operating question before suggesting whether a pricing, subsidy, SKU, ranking, or fulfillment action can transfer.
+
+## How This Extends the Earlier Memory-Layer Work
+
+This retail path extends the earlier livestream memory-layer work in a limited, practical way.
 
 | Reused mechanism | Retail-specific addition | Still not implemented |
 |---|---|---|
@@ -22,25 +38,45 @@ This retail path extends the earlier livestream memory-layer work in a limited, 
 | Source-bounded retrieval | Store-period evidence with `comparison_limit_notes` | Pairwise comparability gate |
 | Scenario-based evaluation | Answer-boundary checks for metric misuse and strategy-transfer overreach | Automatic operating recommendations |
 
-
 ## Business Problem
 
-The current demos do not directly measure repeat purchase, customer cohorts, or long-term market share. Those are operating goals that motivate future data collection; the implemented evidence mainly covers visibility, entry, order, payment, activity, refund, invalid-order, and top-SKU signals.
+The current demos do not directly measure repeat purchase, customer cohorts, or long-term market share. Those are operating goals that motivate future data collection.
+
+The implemented evidence mainly covers:
+
+- visibility;
+- entry;
+- order;
+- payment;
+- activity;
+- refund;
+- invalid-order pressure;
+- top-SKU signals.
 
 In Meituan instant retail, store competition plays out through a local operating chain:
 
+```text
 being seen -> being entered -> being ordered -> being selected again or maintaining share
 
 | Operating step | Practical meaning |
 |---|---|
-| Being seen | The store or product can be discovered by consumers in a specific local context. |
-| Being entered | Exposure turns into store visits. |
-| Being ordered | Visits turn into submitted and paid orders. |
-| Being selected again or maintaining share | The store can sustain demand, trust, and local visibility over time. |
+| Being seen | Whether the store and products receive enough visibility through exposure, ranking, search, and listing positions. |
+| Being entered | Whether visibility turns into store visits or search-related visits. |
+| Being ordered | Whether visits turn into submitted and paid orders under current product, price, activity, and fulfillment conditions. |
+| Being selected again or maintaining share | The longer-term operating goal that motivates future data collection, but is not directly measured in the current demos. |
+```
 
-Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. Their meaning depends on the store state. A new store may need activity support to gain first exposure and first orders. A store under local price pressure may use pricing or subsidy tools to defend visibility and market share. A store with high search exposure can still underperform if entry quality, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
+Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. Their meaning depends on the store state.
 
-The decision-support question is: which store-period records can be compared, for which operating question, under which metric definitions and limitations?
+A new store may need activity support to gain first exposure and first orders. A store under local price pressure may use pricing or subsidy tools to defend visibility and market share. A store with high search exposure can still underperform if entry quality, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
+
+The decision-support question is:
+
+```text
+which store-period records can be compared,
+for which operating question,
+under which metric definitions and limitations?
+```
 
 ## Technical Approach
 
@@ -61,9 +97,11 @@ The memory layer is not used to make final decisions. It is used to remember wha
 
 ### Demo 1: Store A Month-over-Month Diagnostic
 
-Demo 1 analyzes Store A across February, March, and April 2026. It shows why one metric alone is not enough.
+Demo 1 analyzes Store A across February, March, and April 2026.
 
-For example, April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. Refund pressure and invalid-order pressure improved at the same time. The purpose is to preserve a careful operating profile, not to label a month as simply good or bad.
+It shows why one metric alone is not enough. For example, April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. Refund pressure and invalid-order pressure improved at the same time.
+
+The purpose is to preserve a careful operating profile, not to label a month as simply good or bad.
 
 Main file:
 
@@ -85,7 +123,19 @@ Main file:
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider:
+
+- transaction order volume;
+- transaction amount;
+- current activity involvement and intensity;
+- explicit activity status or campaign-calendar evidence if available;
+- store type;
+- region and market context;
+- competition environment;
+- SKU structure;
+- refund pressure;
+- invalid-order pressure;
+- repeated reporting windows.
 
 The current demo sample is still small. For that reason, store locations should not be classified by subjective experience, intuition, or habitual labels.
 
@@ -93,7 +143,9 @@ Taking `region_type` as an example, the current project does not use it to decid
 
 ## Field Contract Examples
 
-The project keeps field names consistent with `retail_ops/data/DATA_DICTIONARY.md`.
+The project keeps field names consistent with:
+
+- `retail_ops/data/DATA_DICTIONARY.md`
 
 | Field | Boundary |
 |---|---|

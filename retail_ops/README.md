@@ -4,13 +4,15 @@ This folder contains the retail-operations evidence layer for a Meituan instant-
 
 It starts from a practical multi-store problem: the Meituan merchant backend provides detailed single-store metrics, but it does not directly answer which store-period records can be compared, under what conditions, and what kind of operating judgment the comparison can support.
 
-## Folder Scope
+The single source of truth for field names and metric meanings is:
 
-This folder contains the retail evidence layer.
+- `retail_ops/data/DATA_DICTIONARY.md`
+
+## Folder Scope
 
 | Component | Purpose |
 |---|---|
-| `data/` | Selected Meituan-style source tables and metric definitions. |
+| `data/` | Selected Meituan-style source tables, source notes, and metric definitions. |
 | `sql/` | Diagnostic SQL for Demo 1 and Demo 2. |
 | `outputs/` | Generated SQL outputs, validation results, and memory facts. |
 | `scripts/` | Local validation, generation, and loading scripts. |
@@ -29,6 +31,7 @@ For a quick review of the retail extension, read these files in order:
 1. `retail_ops/data/DATA_DICTIONARY.md`
 2. `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 3. `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
+4. `retail_ops/COMPARABILITY_GATE_V0.md`
 
 This path shows the movement from metric definitions, to single-store diagnosis, to same-period cross-store diagnostic structure, and toward a future pairwise comparability-gate design.
 
@@ -67,7 +70,7 @@ Validation and evaluation files:
 - `eval/eval_retail_cases.json`
 - `eval/eval_retail_report.md`
 
-### Demo 2: Same-Period Cross-Store Diagnostic (B-F)
+### Demo 2: Same-Period Cross-Store Diagnostic
 
 Demo 2 extends the retail path from a single-store month-over-month diagnostic to a same-period cross-store diagnostic.
 
@@ -76,6 +79,27 @@ It uses five anonymized stores, B-F, all from the same reporting window:
 - 2026-03-01 to 2026-03-31
 
 Demo 2 structures selected backend metrics under the same reporting window and field contract, derives cautious diagnostic signals, and preserves interpretation limits before any operating recommendation is made.
+
+Current Demo 2 scope:
+
+- same-period diagnostic structure;
+- selected store-period metrics;
+- selected top search-term evidence;
+- selected top-SKU evidence;
+- SQL-derived diagnostic fields;
+- generated retail memory facts;
+- evaluation checks for metric-boundary preservation.
+
+Current Demo 2 boundary:
+
+- not an implemented pairwise comparison decision system;
+- not a store ranking;
+- not a strategy-transfer approval system;
+- not a full 48-store automated operating platform.
+
+Main file:
+
+- `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
 Core supporting files:
 
@@ -88,83 +112,55 @@ Core supporting files:
 - `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
 - `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
 
-Validation and evaluation files:
+## Script Notes
 
-- `retail_ops/scripts/validate_demo2_staging_data.py`
-- `retail_ops/scripts/validate_demo2_comparability_output.py`
-- `retail_ops/scripts/generate_demo2_retail_memory_facts.py`
-- `retail_ops/scripts/validate_demo2_retail_memory_facts.py`
-- `eval/eval_retail_demo2_facts.py`
-- `eval/results/eval_retail_demo2_facts_result.txt`
-- `eval/eval_retail_demo2_scope_boundary.py`
-- `eval/results/eval_retail_demo2_scope_boundary_result.txt`
-- `eval/eval_retail_demo2_answer_behavior.py`
-- `eval/results/eval_retail_demo2_answer_behavior_result.txt`
-
-Demo 2 currently uses file-backed generated retail memory facts through a local prototype endpoint. It is not a production Meituan API integration.
+| Script | Meaning |
+|---|---|
+| `retail_ops/scripts/validate_demo2_staging_data.py` | Validates Demo 2 source-table structure. |
+| `retail_ops/scripts/validate_demo2_comparability_output.py` | Validates the Demo 2 diagnostic output contract, not a pairwise gate. |
+| `retail_ops/scripts/generate_demo2_retail_memory_facts.py` | Converts Demo 2 diagnostic output into generated retail memory facts. |
+| `retail_ops/scripts/validate_demo2_retail_memory_facts.py` | Validates generated Demo 2 retail memory fact structure. |
+| `retail_ops/scripts/validate_retail_data_contract.py` | Checks retail field-contract consistency across dictionary, source, output, and facts. |
 
 ## Implemented Retail Path
 
-The current retail path is intentionally staged:
+The implemented path is:
 
-    Meituan-style backend metrics
-    -> DATA_DICTIONARY.md metric definitions
-    -> canonical CSV fields
-    -> SQL diagnostics
-    -> SQL-derived output tables
-    -> generated retail memory facts
-    -> data-contract validation
-    -> retrieval or offline evaluation
-    -> cautious answer, qualified comparison, or refusal
+```text
+selected Meituan backend metrics
+-> canonical field dictionary
+-> SQL diagnostic output
+-> generated memory facts
+-> scenario-based evaluation
+-> boundary-preserving retrieval answer
+```
 
-This now includes:
+The project deliberately keeps source fields, observed values, calculation notes, source paths, supporting source paths, confidence labels, and limitations with the facts.
 
-1. a Store A month-over-month diagnostic;
-2. a same-period B-F cross-store diagnostic;
-3. a future comparability gate after broader multi-store data is available.
+This is what prevents a later answer from treating one metric as a complete operating conclusion.
 
-## Readable Architecture
+## Future Work: Pairwise Comparability Gate
 
-Meituan backend screenshots or exports are organized into canonical CSV fields based on `DATA_DICTIONARY.md`. SQL diagnostics then create ratios, shares, pressure indicators, and comparison-scope notes.
+The next planned stage is a pairwise comparability gate.
 
-Memory facts preserve store-period evidence, observed values, confidence, and limitations. Retrieval and evaluation check whether later answers stay inside the supported evidence boundary.
+It should judge whether two selected store-period records can be compared for a specific operating question.
 
-## Key Design Principle
+The gate should consider:
 
-Meituan instant-retail stores compete through a chain of operating conditions:
+- order volume;
+- transaction amount;
+- activity involvement and activity intensity;
+- explicit activity status or campaign-calendar evidence if available;
+- store type;
+- region and market context;
+- competition environment;
+- SKU structure;
+- refund pressure;
+- invalid-order pressure;
+- repeated reporting windows.
 
-    being seen -> being entered -> being ordered -> being selected again or maintaining share
+The current `region_type` field remains weak context only. It should not be used as a hard market-area classification or peer-grouping rule without broader store data and stronger local market evidence.
 
-Promotion, subsidy, price adjustment, SKU mix, ranking position, and fulfillment quality are treated as operating levers inside this chain.
+Future gate design note:
 
-Short-term activity-cost efficiency is not always the primary target. A new store may need subsidy to gain exposure and first orders. A store under external price pressure may need pricing or activity tools to defend visibility and market share. A store with enough traffic but weak conversion requires a different interpretation from a store with order growth but refund pressure.
-
-## Data Contract and Metric Consistency
-
-The retail demo uses `DATA_DICTIONARY.md` as the metric definition layer and `LINEAGE.md` as the claim-to-field lineage layer.
-
-The validation script checks that:
-
-- required current-scope files exist;
-- canonical dictionary boundary phrases are preserved;
-- Demo 1 and Demo 2 outputs expose required headers;
-- forbidden alias fields are not reintroduced;
-- generated memory fact files keep expected structure, source paths, and known source fields.
-
-Main validation file:
-
-- `retail_ops/scripts/validate_retail_data_contract.py`
-
-Saved validation output:
-
-- `retail_ops/outputs/retail_data_contract_validation_result.txt`
-
-## Current Boundary and Future Comparability Gate
-
-The current retail path is a staged decision-support prototype. Demo 1 and Demo 2 support cautious interpretation, but they do not support broad causal claims, full 48-store generalization, or store-stage diagnosis.
-
-Retail Demo 2 is the current implemented retail endpoint. It is a same-period B-F cross-store diagnostic with generated retail memory facts, scope checks, and limitation notes. A pairwise comparability gate is future work.
-
-The next technical step is to expand store-period coverage and repeated reporting windows before implementing that gate. A reliable gate should judge whether selected store-period records can be compared for a specific operating question, using transaction order volume, transaction amount, current activity involvement and intensity based on existing activity fields, explicit activity status or campaign-calendar evidence if available, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
-
-To avoid subjective regional classification, the current project treats `region_type` as weak context only. It is not a hard market-area classification or peer-store grouping rule.
+- `retail_ops/COMPARABILITY_GATE_V0.md`
