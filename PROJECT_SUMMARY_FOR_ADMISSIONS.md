@@ -6,9 +6,28 @@ Meituan Instant-Retail Decision Support Prototype
 
 Repository: `livestream-agent-memory-layer`
 
-## One-Minute Summary
+## Project Summary
 
-This project came from a real operating problem in Meituan instant retail. The merchant backend gives detailed store-level metrics, but it is mainly designed for reviewing one store at a time. Once the operation grows across many stores, the harder problem is not simply reading more numbers. The harder problem is deciding which store-period records can be compared, under which metric definitions, and for what kind of operating question.
+This project grew from a real operational problem in a 48-store Meituan instant-retail business.
+
+Although the Meituan merchant backend provides extensive operational metrics, the platform is fundamentally designed for single-store monitoring rather than cross-store comparative analysis. As store count increased, the marginal value of further optimizing isolated store-level metrics began to decline.
+
+At the current stage of the business, a more valuable problem is understanding why certain stores consistently outperform others, and whether those operational advantages are transferable.
+
+The central challenge is comparability:
+
+Which stores can be meaningfully compared?
+Under what operational conditions are comparisons valid?
+Which observed differences reflect actionable operational patterns rather than environmental noise?
+
+This project explores a possible framework for combining data science methods and AI-assisted reasoning systems to:
+
+experiment with comparability analysis across stores and operating periods,
+preserve metric semantics and operational context,
+investigate whether operational patterns from high-performing stores may be transferable,
+and support scalable decision-making for future business expansion.
+
+The long-term goal is not merely improving individual store metrics, but building a decision-support framework capable of discovering repeatable operational patterns that can support large-scale replication of the business model.
 
 I built a staged local prototype around that problem. The current implementation manually structures selected Meituan backend metrics, preserves their platform-specific meanings in `retail_ops/data/DATA_DICTIONARY.md`, uses SQL to generate limited diagnostic outputs, and converts diagnostic evidence into memory facts with source fields, observed values, source paths, confidence, and limitations.
 
@@ -79,7 +98,7 @@ Main file:
 
 The current demo sample is too small to support a reliable regional or market-area classification.
 
-For that reason, the project deliberately avoids classifying store locations by subjective experience, intuition, address impression, or habitual labels. Taking `region_type` as the example, the current project keeps it only as weak region or market-context evidence. It must not be treated as a mature market-area type, a store-stage label, or a hard peer-grouping rule.
+For that reason, the project deliberately avoids classifying store locations by subjective experience, intuition, address impression, or habitual labels. Taking `region_type` as the example, the current project keeps it only as weak contextual signals rather than definitive grouping labels.
 
 A more reliable market-area classification should wait until more store data and more reporting windows are available. It should be judged together with data comparability, actual local consumption level, competition environment, activity conditions, SKU structure, refund pressure, invalid-order pressure, and other operating evidence.
 
@@ -139,4 +158,4 @@ Current implemented scope:
 - causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
 - full SKU category classification across the catalogue is not implemented.
 
-At this stage, the repository should be read as a finished demo with clear scope boundaries: it shows how detailed single-store backend metrics can be reorganized into a cautious, traceable, and testable decision-support prototype for multi-store comparison.
+At this stage, the repository should be read as a staged prototype with clear scope boundaries: it shows how selected single-store backend metrics can be reorganized into a cautious, traceable, and testable decision-support workflow for future multi-store comparison.
