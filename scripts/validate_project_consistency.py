@@ -295,7 +295,7 @@ def main() -> int:
         return 1
 
     print("[PASS] Project consistency validation passed.")
-    print("[PASS] Current implemented retail scope stops at Demo 2.")
+    print("[PASS] Retail Demo 2 is the current same-period diagnostic endpoint.")
     print("[PASS] Local retail endpoints exist in api/main.py.")
     print("[PASS] Demo 2 is documented as file-backed/local evidence.")
     print("[PASS] Comparability gate is documented as future work.")

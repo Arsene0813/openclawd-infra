@@ -169,7 +169,7 @@ Interpretation limit: ranking change should be read together with exposure, entr
 Interpretation limit: these boolean fields are not canonical memory slots and must not be treated as store-stage labels. They only support broader memory slots such as `transaction_conversion_profile` and `order_quality_pressure_profile`.
 
 
-## Demo 2 Cross-Store Comparability Diagnostic Fields
+## Demo 2 Same-Period Diagnostic Guardrail Fields
 
 The following fields are SQL-derived diagnostic fields used in Demo 2. They are not Meituan backend metrics and must not be interpreted as store-stage labels, best-store rankings, or operating recommendations.
 

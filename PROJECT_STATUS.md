@@ -19,7 +19,7 @@ The current repository does not claim to solve the full 48-store comparison prob
 It shows the first two implemented steps:
 
 1. convert selected Meituan backend metrics into structured store-period diagnostics;
-2. compare selected same-period store rows with explicit field definitions and interpretation limits.
+2. place selected same-period store rows under one diagnostic structure, with explicit field definitions and interpretation limits.
 
 The project is designed around this operating chain:
 

@@ -43,7 +43,8 @@ For implementation details, see `retail_ops/README.md`, `PROJECT_STATUS.md`, SQL
 ## Current Implemented Scope
 
 <!-- stable-retail-scope-note -->
-The current retail implementation stops at Demo 2: a same-period B-F cross-store diagnostic. It does not yet implement pairwise store-period comparability decisions, store ranking, or automatic strategy-transfer logic.
+Retail Demo 2 is the current same-period diagnostic endpoint.
+A pairwise comparability gate is future work.
 
 The next technical step is to judge whether two store-period records can be compared for a specific operating question, using evidence such as order volume, transaction amount, activity involvement, store type, market context, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
@@ -208,6 +209,8 @@ For the full local API setup with Docker Compose, Qdrant, Ollama, and FastAPI, s
 ---
 
 ## Key Evidence Files
+
+Some historical paths still use `comparability` in the file name. In the current project scope, Demo 2 should be read according to `DATA_DICTIONARY.md` and the demo document: same-period diagnostic evidence plus guardrails, not a completed pairwise comparability decision.
 
 | File | Why it matters |
 |---|---|
