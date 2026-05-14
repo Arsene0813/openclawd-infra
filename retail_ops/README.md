@@ -150,9 +150,9 @@ scenario-based evaluation
 boundary-preserving retrieval answer
 ```
 
-The project deliberately keeps source fields, observed values, calculation notes, source paths, supporting source paths, confidence labels, and limitations with the facts.
+The pipeline deliberately preserves source fields, observed values, calculation notes, source lineage, confidence labels, and interpretation limitations alongside generated facts.
 
-This is what prevents a later answer from treating one metric as a complete operating conclusion.
+This reduces the risk of later retrieval or reasoning stages treating isolated metrics as complete operating conclusions.
 
 ## Future Work: Pairwise Comparability Gate
 
