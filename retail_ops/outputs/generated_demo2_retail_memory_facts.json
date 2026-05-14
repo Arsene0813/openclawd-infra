@@ -75,7 +75,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
@@ -121,11 +121,11 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "activity mechanism details are not included",
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
-      "short-term ROI may not be the primary target in every operating stage"
+      "activity-cost ratio is a platform-defined activity cost divided by activity original transaction amount; operating interpretation should consider visibility, market-share defense, store stage, and local competition."
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -179,7 +179,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "estimated_income_proxy is platform-displayed and not audited profit",
       "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
@@ -227,7 +227,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "refund amount is counted by refund-success date",
       "not an exact original-order cohort refund rate",
       "invalid order reason is not included"
@@ -342,7 +342,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
@@ -427,7 +427,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
@@ -473,11 +473,11 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "activity mechanism details are not included",
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
-      "short-term ROI may not be the primary target in every operating stage"
+      "activity-cost ratio is a platform-defined activity cost divided by activity original transaction amount; operating interpretation should consider visibility, market-share defense, store stage, and local competition."
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -531,7 +531,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "estimated_income_proxy is platform-displayed and not audited profit",
       "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
@@ -579,7 +579,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "refund amount is counted by refund-success date",
       "not an exact original-order cohort refund rate",
       "invalid order reason is not included"
@@ -694,711 +694,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
-      "same-period March 2026 comparison only",
-      "traffic-source users may overlap",
-      "not causal attribution",
-      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_E",
-    "slot": "visibility_entry_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store E's March 2026 visibility and entry profile can be described from exposure, rank, entry, and search-entry metrics. The record supports cautious comparison of whether the store was being seen and entered, but it does not prove causal performance differences.",
-    "observed_values": {
-      "region_type": "Yantai",
-      "store_type": "partner",
-      "exposure_users": 3347,
-      "exposure_times": 15667,
-      "store_average_rank": 14.0,
-      "entry_users": 408,
-      "entry_times": 1400,
-      "entry_conversion_rate_pct": 12.19,
-      "search_exposure_users": 2784,
-      "search_average_rank": 13.0,
-      "search_entry_users": 355,
-      "search_entry_rate_pct": 12.75,
-      "search_entry_share_pct": 87.01,
-      "top_search_terms": [
-        {
-          "search_term": "隐形眼镜护理液",
-          "search_term_en": "contact lens care solution",
-          "search_term_exposure_times": 412,
-          "search_term_click_times": 42,
-          "search_term_order_times": 17
-        },
-        {
-          "search_term": "护理液",
-          "search_term_en": "care solution",
-          "search_term_exposure_times": 93,
-          "search_term_click_times": 3,
-          "search_term_order_times": 1
-        },
-        {
-          "search_term": "美瞳护理液",
-          "search_term_en": "colored contact lens care solution",
-          "search_term_exposure_times": 59,
-          "search_term_click_times": 6,
-          "search_term_order_times": 4
-        }
-      ]
-    },
-    "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
-    "source_fields": [
-      "region_type",
-      "store_type",
-      "exposure_users",
-      "exposure_times",
-      "store_average_rank",
-      "entry_users",
-      "entry_times",
-      "entry_conversion_rate_pct",
-      "search_exposure_users",
-      "search_average_rank",
-      "search_entry_users",
-      "search_entry_rate_pct",
-      "search_entry_share_pct",
-      "search_term",
-      "search_term_en",
-      "search_term_exposure_times",
-      "search_term_click_times",
-      "search_term_order_times"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-      "retail_ops/data/demo2_top_search_terms.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "same-period March 2026 comparison only",
-      "traffic-source users may overlap",
-      "not causal attribution",
-      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_E",
-    "slot": "activity_lever_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store E's March 2026 activity metrics describe activity involvement and subsidy cost structure. These metrics should be treated as operating-tool evidence, not as proof that activity caused the store's result.",
-    "observed_values": {
-      "activity_original_transaction_amount": 5365.63,
-      "activity_orders": 109,
-      "transaction_orders": 158,
-      "activity_cost": 1576.26,
-      "merchant_subsidy_amount": 1542.26,
-      "platform_subsidy_amount": 34.0,
-      "activity_cost_ratio_pct": 29.38,
-      "activity_order_share_pct": 68.99
-    },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
-    "source_fields": [
-      "activity_original_transaction_amount",
-      "activity_orders",
-      "transaction_orders",
-      "activity_cost",
-      "merchant_subsidy_amount",
-      "platform_subsidy_amount",
-      "activity_cost_ratio_pct",
-      "activity_order_share_pct"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "activity mechanism details are not included",
-      "promotion cycle dates are unknown",
-      "activity metrics describe tool usage, not causal proof",
-      "short-term ROI may not be the primary target in every operating stage"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_E",
-    "slot": "transaction_conversion_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store E's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
-    "observed_values": {
-      "transaction_amount": 5784.87,
-      "transaction_orders": 158,
-      "average_order_value": 36.61,
-      "estimated_income_proxy": 5337.95,
-      "order_users": 161,
-      "order_times": 185,
-      "order_conversion_rate_pct": 39.46,
-      "order_amount": 6828.37,
-      "payment_users": 159,
-      "payment_amount": 6693.27,
-      "payment_conversion_rate_pct": 98.76,
-      "entry_users": 408,
-      "valid_orders": 155,
-      "invalid_orders": 25
-    },
-    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
-    "source_fields": [
-      "transaction_amount",
-      "transaction_orders",
-      "average_order_value",
-      "estimated_income_proxy",
-      "order_users",
-      "order_times",
-      "order_conversion_rate_pct",
-      "order_amount",
-      "payment_users",
-      "payment_amount",
-      "payment_conversion_rate_pct",
-      "entry_users",
-      "valid_orders",
-      "invalid_orders"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "same-period March 2026 comparison only",
-      "estimated_income_proxy is platform-displayed and not audited profit",
-      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
-      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_E",
-    "slot": "order_quality_pressure_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store E's March 2026 refund and invalid-order metrics provide order-quality pressure signals. They should constrain direct performance comparison when refund or invalid-order pressure is elevated.",
-    "observed_values": {
-      "refund_amount": 1105.05,
-      "transaction_amount": 5784.87,
-      "refund_pressure_pct": 19.1,
-      "valid_orders": 155,
-      "invalid_orders": 25,
-      "transaction_orders": 158,
-      "invalid_order_pressure_pct": 13.89,
-      "full_refund_orders": 25,
-      "refund_orders_all_or_partial": 29
-    },
-    "calculation": "refund_pressure_pct = refund_amount / transaction_amount * 100; invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100",
-    "source_fields": [
-      "refund_amount",
-      "transaction_amount",
-      "refund_pressure_pct",
-      "valid_orders",
-      "invalid_orders",
-      "transaction_orders",
-      "invalid_order_pressure_pct",
-      "full_refund_orders",
-      "refund_orders_all_or_partial"
-    ],
-    "confidence": "medium",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "refund amount is counted by refund-success date",
-      "not an exact original-order cohort refund rate",
-      "invalid order reason is not included"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_E",
-    "slot": "top3_sku_product_mix_note",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store E's March 2026 top-3 SKU transaction-amount evidence is retained as lightweight product-mix evidence. It should not be treated as full SKU category-share analysis.",
-    "observed_values": {
-      "top3_sku_transaction_amount": 726.25,
-      "transaction_amount": 5784.87,
-      "top3_sku_transaction_amount_share_pct": 12.55,
-      "top_skus_by_transaction_amount": [
-        {
-          "sku_name": "（海俪恩）隐形眼镜多功能护理液（清润）（舒适型）120ml/瓶/盒",
-          "sku_name_en": "Hailien Qingrun comfort-type multi-purpose contact lens solution, 120ml bottle/box",
-          "sku_transaction_amount": 256.97
-        },
-        {
-          "sku_name": "（爱尔康）隐形眼镜多功能护理液（傲滴）120ml/瓶/盒",
-          "sku_name_en": "Alcon Aodi multi-purpose contact lens solution, 120ml bottle/box",
-          "sku_transaction_amount": 243.78
-        },
-        {
-          "sku_name": "（博士伦）隐形眼镜多功能护理液（300ml/瓶+120ml/瓶）/盒",
-          "sku_name_en": "Bausch + Lomb multi-purpose contact lens solution set, 300ml bottle + 120ml bottle/box",
-          "sku_transaction_amount": 225.5
-        }
-      ]
-    },
-    "calculation": "top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100",
-    "source_fields": [
-      "sku_name",
-      "sku_name_en",
-      "sku_transaction_amount",
-      "transaction_amount",
-      "top3_sku_transaction_amount",
-      "top3_sku_transaction_amount_share_pct",
-      "sku_category_note"
-    ],
-    "confidence": "medium",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-      "retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "top-3 SKU evidence only",
-      "not full SKU category-share analysis",
-      "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values",
-      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_E",
-    "slot": "single_metric_attribution_guard",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store E's March 2026 metrics should not be interpreted from a single metric alone. The comparison scope is same_period_diagnostic_ready, with limit notes: high_search_entry_dependence; moderate_activity_involvement; high_refund_pressure; high_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits.",
-    "observed_values": {
-      "transaction_amount": 5784.87,
-      "transaction_orders": 158,
-      "average_order_value": 36.61,
-      "store_average_rank": 14.0,
-      "entry_conversion_rate_pct": 12.19,
-      "order_conversion_rate_pct": 39.46,
-      "search_entry_share_pct": 87.01,
-      "activity_order_share_pct": 68.99,
-      "activity_cost_ratio_pct": 29.38,
-      "refund_pressure_pct": 19.1,
-      "invalid_order_pressure_pct": 13.89,
-      "top3_sku_transaction_amount_share_pct": 12.55,
-      "comparison_scope_flag": "same_period_diagnostic_ready",
-      "comparison_limit_notes": "high_search_entry_dependence; moderate_activity_involvement; high_refund_pressure; high_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits"
-    },
-    "calculation": "comparison_limit_notes are derived from search, activity, refund, invalid-order, and top-3 SKU concentration thresholds in the Demo 2 SQL output",
-    "source_fields": [
-      "transaction_amount",
-      "transaction_orders",
-      "average_order_value",
-      "store_average_rank",
-      "entry_conversion_rate_pct",
-      "order_conversion_rate_pct",
-      "search_entry_share_pct",
-      "activity_order_share_pct",
-      "activity_cost_ratio_pct",
-      "refund_pressure_pct",
-      "invalid_order_pressure_pct",
-      "top3_sku_transaction_amount_share_pct",
-      "comparison_scope_flag",
-      "comparison_limit_notes"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "same-period March 2026 comparison only",
-      "traffic-source users may overlap",
-      "not causal attribution",
-      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_F",
-    "slot": "visibility_entry_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store F's March 2026 visibility and entry profile can be described from exposure, rank, entry, and search-entry metrics. The record supports cautious comparison of whether the store was being seen and entered, but it does not prove causal performance differences.",
-    "observed_values": {
-      "region_type": "Yantai",
-      "store_type": "partner",
-      "exposure_users": 3543,
-      "exposure_times": 18142,
-      "store_average_rank": 13.0,
-      "entry_users": 541,
-      "entry_times": 1946,
-      "entry_conversion_rate_pct": 15.27,
-      "search_exposure_users": 2699,
-      "search_average_rank": 13.0,
-      "search_entry_users": 481,
-      "search_entry_rate_pct": 17.82,
-      "search_entry_share_pct": 88.91,
-      "top_search_terms": [
-        {
-          "search_term": "隐形眼镜护理液",
-          "search_term_en": "contact lens care solution",
-          "search_term_exposure_times": 712,
-          "search_term_click_times": 85,
-          "search_term_order_times": 34
-        },
-        {
-          "search_term": "护理液",
-          "search_term_en": "care solution",
-          "search_term_exposure_times": 184,
-          "search_term_click_times": 22,
-          "search_term_order_times": 15
-        },
-        {
-          "search_term": "隐形眼镜日抛",
-          "search_term_en": "daily disposable contact lenses",
-          "search_term_exposure_times": 119,
-          "search_term_click_times": 15,
-          "search_term_order_times": 9
-        }
-      ]
-    },
-    "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
-    "source_fields": [
-      "region_type",
-      "store_type",
-      "exposure_users",
-      "exposure_times",
-      "store_average_rank",
-      "entry_users",
-      "entry_times",
-      "entry_conversion_rate_pct",
-      "search_exposure_users",
-      "search_average_rank",
-      "search_entry_users",
-      "search_entry_rate_pct",
-      "search_entry_share_pct",
-      "search_term",
-      "search_term_en",
-      "search_term_exposure_times",
-      "search_term_click_times",
-      "search_term_order_times"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-      "retail_ops/data/demo2_top_search_terms.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "same-period March 2026 comparison only",
-      "traffic-source users may overlap",
-      "not causal attribution",
-      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_F",
-    "slot": "activity_lever_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store F's March 2026 activity metrics describe activity involvement and subsidy cost structure. These metrics should be treated as operating-tool evidence, not as proof that activity caused the store's result.",
-    "observed_values": {
-      "activity_original_transaction_amount": 8291.5,
-      "activity_orders": 217,
-      "transaction_orders": 266,
-      "activity_cost": 1008.3,
-      "merchant_subsidy_amount": 975.3,
-      "platform_subsidy_amount": 33.0,
-      "activity_cost_ratio_pct": 12.16,
-      "activity_order_share_pct": 81.58
-    },
-    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
-    "source_fields": [
-      "activity_original_transaction_amount",
-      "activity_orders",
-      "transaction_orders",
-      "activity_cost",
-      "merchant_subsidy_amount",
-      "platform_subsidy_amount",
-      "activity_cost_ratio_pct",
-      "activity_order_share_pct"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "activity mechanism details are not included",
-      "promotion cycle dates are unknown",
-      "activity metrics describe tool usage, not causal proof",
-      "short-term ROI may not be the primary target in every operating stage"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_F",
-    "slot": "transaction_conversion_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store F's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
-    "observed_values": {
-      "transaction_amount": 9301.8,
-      "transaction_orders": 266,
-      "average_order_value": 34.97,
-      "estimated_income_proxy": 5937.09,
-      "order_users": 269,
-      "order_times": 305,
-      "order_conversion_rate_pct": 49.72,
-      "order_amount": 10498.2,
-      "payment_users": 267,
-      "payment_amount": 10227.8,
-      "payment_conversion_rate_pct": 99.26,
-      "entry_users": 541,
-      "valid_orders": 266,
-      "invalid_orders": 30
-    },
-    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
-    "source_fields": [
-      "transaction_amount",
-      "transaction_orders",
-      "average_order_value",
-      "estimated_income_proxy",
-      "order_users",
-      "order_times",
-      "order_conversion_rate_pct",
-      "order_amount",
-      "payment_users",
-      "payment_amount",
-      "payment_conversion_rate_pct",
-      "entry_users",
-      "valid_orders",
-      "invalid_orders"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "same-period March 2026 comparison only",
-      "estimated_income_proxy is platform-displayed and not audited profit",
-      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
-      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_F",
-    "slot": "order_quality_pressure_profile",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store F's March 2026 refund and invalid-order metrics provide order-quality pressure signals. They should constrain direct performance comparison when refund or invalid-order pressure is elevated.",
-    "observed_values": {
-      "refund_amount": 987.89,
-      "transaction_amount": 9301.8,
-      "refund_pressure_pct": 10.62,
-      "valid_orders": 266,
-      "invalid_orders": 30,
-      "transaction_orders": 266,
-      "invalid_order_pressure_pct": 10.14,
-      "full_refund_orders": 30,
-      "refund_orders_all_or_partial": 33
-    },
-    "calculation": "refund_pressure_pct = refund_amount / transaction_amount * 100; invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100",
-    "source_fields": [
-      "refund_amount",
-      "transaction_amount",
-      "refund_pressure_pct",
-      "valid_orders",
-      "invalid_orders",
-      "transaction_orders",
-      "invalid_order_pressure_pct",
-      "full_refund_orders",
-      "refund_orders_all_or_partial"
-    ],
-    "confidence": "medium",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
-      "refund amount is counted by refund-success date",
-      "not an exact original-order cohort refund rate",
-      "invalid order reason is not included"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_F",
-    "slot": "top3_sku_product_mix_note",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store F's March 2026 top-3 SKU transaction-amount evidence is retained as lightweight product-mix evidence. It should not be treated as full SKU category-share analysis.",
-    "observed_values": {
-      "top3_sku_transaction_amount": 1798.4,
-      "transaction_amount": 9301.8,
-      "top3_sku_transaction_amount_share_pct": 19.33,
-      "top_skus_by_transaction_amount": [
-        {
-          "sku_name": "（海俪恩）隐形眼镜多功能护理液（清润）（舒适型）120ml/瓶/盒",
-          "sku_name_en": "Hailien Qingrun comfort-type multi-purpose contact lens solution, 120ml bottle/box",
-          "sku_transaction_amount": 809.34
-        },
-        {
-          "sku_name": "（爱尔康）隐形眼镜多功能护理液（傲滴）120ml/瓶/盒",
-          "sku_name_en": "Alcon Aodi multi-purpose contact lens solution, 120ml bottle/box",
-          "sku_transaction_amount": 715.0
-        },
-        {
-          "sku_name": "（博士伦）隐形眼镜多功能护理液（润明）120ml/瓶/盒",
-          "sku_name_en": "Bausch + Lomb Runming multi-purpose contact lens solution, 120ml bottle/box",
-          "sku_transaction_amount": 274.06
-        }
-      ]
-    },
-    "calculation": "top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100",
-    "source_fields": [
-      "sku_name",
-      "sku_name_en",
-      "sku_transaction_amount",
-      "transaction_amount",
-      "top3_sku_transaction_amount",
-      "top3_sku_transaction_amount_share_pct",
-      "sku_category_note"
-    ],
-    "confidence": "medium",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-      "retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "top-3 SKU evidence only",
-      "not full SKU category-share analysis",
-      "manual category inference should not be overclaimed",
-      "English SKU names are helper translations, not backend source values",
-      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
-    ],
-    "is_active": true,
-    "period_granularity": "month"
-  },
-  {
-    "kind": "retail_memory_fact",
-    "type": "retail_metric_profile",
-    "entity_id": "store_F",
-    "slot": "single_metric_attribution_guard",
-    "period_label": "2026-03",
-    "period_start": "2026-03-01",
-    "period_end": "2026-03-31",
-    "value": "Store F's March 2026 metrics should not be interpreted from a single metric alone. The comparison scope is same_period_diagnostic_ready, with limit notes: high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits.",
-    "observed_values": {
-      "transaction_amount": 9301.8,
-      "transaction_orders": 266,
-      "average_order_value": 34.97,
-      "store_average_rank": 13.0,
-      "entry_conversion_rate_pct": 15.27,
-      "order_conversion_rate_pct": 49.72,
-      "search_entry_share_pct": 88.91,
-      "activity_order_share_pct": 81.58,
-      "activity_cost_ratio_pct": 12.16,
-      "refund_pressure_pct": 10.62,
-      "invalid_order_pressure_pct": 10.14,
-      "top3_sku_transaction_amount_share_pct": 19.33,
-      "comparison_scope_flag": "same_period_diagnostic_ready",
-      "comparison_limit_notes": "high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits"
-    },
-    "calculation": "comparison_limit_notes are derived from search, activity, refund, invalid-order, and top-3 SKU concentration thresholds in the Demo 2 SQL output",
-    "source_fields": [
-      "transaction_amount",
-      "transaction_orders",
-      "average_order_value",
-      "store_average_rank",
-      "entry_conversion_rate_pct",
-      "order_conversion_rate_pct",
-      "search_entry_share_pct",
-      "activity_order_share_pct",
-      "activity_cost_ratio_pct",
-      "refund_pressure_pct",
-      "invalid_order_pressure_pct",
-      "top3_sku_transaction_amount_share_pct",
-      "comparison_scope_flag",
-      "comparison_limit_notes"
-    ],
-    "confidence": "high",
-    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
-    "supporting_source_paths": [
-      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
-    ],
-    "lineage_path": "retail_ops/LINEAGE.md",
-    "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
@@ -1483,7 +779,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",
@@ -1529,11 +825,11 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "activity mechanism details are not included",
       "promotion cycle dates are unknown",
       "activity metrics describe tool usage, not causal proof",
-      "short-term ROI may not be the primary target in every operating stage"
+      "activity-cost ratio is a platform-defined activity cost divided by activity original transaction amount; operating interpretation should consider visibility, market-share defense, store stage, and local competition."
     ],
     "is_active": true,
     "period_granularity": "month"
@@ -1587,7 +883,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "estimated_income_proxy is platform-displayed and not audited profit",
       "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
@@ -1635,7 +931,7 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "refund amount is counted by refund-success date",
       "not an exact original-order cohort refund rate",
       "invalid order reason is not included"
@@ -1750,7 +1046,711 @@
     ],
     "lineage_path": "retail_ops/LINEAGE.md",
     "limitations": [
-      "cross-store demo",
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "same-period March 2026 comparison only",
+      "traffic-source users may overlap",
+      "not causal attribution",
+      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "visibility_entry_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 visibility and entry profile can be described from exposure, rank, entry, and search-entry metrics. The record supports cautious comparison of whether the store was being seen and entered, but it does not prove causal performance differences.",
+    "observed_values": {
+      "region_type": "Yantai",
+      "store_type": "partner",
+      "exposure_users": 3347,
+      "exposure_times": 15667,
+      "store_average_rank": 14.0,
+      "entry_users": 408,
+      "entry_times": 1400,
+      "entry_conversion_rate_pct": 12.19,
+      "search_exposure_users": 2784,
+      "search_average_rank": 13.0,
+      "search_entry_users": 355,
+      "search_entry_rate_pct": 12.75,
+      "search_entry_share_pct": 87.01,
+      "top_search_terms": [
+        {
+          "search_term": "隐形眼镜护理液",
+          "search_term_en": "contact lens care solution",
+          "search_term_exposure_times": 412,
+          "search_term_click_times": 42,
+          "search_term_order_times": 17
+        },
+        {
+          "search_term": "护理液",
+          "search_term_en": "care solution",
+          "search_term_exposure_times": 93,
+          "search_term_click_times": 3,
+          "search_term_order_times": 1
+        },
+        {
+          "search_term": "美瞳护理液",
+          "search_term_en": "colored contact lens care solution",
+          "search_term_exposure_times": 59,
+          "search_term_click_times": 6,
+          "search_term_order_times": 4
+        }
+      ]
+    },
+    "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
+    "source_fields": [
+      "region_type",
+      "store_type",
+      "exposure_users",
+      "exposure_times",
+      "store_average_rank",
+      "entry_users",
+      "entry_times",
+      "entry_conversion_rate_pct",
+      "search_exposure_users",
+      "search_average_rank",
+      "search_entry_users",
+      "search_entry_rate_pct",
+      "search_entry_share_pct",
+      "search_term",
+      "search_term_en",
+      "search_term_exposure_times",
+      "search_term_click_times",
+      "search_term_order_times"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+      "retail_ops/data/demo2_top_search_terms.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "same-period March 2026 comparison only",
+      "traffic-source users may overlap",
+      "not causal attribution",
+      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "activity_lever_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 activity metrics describe activity involvement and subsidy cost structure. These metrics should be treated as operating-tool evidence, not as proof that activity caused the store's result.",
+    "observed_values": {
+      "activity_original_transaction_amount": 5365.63,
+      "activity_orders": 109,
+      "transaction_orders": 158,
+      "activity_cost": 1576.26,
+      "merchant_subsidy_amount": 1542.26,
+      "platform_subsidy_amount": 34.0,
+      "activity_cost_ratio_pct": 29.38,
+      "activity_order_share_pct": 68.99
+    },
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
+    "source_fields": [
+      "activity_original_transaction_amount",
+      "activity_orders",
+      "transaction_orders",
+      "activity_cost",
+      "merchant_subsidy_amount",
+      "platform_subsidy_amount",
+      "activity_cost_ratio_pct",
+      "activity_order_share_pct"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "activity mechanism details are not included",
+      "promotion cycle dates are unknown",
+      "activity metrics describe tool usage, not causal proof",
+      "activity-cost ratio is a platform-defined activity cost divided by activity original transaction amount; operating interpretation should consider visibility, market-share defense, store stage, and local competition."
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 5784.87,
+      "transaction_orders": 158,
+      "average_order_value": 36.61,
+      "estimated_income_proxy": 5337.95,
+      "order_users": 161,
+      "order_times": 185,
+      "order_conversion_rate_pct": 39.46,
+      "order_amount": 6828.37,
+      "payment_users": 159,
+      "payment_amount": 6693.27,
+      "payment_conversion_rate_pct": 98.76,
+      "entry_users": 408,
+      "valid_orders": 155,
+      "invalid_orders": 25
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "order_amount",
+      "payment_users",
+      "payment_amount",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "order_quality_pressure_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 refund and invalid-order metrics provide order-quality pressure signals. They should constrain direct performance comparison when refund or invalid-order pressure is elevated.",
+    "observed_values": {
+      "refund_amount": 1105.05,
+      "transaction_amount": 5784.87,
+      "refund_pressure_pct": 19.1,
+      "valid_orders": 155,
+      "invalid_orders": 25,
+      "transaction_orders": 158,
+      "invalid_order_pressure_pct": 13.89,
+      "full_refund_orders": 25,
+      "refund_orders_all_or_partial": 29
+    },
+    "calculation": "refund_pressure_pct = refund_amount / transaction_amount * 100; invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100",
+    "source_fields": [
+      "refund_amount",
+      "transaction_amount",
+      "refund_pressure_pct",
+      "valid_orders",
+      "invalid_orders",
+      "transaction_orders",
+      "invalid_order_pressure_pct",
+      "full_refund_orders",
+      "refund_orders_all_or_partial"
+    ],
+    "confidence": "medium",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "refund amount is counted by refund-success date",
+      "not an exact original-order cohort refund rate",
+      "invalid order reason is not included"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "top3_sku_product_mix_note",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 top-3 SKU transaction-amount evidence is retained as lightweight product-mix evidence. It should not be treated as full SKU category-share analysis.",
+    "observed_values": {
+      "top3_sku_transaction_amount": 726.25,
+      "transaction_amount": 5784.87,
+      "top3_sku_transaction_amount_share_pct": 12.55,
+      "top_skus_by_transaction_amount": [
+        {
+          "sku_name": "（海俪恩）隐形眼镜多功能护理液（清润）（舒适型）120ml/瓶/盒",
+          "sku_name_en": "Hailien Qingrun comfort-type multi-purpose contact lens solution, 120ml bottle/box",
+          "sku_transaction_amount": 256.97
+        },
+        {
+          "sku_name": "（爱尔康）隐形眼镜多功能护理液（傲滴）120ml/瓶/盒",
+          "sku_name_en": "Alcon Aodi multi-purpose contact lens solution, 120ml bottle/box",
+          "sku_transaction_amount": 243.78
+        },
+        {
+          "sku_name": "（博士伦）隐形眼镜多功能护理液（300ml/瓶+120ml/瓶）/盒",
+          "sku_name_en": "Bausch + Lomb multi-purpose contact lens solution set, 300ml bottle + 120ml bottle/box",
+          "sku_transaction_amount": 225.5
+        }
+      ]
+    },
+    "calculation": "top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100",
+    "source_fields": [
+      "sku_name",
+      "sku_name_en",
+      "sku_transaction_amount",
+      "transaction_amount",
+      "top3_sku_transaction_amount",
+      "top3_sku_transaction_amount_share_pct",
+      "sku_category_note"
+    ],
+    "confidence": "medium",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+      "retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "top-3 SKU evidence only",
+      "not full SKU category-share analysis",
+      "manual category inference should not be overclaimed",
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_E",
+    "slot": "single_metric_attribution_guard",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store E's March 2026 metrics should not be interpreted from a single metric alone. The comparison scope is same_period_diagnostic_ready, with limit notes: high_search_entry_dependence; moderate_activity_involvement; high_refund_pressure; high_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits.",
+    "observed_values": {
+      "transaction_amount": 5784.87,
+      "transaction_orders": 158,
+      "average_order_value": 36.61,
+      "store_average_rank": 14.0,
+      "entry_conversion_rate_pct": 12.19,
+      "order_conversion_rate_pct": 39.46,
+      "search_entry_share_pct": 87.01,
+      "activity_order_share_pct": 68.99,
+      "activity_cost_ratio_pct": 29.38,
+      "refund_pressure_pct": 19.1,
+      "invalid_order_pressure_pct": 13.89,
+      "top3_sku_transaction_amount_share_pct": 12.55,
+      "comparison_scope_flag": "same_period_diagnostic_ready",
+      "comparison_limit_notes": "high_search_entry_dependence; moderate_activity_involvement; high_refund_pressure; high_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits"
+    },
+    "calculation": "comparison_limit_notes are derived from search, activity, refund, invalid-order, and top-3 SKU concentration thresholds in the Demo 2 SQL output",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "store_average_rank",
+      "entry_conversion_rate_pct",
+      "order_conversion_rate_pct",
+      "search_entry_share_pct",
+      "activity_order_share_pct",
+      "activity_cost_ratio_pct",
+      "refund_pressure_pct",
+      "invalid_order_pressure_pct",
+      "top3_sku_transaction_amount_share_pct",
+      "comparison_scope_flag",
+      "comparison_limit_notes"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "same-period March 2026 comparison only",
+      "traffic-source users may overlap",
+      "not causal attribution",
+      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "visibility_entry_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 visibility and entry profile can be described from exposure, rank, entry, and search-entry metrics. The record supports cautious comparison of whether the store was being seen and entered, but it does not prove causal performance differences.",
+    "observed_values": {
+      "region_type": "Yantai",
+      "store_type": "partner",
+      "exposure_users": 3543,
+      "exposure_times": 18142,
+      "store_average_rank": 13.0,
+      "entry_users": 541,
+      "entry_times": 1946,
+      "entry_conversion_rate_pct": 15.27,
+      "search_exposure_users": 2699,
+      "search_average_rank": 13.0,
+      "search_entry_users": 481,
+      "search_entry_rate_pct": 17.82,
+      "search_entry_share_pct": 88.91,
+      "top_search_terms": [
+        {
+          "search_term": "隐形眼镜护理液",
+          "search_term_en": "contact lens care solution",
+          "search_term_exposure_times": 712,
+          "search_term_click_times": 85,
+          "search_term_order_times": 34
+        },
+        {
+          "search_term": "护理液",
+          "search_term_en": "care solution",
+          "search_term_exposure_times": 184,
+          "search_term_click_times": 22,
+          "search_term_order_times": 15
+        },
+        {
+          "search_term": "隐形眼镜日抛",
+          "search_term_en": "daily disposable contact lenses",
+          "search_term_exposure_times": 119,
+          "search_term_click_times": 15,
+          "search_term_order_times": 9
+        }
+      ]
+    },
+    "calculation": "search_entry_rate_pct = search_entry_users / search_exposure_users * 100; search_entry_share_pct = search_entry_users / entry_users * 100",
+    "source_fields": [
+      "region_type",
+      "store_type",
+      "exposure_users",
+      "exposure_times",
+      "store_average_rank",
+      "entry_users",
+      "entry_times",
+      "entry_conversion_rate_pct",
+      "search_exposure_users",
+      "search_average_rank",
+      "search_entry_users",
+      "search_entry_rate_pct",
+      "search_entry_share_pct",
+      "search_term",
+      "search_term_en",
+      "search_term_exposure_times",
+      "search_term_click_times",
+      "search_term_order_times"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+      "retail_ops/data/demo2_top_search_terms.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "same-period March 2026 comparison only",
+      "traffic-source users may overlap",
+      "not causal attribution",
+      "compare with region, store type, activity, refund, order-quality, and product-mix limits"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "activity_lever_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 activity metrics describe activity involvement and subsidy cost structure. These metrics should be treated as operating-tool evidence, not as proof that activity caused the store's result.",
+    "observed_values": {
+      "activity_original_transaction_amount": 8291.5,
+      "activity_orders": 217,
+      "transaction_orders": 266,
+      "activity_cost": 1008.3,
+      "merchant_subsidy_amount": 975.3,
+      "platform_subsidy_amount": 33.0,
+      "activity_cost_ratio_pct": 12.16,
+      "activity_order_share_pct": 81.58
+    },
+    "calculation": "activity_order_share_pct = activity_orders / transaction_orders * 100; activity_cost_ratio_pct follows the data dictionary formula activity_cost / activity_original_transaction_amount * 100",
+    "source_fields": [
+      "activity_original_transaction_amount",
+      "activity_orders",
+      "transaction_orders",
+      "activity_cost",
+      "merchant_subsidy_amount",
+      "platform_subsidy_amount",
+      "activity_cost_ratio_pct",
+      "activity_order_share_pct"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "activity mechanism details are not included",
+      "promotion cycle dates are unknown",
+      "activity metrics describe tool usage, not causal proof",
+      "activity-cost ratio is a platform-defined activity cost divided by activity original transaction amount; operating interpretation should consider visibility, market-share defense, store stage, and local competition."
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "transaction_conversion_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 transaction and conversion profile describes transaction scale, order-submission conversion, payment conversion, estimated income proxy, and average order value. These fields help compare funnel and transaction structure, but they should not be used alone to call the store better or worse.",
+    "observed_values": {
+      "transaction_amount": 9301.8,
+      "transaction_orders": 266,
+      "average_order_value": 34.97,
+      "estimated_income_proxy": 5937.09,
+      "order_users": 269,
+      "order_times": 305,
+      "order_conversion_rate_pct": 49.72,
+      "order_amount": 10498.2,
+      "payment_users": 267,
+      "payment_amount": 10227.8,
+      "payment_conversion_rate_pct": 99.26,
+      "entry_users": 541,
+      "valid_orders": 266,
+      "invalid_orders": 30
+    },
+    "calculation": "average_order_value = transaction_amount / transaction_orders; order_conversion_rate_pct follows the backend definition order_users / entry_users * 100; payment_conversion_rate_pct = payment_users / order_users * 100",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "estimated_income_proxy",
+      "order_users",
+      "order_times",
+      "order_conversion_rate_pct",
+      "order_amount",
+      "payment_users",
+      "payment_amount",
+      "payment_conversion_rate_pct",
+      "entry_users",
+      "valid_orders",
+      "invalid_orders"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "same-period March 2026 comparison only",
+      "estimated_income_proxy is platform-displayed and not audited profit",
+      "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
+      "transaction and conversion metrics do not prove causality or final operating quality by themselves"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "order_quality_pressure_profile",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 refund and invalid-order metrics provide order-quality pressure signals. They should constrain direct performance comparison when refund or invalid-order pressure is elevated.",
+    "observed_values": {
+      "refund_amount": 987.89,
+      "transaction_amount": 9301.8,
+      "refund_pressure_pct": 10.62,
+      "valid_orders": 266,
+      "invalid_orders": 30,
+      "transaction_orders": 266,
+      "invalid_order_pressure_pct": 10.14,
+      "full_refund_orders": 30,
+      "refund_orders_all_or_partial": 33
+    },
+    "calculation": "refund_pressure_pct = refund_amount / transaction_amount * 100; invalid_order_pressure_pct = invalid_orders / (valid_orders + invalid_orders) * 100",
+    "source_fields": [
+      "refund_amount",
+      "transaction_amount",
+      "refund_pressure_pct",
+      "valid_orders",
+      "invalid_orders",
+      "transaction_orders",
+      "invalid_order_pressure_pct",
+      "full_refund_orders",
+      "refund_orders_all_or_partial"
+    ],
+    "confidence": "medium",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
+      "refund amount is counted by refund-success date",
+      "not an exact original-order cohort refund rate",
+      "invalid order reason is not included"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "top3_sku_product_mix_note",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 top-3 SKU transaction-amount evidence is retained as lightweight product-mix evidence. It should not be treated as full SKU category-share analysis.",
+    "observed_values": {
+      "top3_sku_transaction_amount": 1798.4,
+      "transaction_amount": 9301.8,
+      "top3_sku_transaction_amount_share_pct": 19.33,
+      "top_skus_by_transaction_amount": [
+        {
+          "sku_name": "（海俪恩）隐形眼镜多功能护理液（清润）（舒适型）120ml/瓶/盒",
+          "sku_name_en": "Hailien Qingrun comfort-type multi-purpose contact lens solution, 120ml bottle/box",
+          "sku_transaction_amount": 809.34
+        },
+        {
+          "sku_name": "（爱尔康）隐形眼镜多功能护理液（傲滴）120ml/瓶/盒",
+          "sku_name_en": "Alcon Aodi multi-purpose contact lens solution, 120ml bottle/box",
+          "sku_transaction_amount": 715.0
+        },
+        {
+          "sku_name": "（博士伦）隐形眼镜多功能护理液（润明）120ml/瓶/盒",
+          "sku_name_en": "Bausch + Lomb Runming multi-purpose contact lens solution, 120ml bottle/box",
+          "sku_transaction_amount": 274.06
+        }
+      ]
+    },
+    "calculation": "top3_sku_transaction_amount_share_pct = top3_sku_transaction_amount / transaction_amount * 100",
+    "source_fields": [
+      "sku_name",
+      "sku_name_en",
+      "sku_transaction_amount",
+      "transaction_amount",
+      "top3_sku_transaction_amount",
+      "top3_sku_transaction_amount_share_pct",
+      "sku_category_note"
+    ],
+    "confidence": "medium",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+      "retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "top-3 SKU evidence only",
+      "not full SKU category-share analysis",
+      "manual category inference should not be overclaimed",
+      "English SKU names are helper translations, not backend source values",
+      "top SKU details are supported by retail_ops/data/demo2_top_skus_by_transaction_amount.csv"
+    ],
+    "is_active": true,
+    "period_granularity": "month"
+  },
+  {
+    "kind": "retail_memory_fact",
+    "type": "retail_metric_profile",
+    "entity_id": "store_F",
+    "slot": "single_metric_attribution_guard",
+    "period_label": "2026-03",
+    "period_start": "2026-03-01",
+    "period_end": "2026-03-31",
+    "value": "Store F's March 2026 metrics should not be interpreted from a single metric alone. The comparison scope is same_period_diagnostic_ready, with limit notes: high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits.",
+    "observed_values": {
+      "transaction_amount": 9301.8,
+      "transaction_orders": 266,
+      "average_order_value": 34.97,
+      "store_average_rank": 13.0,
+      "entry_conversion_rate_pct": 15.27,
+      "order_conversion_rate_pct": 49.72,
+      "search_entry_share_pct": 88.91,
+      "activity_order_share_pct": 81.58,
+      "activity_cost_ratio_pct": 12.16,
+      "refund_pressure_pct": 10.62,
+      "invalid_order_pressure_pct": 10.14,
+      "top3_sku_transaction_amount_share_pct": 19.33,
+      "comparison_scope_flag": "same_period_diagnostic_ready",
+      "comparison_limit_notes": "high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits"
+    },
+    "calculation": "comparison_limit_notes are derived from search, activity, refund, invalid-order, and top-3 SKU concentration thresholds in the Demo 2 SQL output",
+    "source_fields": [
+      "transaction_amount",
+      "transaction_orders",
+      "average_order_value",
+      "store_average_rank",
+      "entry_conversion_rate_pct",
+      "order_conversion_rate_pct",
+      "search_entry_share_pct",
+      "activity_order_share_pct",
+      "activity_cost_ratio_pct",
+      "refund_pressure_pct",
+      "invalid_order_pressure_pct",
+      "top3_sku_transaction_amount_share_pct",
+      "comparison_scope_flag",
+      "comparison_limit_notes"
+    ],
+    "confidence": "high",
+    "source_path": "retail_ops/outputs/demo2_cross_store_comparability_output.csv",
+    "supporting_source_paths": [
+      "retail_ops/outputs/demo2_cross_store_comparability_output.csv"
+    ],
+    "lineage_path": "retail_ops/LINEAGE.md",
+    "limitations": [
+      "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
       "same-period March 2026 comparison only",
       "traffic-source users may overlap",
       "not causal attribution",

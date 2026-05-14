@@ -144,3 +144,11 @@ The readable summary is only a human-facing explanation.
 | F | `high_search_entry_dependence; high_activity_involvement; moderate_refund_pressure; moderate_invalid_order_pressure; compare_with_region_store_type_activity_refund_limits` | Search entry is highly dominant; activity involvement is high; refund pressure and invalid-order pressure are moderate; comparison should stay limited by region, store type, activity, refund, order-quality, and product-mix context. |
 
 This table does not rank stores. It only makes the SQL-derived interpretation limits easier to read before future pairwise gate work is added.
+
+## Derived-Metric Scope Note
+
+Demo 2 intentionally keeps the same-period cross-store output narrower than Demo 1.
+
+Demo 1 is a month-over-month diagnostic for one store, so it includes more month-level derived indicators. Demo 2 is a same-period B-F diagnostic, so it focuses on field-contract consistency, selected cross-store evidence, and comparison-boundary behavior.
+
+For that reason, Demo 2 does not expand every derived field defined in `retail_ops/data/DATA_DICTIONARY.md`. Fields such as `refund_order_pressure_pct` and `search_exposure_share_pct` remain valid dictionary definitions, but they are not required columns in the current Demo 2 output. Demo 2 mainly uses source refund-order fields, `refund_pressure_pct`, search-entry structure, activity evidence, order volume, transaction amount, store type, and top-SKU concentration evidence to support its current scope.

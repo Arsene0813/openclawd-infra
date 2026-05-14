@@ -149,3 +149,7 @@ Checked by:
 
     python3 retail_ops/scripts/validate_retail_data_contract.py
     python3 scripts/validate_project_consistency.py
+
+## Demo 2 Derived-Metric Scope
+
+Demo 2 is intentionally narrower than Demo 1. It is a same-period B-F diagnostic for field-contract consistency and comparison-boundary behavior, not a full multi-store diagnostic model. Some dictionary-defined derived metrics, including `refund_order_pressure_pct` and `search_exposure_share_pct`, are not expanded as required Demo 2 output columns at this stage.

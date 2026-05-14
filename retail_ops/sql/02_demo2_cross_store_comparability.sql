@@ -239,6 +239,4 @@ SELECT
 
 FROM diagnostics
 ORDER BY
-    region_type,
-    store_type,
     store_id;

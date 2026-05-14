@@ -116,7 +116,7 @@ for row in comparability_rows:
     ]
 
     common_limitations = [
-        "cross-store demo",
+        "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
         "same-period March 2026 comparison only",
         "traffic-source users may overlap",
         "not causal attribution",
@@ -212,11 +212,11 @@ for row in comparability_rows:
             ],
             confidence="high",
             limitations=[
-                "cross-store demo",
+                "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
                 "activity mechanism details are not included",
                 "promotion cycle dates are unknown",
                 "activity metrics describe tool usage, not causal proof",
-                "short-term ROI may not be the primary target in every operating stage",
+                "activity-cost ratio is a platform-defined activity cost divided by activity original transaction amount; operating interpretation should consider visibility, market-share defense, store stage, and local competition.",
             ],
         )
     )
@@ -269,7 +269,7 @@ for row in comparability_rows:
             ],
             confidence="high",
             limitations=[
-                "cross-store demo",
+                "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
                 "same-period March 2026 comparison only",
                 "estimated_income_proxy is platform-displayed and not audited profit",
                 "order_conversion_rate_pct follows the backend definition and must not be recomputed from valid_orders / entry_users",
@@ -314,7 +314,7 @@ for row in comparability_rows:
             ],
             confidence="medium",
             limitations=[
-                "cross-store demo",
+                "same-period diagnostic only; it does not include a pairwise comparability gate, competitor calendar, activity calendar, delivery conditions, rating or review signals, or stockout history.",
                 "refund amount is counted by refund-success date",
                 "not an exact original-order cohort refund rate",
                 "invalid order reason is not included",
