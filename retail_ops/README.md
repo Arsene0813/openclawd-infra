@@ -16,7 +16,7 @@ The single source of truth for field names and metric meanings is:
 | `sql/` | Diagnostic SQL for Demo 1 and Demo 2. |
 | `outputs/` | Generated SQL outputs, validation results, and memory facts. |
 | `scripts/` | Local validation, generation, and loading scripts. |
-| `demo/` | Readable diagnostic write-ups. |
+| `demo/` | Diagnostic review documents for implemented retail stages. |
 
 The current retail path has two implemented demos and one planned future stage:
 
@@ -53,11 +53,16 @@ Main file:
 
 Core supporting files:
 
+Core data:
 - `retail_ops/data/store_a_monthly_metrics.csv`
 - `retail_ops/data/store_a_top_skus.csv`
 - `retail_ops/data/DATA_DICTIONARY.md`
+
+SQL and lineage:
 - `retail_ops/LINEAGE.md`
 - `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
+
+Outputs:
 - `retail_ops/outputs/store_a_demo1_sql_output.csv`
 - `retail_ops/outputs/store_a_demo1_interpretation_summary.csv`
 - `retail_ops/outputs/generated_retail_memory_facts.json`
@@ -103,12 +108,17 @@ Main file:
 
 Core supporting files:
 
+Core data:
 - `retail_ops/data/demo2_store_period_metrics.csv`
 - `retail_ops/data/demo2_top_search_terms.csv`
 - `retail_ops/data/demo2_top_skus_by_sales_volume.csv`
 - `retail_ops/data/demo2_top_skus_by_transaction_amount.csv`
 - `retail_ops/data/demo2_source_notes.md`
+
+SQL：
 - `retail_ops/sql/02_demo2_cross_store_comparability.sql`
+
+Outputs:
 - `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
 - `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
 
@@ -141,7 +151,7 @@ This is what prevents a later answer from treating one metric as a complete oper
 
 ## Future Work: Pairwise Comparability Gate
 
-The next planned stage is a pairwise comparability gate.
+The next planned stage is a pairwise comparability gate for constrained cross-store operating analysis.
 
 It should judge whether two selected store-period records can be compared for a specific operating question.
 
