@@ -9,18 +9,12 @@ The implemented retail scope currently stops at Demo 2. A pairwise comparability
 ## Current Implemented Flow
 
     Meituan backend metric definitions
-            ↓
-    DATA_DICTIONARY.md
-            ↓
-    canonical CSV files
-            ↓
-    SQL diagnostics
-            ↓
-    output CSV files
-            ↓
-    generated memory facts
-            ↓
-    validation and evaluation checks
+    -> DATA_DICTIONARY.md
+    -> canonical CSV files
+    -> SQL diagnostics
+    -> output CSV files
+    -> generated memory facts
+    -> validation and evaluation checks
 
 ## Implemented Demos
 
@@ -42,19 +36,19 @@ The implemented retail scope currently stops at Demo 2. A pairwise comparability
 
 ## Current Implemented Files
 
-### SQL Files
+SQL files:
 
 - `retail_ops/sql/01_store_a_month_over_month_diagnostic.sql`
 - `retail_ops/sql/02_demo2_cross_store_comparability.sql`
 
-### Output Files
+Output files:
 
 - `retail_ops/outputs/store_a_demo1_sql_output.csv`
 - `retail_ops/outputs/store_a_demo1_interpretation_summary.csv`
 - `retail_ops/outputs/demo2_cross_store_comparability_output.csv`
 - `retail_ops/outputs/generated_demo2_retail_memory_facts.json`
 
-### Validation and Evaluation Checks
+Validation and evaluation checks:
 
 - `retail_ops/scripts/validate_retail_data_contract.py`
 - `retail_ops/scripts/validate_demo2_staging_data.py`
@@ -70,11 +64,11 @@ These checks are not model benchmarks. They verify that the staged prototype pre
 
 ## Why the Comparability Gate Is Future Work
 
-The Meituan backend provides rich store-level data. The limitation is not lack of raw metrics. The limitation is that the backend workflow is mainly designed for reviewing one store at a time.
+The Meituan backend provides rich store-level data. The limitation is not lack of raw metrics.
 
-For a 48-store operation, a later decision-support layer should help decide which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
+The limitation is that the backend workflow is mainly designed for reviewing one store at a time. For a 48-store operation, a later decision-support layer should help decide which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
-A reliable comparability gate should depend on transaction order volume, transaction amount, activity involvement, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+A reliable comparability gate should depend on transaction order volume, transaction amount, activity status, activity involvement, activity intensity, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current demo sample is still small. To avoid subjective regional classification, the current project treats `region_type` as weak context only. It is not a hard market-area classification, store-stage label, or peer-store grouping rule.
 

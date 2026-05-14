@@ -3,7 +3,9 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+
 ROOT = Path(__file__).resolve().parents[1]
+
 
 REQUIRED_FILES = [
     "README.md",
@@ -24,6 +26,7 @@ REQUIRED_FILES = [
     "eval/eval_retail_demo2_facts.py",
     "eval/eval_retail_demo2_answer_behavior.py",
 ]
+
 
 CURRENT_SCOPE_REQUIRED_TERMS = {
     "README.md": [
@@ -59,10 +62,39 @@ CURRENT_SCOPE_REQUIRED_TERMS = {
     ],
 }
 
+
+REQUIRED_MARKDOWN_TABLE_PATTERNS = {
+    "PROJECT_STATUS.md": [
+        "| Area | Status | Role |",
+        "|---|---|---|",
+        "| Demo 1 | Implemented |",
+        "| Demo 2 | Implemented |",
+        "| Comparability gate | Future work |",
+    ],
+    "PROJECT_SUMMARY_FOR_ADMISSIONS.md": [
+        "| Operating step | Practical meaning |",
+        "| Layer | What it does |",
+        "| Field | Boundary |",
+    ],
+    "retail_ops/README.md": [
+        "| Component | Purpose |",
+        "|---|---|",
+    ],
+    "retail_ops/ARCHITECTURE.md": [
+        "| Demo | Status | Purpose |",
+        "| Layer | Input | Output | Boundary |",
+    ],
+    "retail_ops/COMPARABILITY_GATE_V0.md": [
+        "| Future factor | Current evidence available | Current limitation | Future evidence needed |",
+    ],
+}
+
+
 REQUIRED_API_PATTERNS = [
     '@app.post("/chat_retail_ops_kb")',
     '@app.post("/chat_retail_ops_demo2_kb")',
 ]
+
 
 FORBIDDEN_DOC_OVERCLAIMS = [
     "is a production retail API endpoint",
@@ -73,6 +105,7 @@ FORBIDDEN_DOC_OVERCLAIMS = [
     "implemented comparability gate",
     "finished comparability gate",
 ]
+
 
 STALE_TERMS = [
     "Demo 3",
@@ -85,6 +118,7 @@ STALE_TERMS = [
     "03_demo",
 ]
 
+
 SCAN_SUFFIXES = {
     ".md",
     ".py",
@@ -95,6 +129,7 @@ SCAN_SUFFIXES = {
     ".yml",
     ".yaml",
 }
+
 
 SKIP_STALE_SCAN_FILES = {
     "scripts/validate_project_consistency.py",
@@ -122,14 +157,14 @@ def is_text_file(path: Path) -> bool:
     return path.suffix.lower() in SCAN_SUFFIXES
 
 
-def main() -> int:
-    failures: list[str] = []
-
+def check_required_files(failures: list[str]) -> None:
     for rel in REQUIRED_FILES:
         path = ROOT / rel
         if not path.exists():
             failures.append(f"Missing required current-scope file: {rel}")
 
+
+def check_required_terms(failures: list[str]) -> None:
     for rel, required_terms in CURRENT_SCOPE_REQUIRED_TERMS.items():
         path = ROOT / rel
         if not path.exists():
@@ -141,15 +176,33 @@ def main() -> int:
             if term not in text:
                 failures.append(f"{rel} missing required current-scope term: {term}")
 
+
+def check_markdown_tables(failures: list[str]) -> None:
+    for rel, required_patterns in REQUIRED_MARKDOWN_TABLE_PATTERNS.items():
+        path = ROOT / rel
+        if not path.exists():
+            failures.append(f"Missing file for Markdown table check: {rel}")
+            continue
+
+        text = read_text(path)
+        for pattern in required_patterns:
+            if pattern not in text:
+                failures.append(f"{rel} missing Markdown table pattern: {pattern}")
+
+
+def check_api_patterns(failures: list[str]) -> None:
     api_path = ROOT / "api/main.py"
     if not api_path.exists():
         failures.append("Missing api/main.py")
-    else:
-        api_text = read_text(api_path)
-        for pattern in REQUIRED_API_PATTERNS:
-            if pattern not in api_text:
-                failures.append(f"api/main.py missing expected local retail endpoint pattern: {pattern}")
+        return
 
+    api_text = read_text(api_path)
+    for pattern in REQUIRED_API_PATTERNS:
+        if pattern not in api_text:
+            failures.append(f"api/main.py missing expected local retail endpoint pattern: {pattern}")
+
+
+def check_doc_overclaims(failures: list[str]) -> None:
     docs_to_check = [
         "README.md",
         "PROJECT_STATUS.md",
@@ -171,6 +224,8 @@ def main() -> int:
             if claim.lower() in lowered:
                 failures.append(f"{rel} contains overclaim: {claim}")
 
+
+def check_stale_terms(failures: list[str]) -> None:
     for path in git_tracked_files():
         if not is_text_file(path):
             continue
@@ -189,7 +244,14 @@ def main() -> int:
             if term.lower() in lowered:
                 failures.append(f"{rel} still contains stale Demo 3 term: {term}")
 
-    dictionary = read_text(ROOT / "retail_ops/data/DATA_DICTIONARY.md")
+
+def check_dictionary_boundaries(failures: list[str]) -> None:
+    dictionary_path = ROOT / "retail_ops/data/DATA_DICTIONARY.md"
+    if not dictionary_path.exists():
+        failures.append("Missing retail_ops/data/DATA_DICTIONARY.md")
+        return
+
+    dictionary = read_text(dictionary_path)
     dictionary_required_boundaries = [
         "activity_cost_ratio_pct",
         "not traditional ROI",
@@ -206,6 +268,18 @@ def main() -> int:
         if term not in dictionary:
             failures.append(f"DATA_DICTIONARY.md missing boundary term: {term}")
 
+
+def main() -> int:
+    failures: list[str] = []
+
+    check_required_files(failures)
+    check_required_terms(failures)
+    check_markdown_tables(failures)
+    check_api_patterns(failures)
+    check_doc_overclaims(failures)
+    check_stale_terms(failures)
+    check_dictionary_boundaries(failures)
+
     if failures:
         print("Project consistency validation FAILED.")
         for failure in failures:
@@ -217,6 +291,7 @@ def main() -> int:
     print("[PASS] Local retail endpoints exist in api/main.py.")
     print("[PASS] Demo 2 is documented as file-backed/local evidence.")
     print("[PASS] Comparability gate is documented as future work.")
+    print("[PASS] Markdown tables required for review readability are present.")
     print("[PASS] Stale Demo 3 references are absent from tracked text artifacts.")
     return 0
 

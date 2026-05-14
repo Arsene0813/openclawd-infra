@@ -15,13 +15,9 @@ The Meituan merchant backend provides rich store-level data, but the workflow is
 
 For a 48-store operation, the harder problem is deciding which stores can be compared, under what conditions, and what kind of operating action a comparison may support.
 
-The gate should not answer:
+The gate should not answer which store is best.
 
-    Which store is best?
-
-It should answer a narrower question:
-
-    Can these two store-period records be compared for this specific operating question, and what limitations should constrain the answer?
+It should answer a narrower question: can these two store-period records be compared for this specific operating question, and what limitations should constrain the answer?
 
 ## Current Demo 2 Output vs Future Pairwise Gate
 
@@ -33,6 +29,8 @@ Current Demo 2 provides:
 - current implemented fields including `comparison_scope_flag` and `comparison_limit_notes`;
 - evidence about whether each store-period row is inside the current Demo 2 scope;
 - interpretation limits that should be preserved in later retrieval or analysis.
+
+The current `comparison_limit_notes` field covers only a limited subset of future gate factors. It does not yet encode transaction-volume bands, transaction-scale bands, competition context, repeated-window stability, or data-supported market-area classification.
 
 ### Future Pairwise Comparability Gate
 
@@ -51,6 +49,7 @@ A reliable gate should consider at least:
 
 - transaction order volume;
 - transaction amount;
+- activity status;
 - activity involvement and possible activity status inferred from existing activity fields;
 - activity intensity;
 - store type;
@@ -61,7 +60,9 @@ A reliable gate should consider at least:
 - invalid-order pressure;
 - repeated reporting windows.
 
-These factors affect whether two stores are actually comparable as operating cases. The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
+These factors affect whether two stores are actually comparable as operating cases.
+
+The future gate should not create a store label from one threshold. It should compare selected store-period records for a specific operating question.
 
 ## Candidate Gate Factors
 
@@ -73,7 +74,7 @@ These factors affect whether two stores are actually comparable as operating cas
 | Activity involvement | `activity_orders`, `activity_order_share_pct`, `activity_cost`, `activity_cost_ratio_pct`, `merchant_subsidy_amount`, `platform_subsidy_amount` | Promotion cycle dates, mechanism details, and exact activity calendar are not included. | Activity calendar, promotion type, and activity mechanism evidence. |
 | Activity intensity | `activity_order_share_pct`, `activity_cost_ratio_pct`, `activity_cost` | Current thresholds are diagnostic guardrails, not a finished transfer rule. | Repeated activity windows and stronger evidence on activity mechanism. |
 | Store type | `store_type` | Store type alone does not prove comparability. | Broader sample by store type. |
-| Region / market context | `region_type` | Current demo sample is too small for reliable regional classification. | More store data, local consumption-level evidence, and competition-context evidence. |
+| Region and market context | `region_type` | Current demo sample is too small for reliable regional classification. | More store data, local consumption-level evidence, and competition-context evidence. |
 | Competition context | Not currently structured. | Local competitor density and price pressure are not included. | Competitor and local market evidence. |
 | SKU structure | Top-SKU transaction-amount and sales-volume evidence. | Top-SKU evidence is not full category-share analysis. | Broader SKU classification or category mapping. |
 | Refund pressure | `refund_amount`, `refund_pressure_pct`, `full_refund_orders`, `refund_orders_all_or_partial` | Refund amount is counted by refund-success date. | Cohort-level refund or refund-reason evidence if available. |

@@ -1,57 +1,45 @@
 # Project Summary for Admissions Review
 
-## Project title
+## Project Title
 
-**Lifecycle-Aware AI Memory Layer for Retail Decision Support**
+Lifecycle-Aware AI Memory Layer for Retail Decision Support
 
 Repository: `livestream-agent-memory-layer`
 
-## One-minute summary
+## One-Minute Summary
 
-This project comes from a concrete operating problem in my Meituan instant-retail stores.
+This project comes from a concrete operating problem in my Meituan instant-retail stores. The Meituan merchant backend gives detailed metrics for each store, but it is mainly designed for single-store review. Once the operation expands across many stores, the harder question is not simply collecting more numbers.
 
-The Meituan merchant backend gives detailed metrics for each store, but it is mainly designed for single-store review. Once the operation expands across many stores, the harder question is not simply collecting more numbers. The harder question is whether different store-period records can be compared at all, and what kind of operating decision that comparison can support.
+The harder question is whether different store-period records can be compared at all, and what kind of operating decision that comparison can support.
 
-I built a staged local prototype around that problem.
+I built a staged local prototype around that problem. First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together. Then SQL turns selected store-period records into diagnostic outputs. Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
 
-First, a metric dictionary preserves the original Meituan backend definitions, so fields such as order conversion rate, transaction amount, order amount, payment amount, refund amount, and activity cost ratio are not mixed together.
+The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review. It does not yet implement a finished pairwise comparability gate.
 
-Then SQL turns selected store-period records into diagnostic outputs.
+That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.
 
-Finally, generated memory facts carry the period, source fields, observed values, source paths, confidence, and limitations into later retrieval and answer-boundary checks.
-
-The current repository implements two limited demos: Store A month-over-month diagnosis, and a B-F same-period diagnostic review.
-
-It does not yet implement a finished pairwise comparability gate. That is the next stage, because reliable store comparison should consider order volume, transaction scale, activity involvement, store type, local market context, competition, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows before suggesting whether a pricing, subsidy, SKU, or ranking action can transfer from one store to another.
-
-## Business problem
+## Business Problem
 
 In Meituan instant retail, store competition is not only about whether a store has products online. It is about whether the store can move through an operating chain:
 
-```text
-being seen -> being entered -> being ordered -> being selected again or maintaining share
-```
+    being seen -> being entered -> being ordered -> being selected again or maintaining share
 
 | Operating step | Practical meaning |
 |---|---|
 | Being seen | The store or product can be discovered by consumers in a specific local context. |
 | Being entered | Exposure turns into store visits. |
 | Being ordered | Visits turn into submitted and paid orders. |
-| Being selected again / maintaining share | The store can sustain demand, trust, and local visibility over time. |
+| Being selected again or maintaining share | The store can sustain demand, trust, and local visibility over time. |
 
 Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are tools inside this chain. They are not isolated goals.
 
 In this framework, activity cost is not treated as a simple ROI problem. A new store may need stronger activity support to gain first exposure and first orders. A store under local price pressure may need pricing or subsidy tools to defend visibility and market share. A store with high search exposure may still have weak results if entry, order conversion, refund pressure, invalid orders, or SKU concentration create friction.
 
-The decision-support problem is therefore not:
+The decision-support problem is therefore not: which store is best?
 
-> Which store is best?
+The better question is: which stores are comparable, for which question, under which metric definitions and limitations?
 
-The better question is:
-
-> Which stores are comparable, for which question, under which metric definitions and limitations?
-
-## Technical approach
+## Technical Approach
 
 The retail prototype has four layers.
 
@@ -66,21 +54,19 @@ The SQL layer is not used to paste labels onto stores. It is used to organize ba
 
 The memory layer is not used to make final decisions. It is used to remember what was observed, what the evidence depends on, and where a comparison should stop.
 
-## Current implemented retail path
+## Current Implemented Retail Path
 
-### Demo 1: Store A month-over-month diagnostic
+### Demo 1: Store A Month-over-Month Diagnostic
 
-Demo 1 analyzes Store A across February, March, and April 2026.
+Demo 1 analyzes Store A across February, March, and April 2026. It shows why one metric alone is not enough.
 
-It shows why one metric alone is not enough. For example, April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. Refund pressure and invalid-order pressure improved at the same time.
-
-The purpose is to preserve a careful operating profile, not to label a month as simply good or bad.
+For example, April 2026 showed recovery in traffic and transaction scale, but order conversion and average order value declined. Refund pressure and invalid-order pressure improved at the same time. The purpose is to preserve a careful operating profile, not to label a month as simply good or bad.
 
 Main file:
 
 - `retail_ops/demo/demo_1_store_a_month_over_month_diagnostic.md`
 
-### Demo 2: Same-period cross-store diagnostic
+### Demo 2: Same-Period Cross-Store Diagnostic
 
 Demo 2 extends the analysis to selected Stores B-F under the same March 2026 reporting window.
 
@@ -92,17 +78,17 @@ Main file:
 
 - `retail_ops/demo/demo_2_cross_store_comparability_diagnostic.md`
 
-### Future work: Comparability gate
+### Future Work: Comparability Gate
 
 A pairwise comparability gate is planned as the next stage, but it is not presented as a finished demo in the current repository.
 
-The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, activity involvement, activity intensity based on existing activity fields, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
+The gate should judge whether selected store-period records can be compared for a specific operating question. It should consider transaction order volume, transaction amount, activity involvement, activity intensity based on existing activity fields, activity status, store type, region and market context, competition environment, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
 The current demo sample is still small. For that reason, store locations should not be classified by subjective experience, intuition, or habitual labels.
 
 Taking `region_type` as an example, the current project does not use it to decide that one store belongs to a fixed market-area type. A more reliable classification should wait until more store data is available and can be judged together with data comparability, actual local consumption level, competition environment, and other operating conditions.
 
-## Field contract examples
+## Field Contract Examples
 
 The project keeps field names consistent with `retail_ops/data/DATA_DICTIONARY.md`.
 
@@ -115,7 +101,7 @@ The project keeps field names consistent with `retail_ops/data/DATA_DICTIONARY.m
 | `region_type` | Weak region or market-context evidence; not a mature market-area classification and not a hard peer-grouping rule. |
 | `top3_sku_transaction_amount_share_pct` | Lightweight top-SKU concentration evidence, not full product-category sales share. |
 
-## Current scope
+## Current Scope
 
 This is an ongoing prototype, not a finished 48-store operating platform.
 
