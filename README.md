@@ -2,18 +2,25 @@
 
 Repository: `livestream-agent-memory-layer`
 
-Lifecycle-aware AI memory layer for retail decision support.
+Evidence-grounded retail decision-support prototype with lifecycle-aware retrieval.
 
-This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from Meituan merchant-backend metrics used in multi-store instant-retail operations.
+## Core Research Question
 
-The merchant backend provides detailed single-store metrics, but it does not directly answer cross-store decision questions:
+This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from merchant-backend metrics used in multi-store operations. While the Meituan backend provides detailed single-store metrics, it is not designed to support cross-store operational reasoning at scale.
 
-- which store-period records can be compared;
-- under what conditions they can be compared;
-- what kind of operating judgment the evidence can support;
-- where the system should stop before producing unsupported advice.
+As the number of stores increased, the central problem became not data availability, but comparability.
 
-The current prototype turns that problem into a staged decision-support workflow:
+This project investigates:
+- which store-period records are meaningfully comparable;
+- under what operational conditions comparisons remain valid;
+- what kinds of operational conclusions the available evidence can support;
+- and where the system should stop before generating unsupported judgments.
+
+The goal is not fully automated decision-making, but building a more reliable evidence-based framework for multi-store operational analysis and future business replication.
+
+## Current Prototype Workflow
+
+The current prototype implements a staged decision-support workflow:
 
 1. preserve backend metric definitions;
 2. use SQL to structure selected store-period data;
@@ -23,6 +30,17 @@ The current prototype turns that problem into a staged decision-support workflow
 The single source of truth for retail field names and metric meanings is:
 
 - `retail_ops/data/DATA_DICTIONARY.md`
+
+## Key Design Principles
+
+This prototype emphasizes:
+
+- preserving exact backend metric semantics instead of flattening them into generic business metrics;
+- structuring store-period observations before making stronger comparability claims;
+- converting diagnostics into retrieval-facing evidence records rather than unsupported summaries;
+- preserving source fields, observed values, source paths, confidence labels, and limitations;
+- evaluating whether generated answers stay inside the available evidence boundary;
+- refusing unsupported operational conclusions instead of overextending inference.
 
 ## Fast Reading Path
 
@@ -56,7 +74,7 @@ For implementation details, see:
 
 Retail Demo 2 is the current same-period diagnostic endpoint. A pairwise comparability gate is future work.
 
-The current retail path does not claim that two stores are directly comparable for pricing, subsidy, SKU, ranking, or fulfillment decisions. It first structures selected store-period records under a shared reporting window and field contract.
+The current retail path does not assume that two stores are directly comparable for pricing, subsidy, SKU, ranking, or fulfillment decisions. Instead, it first structures selected store-period observations under a consistent reporting window and shared metric definitions before performing diagnostic comparison.
 
 | Area | Implemented now | Current boundary |
 |---|---|---|
@@ -244,7 +262,7 @@ Current limitations:
 - Promotion cycle dates, competitor density, delivery conditions, rating/review signals, and stockout history are not yet included.
 - Estimated income is treated as a platform-displayed proxy, not audited profit.
 - Top-SKU evidence is used as lightweight product-mix evidence, not full product-category sales share.
-- `region_type` is weak region or market-context evidence only. It is not a mature market-area classification, store-stage label, or hard peer-grouping rule.
+- `region_type` is weak region or market-context evidence only. It is not a mature market-area classification, store-stage label.
 
 ## Future Work: Comparability Gate
 
