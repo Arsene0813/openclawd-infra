@@ -104,6 +104,7 @@ FORBIDDEN_DOC_OVERCLAIMS = [
     "comparability gate is implemented",
     "implemented comparability gate",
     "finished comparability gate",
+    "finished pairwise comparability gate",
 ]
 
 

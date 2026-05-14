@@ -43,7 +43,7 @@ For implementation details, see `retail_ops/README.md`, `PROJECT_STATUS.md`, SQL
 ## Current Implemented Scope
 
 <!-- stable-retail-scope-note -->
-The current retail implementation stops at Demo 2: a same-period B-F cross-store diagnostic. It does not yet implement a finished pairwise comparability gate, store ranking system, or automatic strategy-transfer engine.
+The current retail implementation stops at Demo 2: a same-period B-F cross-store diagnostic. It does not yet implement pairwise store-period comparability decisions, store ranking, or automatic strategy-transfer logic.
 
 The next technical step is to judge whether two store-period records can be compared for a specific operating question, using evidence such as order volume, transaction amount, activity involvement, store type, market context, SKU structure, refund pressure, invalid-order pressure, and repeated reporting windows.
 
@@ -52,7 +52,7 @@ The next technical step is to judge whether two store-period records can be comp
 | Livestream memory layer | Typed product facts, overwrite control, soft deactivation, active-state retrieval, fallback/refusal, scenario evaluation | General-purpose production agent memory platform |
 | Retail metric dictionary | Meituan-style backend metric definitions and naming boundaries | Automatic ingestion from Meituan backend |
 | Retail Demo 1 | Store A month-over-month diagnostic across February, March, and April 2026 | Causal explanation of monthly performance |
-| Retail Demo 2 | Same-period B-F diagnostic with scope and limitation checks | Finished pairwise comparability gate, store ranking, or automatic strategy recommendation |
+| Retail Demo 2 | Same-period B-F diagnostic with scope and limitation checks | Pairwise store-period comparability gate, store ranking, or automatic strategy recommendation |
 | Retail memory facts | Generated facts with observed values, source fields, source paths, supporting source paths, confidence, and limitations | Full 48-store automated decision system |
 | Evaluation | Scenario-based checks for supported answers, unsupported-scope refusal, and metric-boundary preservation | Broad LLM benchmark |
 
