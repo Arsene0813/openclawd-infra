@@ -115,28 +115,9 @@ If the project later introduces fields such as `market_area_type`, those fields 
 
 ## Future Work: Pairwise Comparability Gate
 
-The next planned stage is a pairwise comparability gate.
+The next planned stage is a pairwise comparability gate. It should judge whether two selected store-period records can be compared for a specific operating question before transferring any pricing, subsidy, SKU, ranking, or fulfillment interpretation.
 
-The gate should answer a narrow question:
-
-Can these two store-period records be compared for this specific operating question?
-
-It should consider at least:
-
-- transaction order volume;
-- transaction amount;
-- activity involvement;
-- activity intensity;
-- explicit activity status or campaign-calendar evidence if available;
-- store type;
-- region and market context;
-- competition environment;
-- SKU structure;
-- refund pressure;
-- invalid-order pressure;
-- repeated reporting windows.
-
-The gate should not produce one global store ranking or one universal comparability score. A store pair may be comparable for search-entry structure but not comparable for promotion transfer, pricing pressure, SKU strategy, or fulfillment interpretation.
+The full future-gate design is documented in `retail_ops/COMPARABILITY_GATE_V0.md`. In this admissions-facing summary, the important point is that the current repository deliberately stops before making unsupported pairwise comparison or strategy-transfer claims.
 
 ## Field Contract Examples
 
