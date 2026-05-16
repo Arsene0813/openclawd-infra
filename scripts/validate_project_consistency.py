@@ -47,7 +47,7 @@ CURRENT_SCOPE_REQUIRED_TERMS = {
     ],
     "PROJECT_SUMMARY_FOR_ADMISSIONS.md": [
         "pairwise comparability gate",
-        "finished demo",
+        "staged local prototype",
     ],
     "retail_ops/README.md": [
         "same-period",
