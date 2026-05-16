@@ -6,6 +6,12 @@ In this repository, "experiment" means a staged analytical check on whether the 
 
 It does not mean a randomized business experiment or causal A/B test.
 
+## Document Responsibility
+
+This file owns implementation checks and evaluation-oriented experiment descriptions.
+
+It should record the question, evidence path, expected behavior, current result, pass condition, and failure mode for each staged check. It should not repeat the full business narrative or the full future pairwise-gate design.
+
 ## Current Experiment Scope
 
 The current experiments test whether selected Meituan backend metrics can be:
