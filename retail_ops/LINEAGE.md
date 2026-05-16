@@ -12,6 +12,12 @@ Demo 2 covers same-period Stores B-F diagnostic artifacts. Path names that inclu
 
 In the current implementation, Demo 2 means same-period diagnostic evidence and guardrails. The pairwise comparability gate is future work.
 
+## Document Responsibility
+
+This file owns claim-to-data lineage.
+
+It explains how selected source fields support SQL diagnostics, generated memory facts, and answer-boundary checks. It does not own the full admissions narrative, the full metric dictionary, or the full future pairwise comparability-gate design.
+
 ## Shared Lineage Contract
 
 Existing Meituan backend metrics are kept under a single canonical English field name.
