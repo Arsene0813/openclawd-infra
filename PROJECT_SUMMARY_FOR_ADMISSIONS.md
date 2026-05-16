@@ -38,6 +38,15 @@ The current repository implements two retail demos:
 
 The project does not yet implement a pairwise comparability gate. That is the next planned stage. The gate should judge whether two store-period records can be compared for a specific operating question before any pricing, subsidy, SKU, ranking, or fulfillment action is transferred.
 
+## Review Note
+
+This admissions-facing summary explains the business problem, analytical shift, implemented prototype scope, and current limitations.
+
+Detailed metric definitions are maintained in `retail_ops/data/DATA_DICTIONARY.md`.
+Claim-to-data lineage is maintained in `retail_ops/LINEAGE.md`.
+Experiment and validation logic is maintained in `retail_ops/EXPERIMENTS.md`.
+The future pairwise comparability-gate design is maintained in `retail_ops/COMPARABILITY_GATE_V0.md`.
+
 ## Business Problem
 
 In Meituan instant retail, store competition is not only about having products online. For standardized products such as contact lenses and care solutions, many stores compete around a local operating chain:
