@@ -4,6 +4,12 @@ This file documents the Meituan backend metric definitions used in the retail op
 
 The purpose is to prevent Meituan backend numbers from being treated as generic business metrics without checking their original platform meaning, reporting window, denominator, and data grain.
 
+## Document Responsibility
+
+This file is the owner document for retail field names, metric definitions, data-grain boundaries, SQL-derived diagnostic field meanings, and naming rules.
+
+Other project documents should not repeat full metric definitions. They should link back to this file when field-level precision is needed.
+
 ## Naming Convention
 
 The canonical English field names in this project are the implemented CSV / SQL field names used in the current retail demos.
