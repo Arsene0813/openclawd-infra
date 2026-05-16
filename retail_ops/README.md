@@ -156,26 +156,15 @@ This reduces the risk of later retrieval or reasoning stages treating isolated m
 
 ## Future Work: Pairwise Comparability Gate
 
-The next planned stage is a pairwise comparability gate for constrained cross-store operating analysis.
+The next planned retail stage is a pairwise comparability gate for constrained cross-store operating analysis.
 
-It should judge whether two selected store-period records can be compared for a specific operating question.
+This folder README only points to that future design. The full gate contract, candidate factors, region-context boundary, future input triple, output enum, and evaluation stub are documented in:
 
-The gate should consider:
+`retail_ops/COMPARABILITY_GATE_V0.md`
 
-- order volume;
-- transaction amount;
-- activity involvement and activity intensity;
-- explicit activity status or campaign-calendar evidence if available;
-- store type;
-- region and market context;
-- competition environment;
-- SKU structure;
-- refund pressure;
-- invalid-order pressure;
-- repeated reporting windows.
+The current retail implementation remains limited to:
 
-The current `region_type` field remains weak context only. It should not be used as a hard market-area classification or peer-grouping rule without broader store data and stronger local market evidence.
+- Demo 1: Store A month-over-month diagnostic.
+- Demo 2: Stores B-F same-period diagnostic structure.
 
-Future gate design note:
-
-- `retail_ops/COMPARABILITY_GATE_V0.md`
+The current Demo 2 diagnostic output must not be read as a finished pairwise gate, store ranking, or strategy-transfer approval system.
