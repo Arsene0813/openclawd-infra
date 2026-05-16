@@ -61,6 +61,8 @@ For an admissions or project review, read in this order:
 5. `retail_ops/EXPERIMENTS.md`  
    Current analytical experiment map and failure modes.
 
+Document responsibility note: this README is the repository landing page. Detailed metric definitions, claim-to-data lineage, experiment logic, and future pairwise comparability-gate design are maintained in their owner documents listed below.
+
 For implementation details, see:
 
 - `retail_ops/README.md`
@@ -265,6 +267,8 @@ Current limitations:
 - `region_type` is weak region or market-context evidence only. It is not a mature market-area classification, store-stage label.
 
 ## Future Work: Comparability Gate
+
+Full future-gate design is maintained in `retail_ops/COMPARABILITY_GATE_V0.md`. This section only summarizes the next planned direction.
 
 The next planned stage is a pairwise comparability gate.
 
