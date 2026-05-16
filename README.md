@@ -61,7 +61,19 @@ For an admissions or project review, read in this order:
 5. `retail_ops/EXPERIMENTS.md`  
    Current analytical experiment map and failure modes.
 
-Document responsibility note: this README is the repository landing page. Detailed metric definitions, claim-to-data lineage, experiment logic, and future pairwise comparability-gate design are maintained in their owner documents listed below.
+### Document Responsibility Note
+
+This README is the repository landing page. It gives the project purpose, implemented scope, fast reading path, and current boundary.
+
+Detailed metric definitions are maintained in `retail_ops/data/DATA_DICTIONARY.md`.
+
+Claim-to-data lineage is maintained in `retail_ops/LINEAGE.md`.
+
+Experiment and validation logic is maintained in `retail_ops/EXPERIMENTS.md`.
+
+The future pairwise comparability-gate design is maintained in `retail_ops/COMPARABILITY_GATE_V0.md`.
+
+This avoids repeating the same explanation across multiple documents while keeping the full evidence and implementation notes available in their owner documents.
 
 For implementation details, see:
 
