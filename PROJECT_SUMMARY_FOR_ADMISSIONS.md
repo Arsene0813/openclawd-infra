@@ -10,24 +10,17 @@ Repository: `livestream-agent-memory-layer`
 
 This project grew from a real operational problem in a 48-store Meituan instant-retail business.
 
-Although the Meituan merchant backend provides extensive operational metrics, the platform is fundamentally designed for single-store monitoring rather than cross-store comparative analysis. As store count increased, the marginal value of further optimizing isolated store-level metrics began to decline.
+Once the number of stores increased, the harder question was not whether more metrics were available. The harder question was whether different store-period records could be compared at all.
 
-At the current stage of the business, a more valuable problem is understanding why certain stores consistently outperform others, and whether those operational advantages are transferable.
+In instant retail, competition is strongly connected to whether a store can be seen, entered, ordered from, and selected again or protected as part of local market share. Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are not isolated goals. They are operating tools whose meaning depends on store state, local competition, activity involvement, refund pressure, invalid-order pressure, and product-mix evidence.
 
-The central challenge is comparability:
+The purpose of comparing multiple stores is therefore not to rank stores mechanically. The purpose is to identify which operating signals are reliable enough to support better decisions, and which apparent differences should not be transferred across stores because the conditions are not comparable.
 
-Which stores can be meaningfully compared?
-Under what operational conditions are comparisons valid?
-Which observed differences reflect actionable operational patterns rather than environmental noise?
+This project explores three practical questions:
 
-This project explores a possible framework for combining data science methods and AI-assisted reasoning systems to:
-
-experiment with comparability analysis across stores and operating periods,
-preserve metric semantics and operational context,
-investigate whether operational patterns from high-performing stores may be transferable,
-and support scalable decision-making for future business expansion.
-
-The long-term goal is not merely improving individual store metrics, but building a decision-support framework capable of discovering repeatable operational patterns that can support large-scale replication of the business model.
+1. Which store-period records can be meaningfully compared?
+2. Under what operational conditions are comparisons valid?
+3. Which observed differences may reflect actionable operating patterns rather than local noise, temporary activity effects, or data-context mismatch?
 
 I built a staged local prototype around that problem. The current implementation manually structures selected Meituan backend metrics, preserves their platform-specific meanings in `retail_ops/data/DATA_DICTIONARY.md`, uses SQL to generate limited diagnostic outputs, and converts diagnostic evidence into memory facts with source fields, observed values, source paths, confidence, and limitations.
 
@@ -36,7 +29,7 @@ The current repository implements two retail demos:
 1. Store A month-over-month diagnostic across February, March, and April 2026.
 2. Stores B-F same-period diagnostic for March 2026.
 
-The project does not yet implement a pairwise comparability gate. That is the next planned stage. The gate should judge whether two store-period records can be compared for a specific operating question before any pricing, subsidy, SKU, ranking, or fulfillment action is transferred.
+The long-term goal is to support better multi-store operating decisions as the business expands, not to automate decisions or copy one store's actions directly. The next planned stage is a pairwise comparability gate that judges whether two store-period records can be compared for a specific operating question before any pricing, subsidy, SKU, ranking, or fulfillment interpretation is transferred.
 
 ## Review Note
 
