@@ -10,11 +10,11 @@ Repository: `livestream-agent-memory-layer`
 
 This project grew from a real operational problem in a 48-store Meituan instant-retail business.
 
-Once the number of stores increased, the harder question was not whether more metrics were available. The harder question was whether different store-period records could be compared at all.
+The Meituan merchant backend provides many store-level metrics, but the workflow is mainly designed for reviewing one store at a time. Once the number of stores increased, the harder question was not whether more metrics were available. The harder question was whether different store-period records could be compared at all.
 
-In instant retail, competition is strongly connected to whether a store can be seen, entered, ordered from, and selected again or protected as part of local market share. Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are not isolated goals. They are operating tools whose meaning depends on store state, local competition, activity involvement, refund pressure, invalid-order pressure, and product-mix evidence.
+The purpose of comparing multiple stores is not to rank stores mechanically. The purpose is to identify which operating signals are reliable enough to support better decisions, and which apparent differences should not be transferred across stores because the conditions are not comparable.
 
-The purpose of comparing multiple stores is therefore not to rank stores mechanically. The purpose is to identify which operating signals are reliable enough to support better decisions, and which apparent differences should not be transferred across stores because the conditions are not comparable.
+In this project, I treat instant-retail performance as an operating chain involving visibility, store entry, order conversion, and later repeat selection or share maintenance. Promotion, subsidy, price adjustment, SKU arrangement, ranking position, and fulfillment stability are operating tools inside that chain, not isolated goals.
 
 This project explores three practical questions:
 
@@ -131,14 +131,17 @@ The project keeps field names consistent with:
 
 Current implemented scope:
 
-- selected Meituan backend data has been manually structured into canonical CSV files;
-- Demo 1 and Demo 2 are implemented as local staged diagnostics;
-- SQL outputs are converted into generated retail memory facts;
-- scenario-based checks test whether metric definitions and comparison limits are preserved;
-- the pairwise comparability gate is documented as future work;
-- automated Meituan backend ingestion is not implemented;
-- full 48-store automated decision support is not implemented;
-- causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed;
-- full SKU category classification across the catalogue is not implemented.
+- Selected Meituan backend data is manually structured into canonical CSV files.
+- Demo 1 and Demo 2 are implemented as local staged diagnostics.
+- SQL outputs are converted into generated retail memory facts.
+- Scenario-based checks test whether metric definitions and comparison limits are preserved.
+- The pairwise comparability gate is documented as future work.
+
+Current boundaries:
+
+- Automated Meituan backend ingestion is not implemented.
+- Full 48-store automated decision support is not implemented.
+- Causal attribution of sales growth to search ranking, promotion, or conversion change is not claimed.
+- Full SKU category classification across the catalogue is not implemented.
 
 At this stage, the repository should be read as a staged prototype with clear scope boundaries: it shows how selected single-store backend metrics can be reorganized into a cautious, traceable, and testable decision-support workflow for future multi-store comparison.
