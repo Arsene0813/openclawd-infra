@@ -2,13 +2,13 @@
 
 Repository: `livestream-agent-memory-layer`
 
-Evidence-grounded retail decision-support prototype with lifecycle-aware retrieval.
+Evidence-grounded decision-support prototype for multi-store Meituan instant-retail operations, built with SQL diagnostics and lifecycle-aware retrieval.
 
 ## Core Research Question
 
-This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from merchant-backend metrics used in multi-store operations. While the Meituan backend provides detailed single-store metrics, it is not designed to support cross-store operational reasoning at scale.
+This is a local working prototype built from a real Meituan instant-retail operating problem. The retail evidence is manually structured from merchant-backend metrics used in multi-store operations.
 
-As the number of stores increased, the central problem became not data availability, but comparability.
+The Meituan backend provides detailed single-store metrics, but it is not designed to support cross-store operational reasoning at scale. As the number of stores increased, the central problem became not data availability, but comparability: deciding which store-period records can support reusable operating signals across visibility, store entry, order conversion, and later repeat selection or share maintenance.
 
 This project investigates:
 - which store-period records are meaningfully comparable;
@@ -16,7 +16,7 @@ This project investigates:
 - what kinds of operational conclusions the available evidence can support;
 - and where the system should stop before generating unsupported judgments.
 
-The goal is not fully automated decision-making, but building a more reliable evidence-based framework for multi-store operational analysis and future business replication.
+The goal is not fully automated decision-making. The goal is to build a more reliable evidence-based framework for multi-store operational analysis, so that future operating decisions can be made with clearer data boundaries as the business expands.
 
 ## Current Prototype Workflow
 
@@ -72,9 +72,9 @@ For implementation details, see:
 
 ## Current Implemented Scope
 
-Retail Demo 2 is the current same-period diagnostic endpoint. A pairwise comparability gate is future work.
+Retail Demo 2 is the current same-period diagnostic stage. A pairwise comparability gate is future work.
 
-The current retail path does not assume that two stores are directly comparable for pricing, subsidy, SKU, ranking, or fulfillment decisions. Instead, it first structures selected store-period observations under a consistent reporting window and shared metric definitions before performing diagnostic comparison.
+The current retail path does not assume that two stores are directly comparable for pricing, subsidy, SKU, ranking, or fulfillment decisions. Instead, it first structures selected store-period observations under a consistent reporting window and shared metric definitions before making stronger comparison claims.
 
 | Area | Implemented now | Current boundary |
 |---|---|---|
@@ -251,18 +251,18 @@ This project demonstrates:
 
 The strongest point of the project is not that it is a finished operating platform. The strongest point is that it makes the evidence boundary explicit before comparing stores or suggesting operating actions.
 
-## Current Limitations
+## Current Boundaries
 
-Current limitations:
+Current boundaries:
 
 - Demo 1 covers Store A month-over-month analysis.
 - Demo 2 covers a limited same-period B-F diagnostic.
-- Automated Meituan backend ingestion is not implemented.
+- Selected Meituan backend data is manually structured; automated Meituan backend ingestion is not implemented.
 - Full 48-store peer selection and daily automated recommendations are not implemented.
 - Promotion cycle dates, competitor density, delivery conditions, rating/review signals, and stockout history are not yet included.
-- Estimated income is treated as a platform-displayed proxy, not audited profit.
+- `estimated_income_proxy` is treated as a platform-displayed proxy, not audited profit.
 - Top-SKU evidence is used as lightweight product-mix evidence, not full product-category sales share.
-- `region_type` is weak region or market-context evidence only. It is not a mature market-area classification, store-stage label.
+- `region_type` is weak region or market-context evidence only. It is not a mature market-area classification, store-stage label, or hard peer-grouping rule.
 
 ## Future Work: Comparability Gate
 
